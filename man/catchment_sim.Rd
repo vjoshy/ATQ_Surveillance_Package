@@ -4,14 +4,14 @@
 \alias{catchment_sim}
 \title{Simulating catchment areas}
 \usage{
-catchment_sim(n, alpha, gamma, area)
+catchment_sim(n, alpha, beta, area)
 }
 \arguments{
 \item{n}{number of observations to be simulated}
 
 \item{alpha}{shape parameter of gamma distribution}
 
-\item{gamma}{rate parameter of gamma distribution}
+\item{beta}{rate parameter of gamma distribution}
 
 \item{area}{square dimension for catchment (if area = 20, then each catchment dimensions will be 20 x 20)}
 }
