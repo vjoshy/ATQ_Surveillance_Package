@@ -2,3 +2,5 @@
 
 export(catchment_sim)
 export(elementary_pop)
+export(subpop_children)
+export(subpop_noChildren)
