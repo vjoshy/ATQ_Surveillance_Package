@@ -9,6 +9,24 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' #' #simulate catchment area
+#' catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
+#'
+#' #simulate elementary schools for each area
+#' elementary_df <- elementary_pop(catch_df, 5.27426341, 0.01427793)
+#'
+#' # simulate household with children and assign them to elementary school
+#' house_children <- subpop_children(elementary_df)
+#'
+#' # simulate household with no children and assign them to elementary school
+#' house_noChild <- subpop_noChildren(house_children, elementary_df)
+#'
+#' #simulate total households and individuals
+#' simulation <- simulate_households(house_children, house_noChild)
+#' }
+#'
+#'
 simulate_households <- function(children_df, noChildren_df){
 
   noChildren_df$schoolID <- 0

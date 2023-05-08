@@ -30,9 +30,6 @@ house_children <- subpop_children(elementary_df)
 
 # simulate household with no children and assign them to elementary school
 house_noChild <- subpop_noChildren(house_children, elementary_df)
-
-#simulate total households and individuals
-simulation <- simulate_households(house_children, house_noChild)
 }
 
 }
