@@ -39,8 +39,8 @@ simulate_households <- function(children_df, noChildren_df){
   households <- rbind(households1, households2)
 
   # Generate house locations within catchment areas
-  households$loc.x <- runif(nrow(households), households$xStart, households$xEnd)
-  households$loc.y <- runif(nrow(households), households$yStart, households$yEnd)
+  households$loc.x <- stats::runif(nrow(households), households$xStart, households$xEnd)
+  households$loc.y <- stats::runif(nrow(households), households$yStart, households$yEnd)
 
   # expanding rows for each individual
   individuals <- households[rep(row.names(households), households$num_people),]
