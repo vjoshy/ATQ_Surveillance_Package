@@ -7,7 +7,7 @@
 catchment_sim(n, alpha, beta, area)
 }
 \arguments{
-\item{n}{number of observations to be simulated}
+\item{n}{number of catchments to be simulated}
 
 \item{alpha}{shape parameter of gamma distribution}
 

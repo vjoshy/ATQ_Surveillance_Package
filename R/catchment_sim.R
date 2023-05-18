@@ -4,7 +4,7 @@
 #' Function to simulate specified catchment square area (a x a).
 #' Catchment areas are simulated via gamma distribution
 #'
-#' @param n number of observations to be simulated
+#' @param n number of catchments to be simulated
 #' @param alpha shape parameter of gamma distribution
 #' @param beta rate parameter of gamma distribution
 #' @param area square dimension for catchment (if area = 20, then each catchment dimensions will be 20 x 20)
