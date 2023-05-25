@@ -2,20 +2,21 @@
 #'
 #' simulate epidemic
 #'
-#' @param df dataframe
-#' @param b parameter
-#' @param sus parameter
-#' @param spar parameter
-#' @param num_inf parameter
+#' @param df individuals data frame from household data simulation
+#' @param b Spatial parameter(s) (>0) or network parameter (s) (>0) if contact network is used.
+#' @param sus Susceptibility parameter (>0)
+#' @param spark Sparks parameter (>=0), representing infections unexplained by other parts of the model.
+#' @param num_inf number of individuals that are infected initially in each catchment
 #'
 #' @importFrom dplyr %>%
 #'
-#' @return list of simulated epidemic
+#' @return list of 10 simulated epidemics
 #' @export
 #'
 #' @examples
 #' \dontrun{whaever }
-sim12epiNew <- function(df, b, sus, spar, num_inf){
+#'
+simepi <- function(df, b, sus, spark, num_inf){
 
   catchID <- individualID <- loc.x <- loc.y <- NULL
 
@@ -44,7 +45,7 @@ sim12epiNew <- function(df, b, sus, spar, num_inf){
                    , tmax=270
                    , sus.par= sus
                    , beta= b
-                   , spark = spar
+                   , spark = spark
                    , x=df$loc.x*2
                    , y=df$loc.y*2
                    , inftime = first.inf
@@ -63,7 +64,7 @@ sim12epiNew <- function(df, b, sus, spar, num_inf){
                      , tmax=270
                      , sus.par= sus
                      , beta= b
-                     , spark = spar
+                     , spark = spark
                      , x=df$loc.x*2
                      , y=df$loc.y*2
                      , inftime = first.inf
@@ -71,7 +72,7 @@ sim12epiNew <- function(df, b, sus, spar, num_inf){
     }
 
 
-    runs[[i]]<- list(XYcoordinates = SIR$XYcoordinates, inftime = SIR$inftime, remtime = SIR$remtime, first.inf = first.inf, start = start)
+    runs[[i]]<- list(XYcoordinates = SIR$XYcoordinates, inftime = SIR$inftime, remtime = SIR$remtime, start = start)
   }
 
 
