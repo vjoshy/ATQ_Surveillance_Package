@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{whaever }
+#' \dontrun{I need to update this}
 #'
 simepi <- function(df, b, sus, spark, num_inf){
 

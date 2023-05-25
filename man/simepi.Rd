@@ -24,6 +24,6 @@ list of 10 simulated epidemics
 simulate epidemic
 }
 \examples{
-\dontrun{whaever }
+\dontrun{I need to update this}
 
 }
