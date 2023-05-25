@@ -2,6 +2,8 @@
 
 export(catchment_sim)
 export(elementary_pop)
+export(sim12epiNew)
 export(simulate_households)
 export(subpop_children)
 export(subpop_noChildren)
+importFrom(dplyr,"%>%")
