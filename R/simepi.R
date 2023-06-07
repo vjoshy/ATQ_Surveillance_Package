@@ -25,20 +25,24 @@ simepi <- function(df, b, sus, spark, num_inf){
 
   for(i in 1:10){
 
-    # Select individuals from each catchment area for initial infections.
-    #   Number of initial infections per cathcment area = numinf.catch
+    #   Select individuals from each catchment area for initial infections.
+    #   Number of initial infections per catchment area = numinf.catch
     sample <- (df %>%
                  dplyr::group_by(catchID) %>%
                  dplyr::slice_sample(n = 2))$individualID
 
-    # Set Initial infection time for the sampled individuals
+    #   Set Initial infection time for the sampled individuals
     #   Start is the "epidemic start time"
     #   Individuals are randomly infected within 14 days after the start time
     first.inf <- rep(0, nrow(df))
+
+    # mean and standard deviation can change with infection types
+    # infection period can also change
     start <- max(round(stats::rnorm(1, mean = 45, sd=15)), 20)
     first.inf[df$individualID %in% sample] <- start + floor(stats::runif(num_inf*num_catchment, 0, 15))
 
     # simulate epidemic
+    # epidata parameters will also have to be included in function arguments
     SIR <- EpiILM::epidata(type="SIR"
                    , n=nrow(df)
                    , tmin=1
@@ -46,8 +50,8 @@ simepi <- function(df, b, sus, spark, num_inf){
                    , sus.par= sus
                    , beta= b
                    , spark = spark
-                   , x=df$loc.x*2
-                   , y=df$loc.y*2
+                   , x=df$loc.x
+                   , y=df$loc.y
                    , inftime = first.inf
                    , infperiod=rep(4, nrow(df)))
 
@@ -65,8 +69,8 @@ simepi <- function(df, b, sus, spark, num_inf){
                      , sus.par= sus
                      , beta= b
                      , spark = spark
-                     , x=df$loc.x*2
-                     , y=df$loc.y*2
+                     , x=df$loc.x
+                     , y=df$loc.y
                      , inftime = first.inf
                      , infperiod=rep(4, nrow(df)))
     }
