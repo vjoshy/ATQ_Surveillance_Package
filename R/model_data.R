@@ -1,12 +1,18 @@
 #' Title
 #'
-#' @param epi.series
-#' @param individual.data
+#' @param epi.series simulated epidemic data frame
+#' @param individual.data individuals data frame
 #'
-#' @return
+#' @importFrom stats aggregate filter runif time
+#' @importFrom zoo rollapply
+#' @importFrom dplyr mutate rename
+#'
+#' @return returns simulated data frame
 #' @export
 #'
 #' @examples
+#' #' \dontrun{I need to update this}
+#'
 model_data <- function(epi.series, individual.data){
 
   # catchment area data sets
