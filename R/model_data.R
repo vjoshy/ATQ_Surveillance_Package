@@ -205,7 +205,6 @@ model_data <- function(epi.series, individual.data){
 }
 
 
-#' @export
 sim.lab.confirm <- function(epidata, individual.data){
 
   #combine dataframes to have individual and infection information

@@ -3,7 +3,6 @@
 export(catchment_sim)
 export(elementary_pop)
 export(model_data)
-export(sim.lab.confirm)
 export(simepi)
 export(simulate_households)
 export(subpop_children)
