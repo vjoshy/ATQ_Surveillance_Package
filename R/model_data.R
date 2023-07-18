@@ -15,55 +15,42 @@
 #'
 model_data <- function(epi.series, individual.data){
 
-  # catchment area data sets
-  actual.cases.catch <- data.frame(time = c(), catchID = c(), case.no = c(), case.elem = c(), ScYr = c())
+  #catchment area datasets
+  actual.cases.catch <- data.frame(time=c(), catchID = c(), case.no = c(), case.elem = c(), ScYr = c())
   absent.catch <- data.frame(time = c(), catchID = c(), pct.absent = c(), absent = c(), absent.sick = c(), ScYr = c())
   labconf.catch <- data.frame(time = c(), catchID = c(), labconf = c(), ScYr = c())
 
-  #Region-wide data sets
-  actual.cases.region <- data.frame(time = c(), case.no = c(), case.elem = c(), ScYr = c())
-  absent.region <- data.frame(time = c(), pct.absent = c(), absent = c(), absent.sick = c(), ScYr =c())
+  #Region-wide datasets
+  actual.cases.region <- data.frame(time=c(), case.no = c(), case.elem = c(), ScYr = c())
+  absent.region <- data.frame(time = c(), pct.absent = c(), absent = c(), absent.sick = c(), ScYr = c())
   labconf.region <- data.frame(time = c(), labconf = c(), ScYr = c())
 
-  # create df consisting of all years from simulated epidemic
+  #create dataframes consisting of all years
   for(i in 1:length(epi.series)){
-
-    # catchment data sets ( grouped by catchment areas)
+    # catchment datasets
     # Actual cases (both lab confirmed, and non lab confirmed)
-    # This is not needed for modelling, but is good additional information
-
-    actual.cases <- sim.actual.case(epi.series[[i]], individual.data) %>%
-      filter(time > 0) %>%
-      mutate(ScYr = i)
-
+    #   This is not needed for modelling, but is good additional information
+    actual.cases <- sim.actual.case(epi.series[[i]], individual.data)
+    actual.cases <- actual.cases[actual.cases$time >0,]
+    actual.cases$ScYr <- i
     actual.cases.catch <- rbind(actual.cases.catch, actual.cases)
 
-
     # Laboratory confirmed cases
-    lab.conf <- sim.lab.confirm(epi.series[[i]], individual.data) %>%
-      mutate(ScYr = i)
-
+    lab.conf <- sim.lab.confirm(epi.series[[i]], individual.data)
+    lab.conf$ScYr <- i
     labconf.catch <- rbind(labconf.catch, lab.conf)
 
-
     # Absenteeism
-    absent <- sim.absent(epi.series[[i]], individual.data) %>%
-      mutate(ScYr = i)
-
-    # count of absentees from sickness and otherwise
+    absent <- sim.absent(epi.series[[i]], individual.data)
+    absent$ScYr <- i
     absent.count <- aggregate(cbind(absent, absent.sick) ~ time + catchID + ScYr, data=absent, FUN=sum)
-
-    # average percent of absent
     absent.pct <- aggregate(pct.absent ~ time + catchID + ScYr, data = absent, FUN=mean)
-
-    # combine above data frames
     absent.merge <- merge(absent.pct, absent.count, by = c("time", "catchID", "ScYr"))
     absent.catch <- rbind(absent.catch, absent.merge)
 
-
-    # Region datasets - without grouping by catchment areas
+    # Region datasets
     # Actual cases (both lab confirmed, and non lab confirmed)
-    # This is not needed for modelling, but is good additional information
+    #   This is not needed for modelling, but is good additional information
     actual.cases <- aggregate(cbind(case, case.elem) ~ time + ScYr, data=actual.cases, FUN = sum)
     actual.cases.region <- rbind(actual.cases.region, actual.cases)
 
@@ -76,19 +63,16 @@ model_data <- function(epi.series, individual.data){
     absent.pct <- aggregate(pct.absent ~ time + ScYr, data=absent, FUN = mean)
     absent.merge <- merge(absent.pct, absent.count, by = c("time", "ScYr"))
     absent.region <- rbind(absent.region, absent.merge)
-
   }
 
-
   # Catchment area datasets
-  # Combine lab confirmed cases, absenteeism and actual cases into one dataframe
+  #   Combine lab confirmed cases, absenteeism and actual cases into one dataframe
+  master.catch <- merge(actual.cases.catch, absent.catch, by=c("time", "catchID", "ScYr"), all=TRUE)
+  master.catch <- merge(master.catch, labconf.catch, by=c("time", "catchID", "ScYr"), all=TRUE)
+  master.catch <- rename(master.catch, c("Actual.case" = "case", "Case.No" = "labconf", "Date" = "time"))
 
-  master.catch <- merge(actual.cases.catch, absent.catch, by = c("time", "catchID", "ScYr"), all = TRUE) %>%
-    merge(labconf.catch, by = c("time", "catchID", "ScYr"), all = TRUE) %>%
-    rename(c("Actual.case" = "case", "Case.No" = "labconf", "Date" = "time"))
-
-  master.catch$Case <- 1 * (master.catch$Case.No > 0) # indicator for lab confirmed flu case in the catchment area on that day
-  master.catch$sinterm <- sin((2*pi*master.catch$Date)/365.25)
+  master.catch$Case <- 1*(master.catch$Case.No > 0) # indicator for lab confirmed flu case in the catchment area on that day
+  master.catch$sinterm <- sin((2*pi*master.catch$Date)/365.25) # seasonal term
   master.catch$costerm <- cos((2*pi*master.catch$Date)/365.25) # seasonal term
   master.catch$window <- 0 # "True Alarm" window (to be calculated)
   master.catch$ref.date <- 0 # reference date indicator (to be calculated)
@@ -96,13 +80,11 @@ model_data <- function(epi.series, individual.data){
 
   master.catch <- master.catch[order(master.catch$ScYr, master.catch$Date, master.catch$catchID),]
 
-
-
   # Region wide datasets
-  # Combine lab confirmed cases, absenteeism and actual cases into one dataframe
-  master.region <- merge(actual.cases.region, absent.region, by=c("time", "ScYr"), all=TRUE) %>%
-    merge( labconf.region, by=c("time", "ScYr"), all=TRUE) %>%
-    rename( c("Actual.case" = "case", "Case.No" = "labconf", "Date" = "time"))
+  #   Combine lab confirmed cases, absenteeism and actual cases into one dataframe
+  master.region <- merge(actual.cases.region, absent.region, by=c("time", "ScYr"), all=TRUE)
+  master.region <- merge(master.region, labconf.region, by=c("time", "ScYr"), all=TRUE)
+  master.region <- rename(master.region, c("Actual.case" = "case", "Case.No" = "labconf", "Date" = "time"))
 
   master.region$Case <- 1*(master.region$Case.No > 0) # indicator for lab confirmed flu case that day
   master.region$sinterm <- sin((2*pi*master.region$Date)/365.25) # seasonal term
@@ -124,7 +106,7 @@ model_data <- function(epi.series, individual.data){
 
     # Calculate region wide reference date
     weekly.cases <- rollapply(tmp.data$Case.No, width = 7, sum, partial = TRUE, align = "right") # number of cases within a rolling window of 7 days
-    region.ref <- suppressWarnings(min(which(weekly.cases > 1))) # first day in the year where 2 confirmed influenza cases within 7 days
+    region.ref <- min(which(weekly.cases > 1)) # first day in the year where 2 confirmed influenza cases within 7 days
 
     # If a reference date is defined for the region,
     #   create an indicator to specify that day as the reference date,
@@ -145,7 +127,7 @@ model_data <- function(epi.series, individual.data){
 
       # Option 1 - 2nd lab confirmed case within 10 days
       weekly.cases <- rollapply(tmp.data$Case.No, width = 10, sum, partial = TRUE, align = "right") # number of cases within a rolling window of 10 days
-      catch.ref <- suppressWarnings(min(which(weekly.cases > 1))) # first day in the catchment area and year where 2 confirmed influenza cases within 10 days
+      catch.ref <- min(which(weekly.cases > 1)) # first day in the catchment area and year where 2 confirmed influenza cases within 10 days
 
       # (Option 2 - first lab confirmed case in catchment area after region ref date)
       # catch.ref <- min(tmp.data[tmp.data$Case.No >0 & tmp.data$Date >= region.ref,'Date'])
@@ -165,18 +147,15 @@ model_data <- function(epi.series, individual.data){
   # Create lagged absenteeism columns
   no.lags <- 16 # Maximum number of lags (note that lag0 is included)
   catch.lag <- data.frame()
+  region.lag <- data.frame()
 
-  # lagged absenteeism values for each catchment area
+  # lagged absenteeism values for each catchment cathcment area
   for(j in unique(master.catch$catchID)){
-
     tmp.catch <- master.catch[master.catch$catchID == j,]
     tmp.catch <- tmp.catch[order(tmp.catch$ScYr, tmp.catch$Date),]
-
     x_t <- tmp.catch[, "pct.absent"]
     n <- length(x_t)
-
     lagmatrix <- matrix(0, nrow = n, ncol = no.lags)
-
     colnames(lagmatrix) <- paste("lag", c(0:(no.lags-1)), sep="")
 
     for(k in 1:no.lags){
@@ -203,7 +182,6 @@ model_data <- function(epi.series, individual.data){
 
   return(list(catchment = master.catch, region = master.region))
 }
-
 
 sim.lab.confirm <- function(epidata, individual.data){
 
@@ -243,10 +221,10 @@ sim.absent <- function(epidata, individual.data){
   epidata.df <- cbind(individual.data, inftime = epidata$inftime, remtime = epidata$remtime)
 
   #school information
-  schoolkids <- epidata.df[epidata.df$elem.child.ind == 1,]
+  schoolkids <- epidata.df[epidata.df$elem_child_ind == 1,]
   num.schoolkids <- nrow(schoolkids)
   num.schools <- length(unique(schoolkids$schoolID))
-  school.pop <- aggregate(elem.child.ind ~ schoolID, data=schoolkids, FUN=sum)
+  school.pop <- aggregate(elem_child_ind ~ schoolID, data=schoolkids, FUN=sum)
   names(school.pop)[2] <- "school.population"
 
   # For every day in the school year, simulate if each child is absent or not
@@ -287,7 +265,7 @@ sim.actual.case <- function(epidata, individual.data){
 
   # number of students that had influenza
   #note: this is not needed for modelling, this is just additional information
-  elemkids <- epidata.df[epidata.df$elem.child.ind == 1,]
+  elemkids <- epidata.df[epidata.df$elem_child_ind == 1,]
   cases.elemkids <- aggregate(case ~ inftime + catchID, data=elemkids, FUN=sum)
 
   # Aggregate data, such that we have the number of influenza cases each day of the study period
