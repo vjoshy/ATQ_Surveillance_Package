@@ -4,12 +4,14 @@
 \alias{log_reg}
 \title{Logistic regression model fitting function for simulated data}
 \usage{
-log_reg(lagdata, maxlag = 15)
+log_reg(lagdata, maxlag = 15, area = "region")
 }
 \arguments{
 \item{lagdata}{Data frame with lagged absenteeism data}
 
 \item{maxlag}{maximum lagged day to be assessed}
+
+\item{area}{"regional" (default) or "catchment" area analysis}
 }
 \value{
 list of lists of linear models (mod) and model responses (resp)

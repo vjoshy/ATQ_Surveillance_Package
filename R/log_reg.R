@@ -2,6 +2,7 @@
 #'
 #' @param lagdata Data frame with lagged absenteeism data
 #' @param maxlag maximum lagged day to be assessed
+#' @param area "regional" (default) or "catchment" area analysis
 #'
 #' @return list of lists of linear models (mod) and model responses (resp)
 #' mod is a list of list of yearly models created using all data temporarily preceded that year (i.e, list length is equal to number of years)
@@ -16,16 +17,24 @@
 #'  \dontrun{I need to update this}
 #'
 #'
-log_reg <- function(lagdata, maxlag = 15){
+log_reg <- function(lagdata, maxlag = 15, area = "region"){
 
 
   lags = seq.int(1, maxlag)
 
   #creates list of regression formulas for each iteration of lagged value from 0 to 15
-  forms <- lapply(0:maxlag, function(lag) {
-    lag_formula <- as.formula(paste("Case ~ sinterm + costerm +", paste0("lag", 0:lag, collapse = "+")))
-    lag_formula
-  })
+  if(area == "catchment"){
+    forms <- lapply(0:maxlag, function(lag) {
+      lag_formula <- as.formula(paste("Case ~ catchID + sinterm + costerm +", paste0("lag", 0:lag, collapse = "+")))
+      lag_formula
+    })
+  } else {
+    forms <- lapply(0:maxlag, function(lag) {
+      lag_formula <- as.formula(paste("Case ~ sinterm + costerm +", paste0("lag", 0:lag, collapse = "+")))
+      lag_formula
+    })
+  }
+
 
   # Create lists of training and prediction datasets
   # Training datasets - each year uses all data that temporally preceded that year
