@@ -19,8 +19,8 @@ catchment_sim(n, alpha, beta, area)
 data frame of n observations
 }
 \description{
-Function to simulate specified catchment square area (a x a).
-Catchment areas are simulated via gamma distribution
+Function to simulate specified catchments of square area (a x a).
+Catchment areas are simulated via gamma distribution.
 }
 \examples{
 catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)

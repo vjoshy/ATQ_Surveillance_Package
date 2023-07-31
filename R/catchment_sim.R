@@ -1,8 +1,8 @@
 
 #' Simulating catchment areas
 #'
-#' Function to simulate specified catchment square area (a x a).
-#' Catchment areas are simulated via gamma distribution
+#' Function to simulate specified catchments of square area (a x a).
+#' Catchment areas are simulated via gamma distribution.
 #'
 #' @param n number of catchments to be simulated
 #' @param alpha shape parameter of gamma distribution
