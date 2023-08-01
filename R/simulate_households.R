@@ -5,7 +5,7 @@
 #' @param children_df data frame output from house_children() function
 #' @param noChildren_df data frame output from house_noChildren() function
 #'
-#' @return list of two data frames
+#' @return list of two data frames; simulated individuals data and simulated households data
 #' @export
 #'
 #' @examples

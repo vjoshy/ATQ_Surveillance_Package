@@ -12,7 +12,7 @@ simulate_households(children_df, noChildren_df)
 \item{noChildren_df}{data frame output from house_noChildren() function}
 }
 \value{
-list of two data frames
+list of two data frames; simulated individuals data and simulated households data
 }
 \description{
 Creates two simulated populations, households and individuals

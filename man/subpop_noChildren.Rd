@@ -17,19 +17,38 @@ simulated population of households without children
 \description{
 Simulation of households without children via random uniform distribution using data frames from elementary_pop() and house_children() functions
 }
+\details{
+This is an interactive function where user has to enter 6 population proportion values as prompted.
+To automate entering these prompts, establish a file connection where a vector of the eight population proportion values are written to an open file. Refer to examples section.
+}
 \examples{
-\dontrun{
-#simulate catchment area
-catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
+# simulate catchment area
+ catch_df <- catchment_sim(8, 4.30, 3.6, 5)
 
-#simulate elementary schools for each area
-elementary_df <- elementary_pop(catch_df, 5.27426341, 0.01427793)
+# simulate elementary schools for each area
+ elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
+
+# Establish a file connection for population proportion values when prompted by subpop_children()
+ f <- file()
+ lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+ ans <- paste(lines, collapse = "\n")
+ write(ans, f)
+ options("usr_con" = f)#'
 
 # simulate household with children and assign them to elementary school
-house_children <- subpop_children(elementary_df)
+ house_children <- subpop_children(elementary_df)
+
+# Overwriting connection with population proportion values for households without children
+ lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+ ans <- paste(lines, collapse = "\n")
+ write(ans, f)
 
 # simulate household with no children and assign them to elementary school
-house_noChild <- subpop_noChildren(house_children, elementary_df)
-}
+ house_noChild <- subpop_noChildren(house_children, elementary_df)
+
+# close the file
+ close(f)
+# reset connection option
+ options("usr_con" = stdin())
 
 }
