@@ -1,6 +1,6 @@
 #' Simulate epidemic
 #'
-#' simulate epidemic
+#' This function under Susceptible-Infectious-Removed (SIR) compartment framework. The time period for simulation is 270 days
 #'
 #' @param df individuals data frame from household data simulation
 #' @param b Spatial parameter(s) (>0) or network parameter (s) (>0) if contact network is used.

@@ -106,7 +106,7 @@ model_data <- function(epi.series, individual.data){
 
     # Calculate region wide reference date
     weekly.cases <- rollapply(tmp.data$Case.No, width = 7, sum, partial = TRUE, align = "right") # number of cases within a rolling window of 7 days
-    region.ref <- min(which(weekly.cases > 1)) # first day in the year where 2 confirmed influenza cases within 7 days
+    region.ref <- suppressWarnings(min(which(weekly.cases > 1))) # first day in the year where 2 confirmed influenza cases within 7 days
 
     # If a reference date is defined for the region,
     #   create an indicator to specify that day as the reference date,

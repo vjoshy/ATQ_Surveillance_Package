@@ -21,7 +21,7 @@ simepi(df, b, sus, spark, num_inf)
 list of 10 simulated epidemics
 }
 \description{
-simulate epidemic
+This function under Susceptible-Infectious-Removed (SIR) compartment framework. The time period for simulation is 270 days
 }
 \examples{
 \dontrun{I need to update this}
