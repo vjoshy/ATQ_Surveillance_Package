@@ -15,7 +15,7 @@ A data frame simulated from code the simulate_households(house_children, house_n
 individuals is one of two data frames returned within a list from the simulate_household() function
 }
 \details{
-\describe{
+\itemize{
 \item {houseID}{ID associated with each household}
 \item {catchID}{ID associated with each catchment}
 \item {schoolID}{ID associated with schools in each catchment}

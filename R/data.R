@@ -7,7 +7,7 @@ NULL
 #'
 #' A data frame simulated from code the catchment_sim(16, 0.5, 1.5, 5)
 #'
-#'  \describe{
+#'  \itemize{
 #'    \item {catchID}{ID associated with each catchment}
 #'    \item {num.schools}{Number of schools in each catchment}
 #'    \item {xStart}{Start x coordinate of catchment grid}
@@ -26,7 +26,7 @@ NULL
 #'
 #' A data frame simulated from code the elementary_pop(catchment, 0.5, 0.015)
 #'
-#'  \describe{
+#'  \itemize{
 #'    \item {catchID}{ID associated with each catchment}
 #'    \item {schoolID}{ID associated with schools in each catchment}
 #'    \item {schoolPop}{Population of students in each school generated from a gamma distribution}
@@ -50,7 +50,7 @@ NULL
 #'     proportion of single parents with 1, 2, 3+ children = 0.5857832, 0.3071523, 0.1070645
 #'     proportion of children that are of elementary school age = 0.4976825
 #'
-#'  \describe{
+#'  \itemize{
 #'    \item {schoolID}{ID associated with schools in each catchment}
 #'    \item {houseID}{ID associated with each household}
 #'    \item {num_parent}{Number of parents in each household}
@@ -77,7 +77,7 @@ NULL
 #'     proportion of households with 1, 2, 3, 4, 5+ members = 0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358
 #'     proportion of households with children = 0.4277052
 #'
-#'  \describe{
+#'  \itemize{
 #'    \item {catchID}{ID associated with each catchment}
 #'    \item {houseID}{ID associated with each household}
 #'    \item {num_people}{Total number of people in each household}
@@ -100,7 +100,7 @@ NULL
 #' A data frame simulated from code the simulate_households(house_children, house_nochildren)
 #' individuals is one of two data frames returned within a list from the simulate_household() function
 #'
-#'  \describe{
+#'  \itemize{
 #'    \item {houseID}{ID associated with each household}
 #'    \item {catchID}{ID associated with each catchment}
 #'    \item {schoolID}{ID associated with schools in each catchment}
