@@ -5,30 +5,30 @@
 \alias{individuals}
 \title{Simulated individuals data}
 \format{
-A data frame with 2,913 rows and 13 variables
+A data frame with 5,599 rows and 13 variables
 }
 \usage{
 data(individuals)
 }
 \description{
-A data frame simulated from code the simulate_households(house_children, house_nochildren)
+A data frame simulated from code simulate_households(house_children, house_nochildren)
 individuals is one of two data frames returned within a list from the simulate_household() function
 }
 \details{
 \itemize{
-\item {houseID}{ID associated with each household}
-\item {catchID}{ID associated with each catchment}
-\item {schoolID}{ID associated with schools in each catchment}
-\item {num_people}{Total number of people in each household}
-\item {num_elem_child}{Number of children who are of elementary school age}
-\item {schoolPop}{Population of students in each school generated from a gamma distribution}
-\item {xStart}{Start x coordinate of catchment grid}
-\item {xEnd}{End x coordinate of catchment grid}
-\item {yStart}{Start y coordinate of catchment grid}
-\item {yEnd}{End y coordinate of catchment grid}
-\item {loc.x}{x coordinate of household}
-\item {loc.y}{y coorindate of household}
-\item {individualID}{ID associated with each individual}
-\item {elem_child_ind} {binary variable indicating whether indvidual is of elementary school age}
+\item houseID, ID associated with each household
+\item catchID, ID associated with each catchment
+\item school, ID, ID associated with schools in each catchment
+\item num_people, Total number of people in each household
+\item num_elem_child, Number of children who are of elementary school age
+\item schoolPop, Population of students in each school generated from a gamma distribution
+\item xStart, Start x coordinate of catchment grid
+\item xEnd, End x coordinate of catchment grid
+\item yStart, Start y coordinate of catchment grid
+\item yEnd, End y coordinate of catchment grid
+\item loc.x, x coordinate of household
+\item loc.y, y coordinate of household
+\item individualID, ID associated with each individual
+\item elem_child_ind, binary variable indicating whether individual is of elementary school age
 }
 }

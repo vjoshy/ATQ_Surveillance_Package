@@ -149,7 +149,7 @@ model_data <- function(epi.series, individual.data){
   catch.lag <- data.frame()
   region.lag <- data.frame()
 
-  # lagged absenteeism values for each catchment cathcment area
+  # lagged absenteeism values for each catchment catchment area
   for(j in unique(master.catch$catchID)){
     tmp.catch <- master.catch[master.catch$catchID == j,]
     tmp.catch <- tmp.catch[order(tmp.catch$ScYr, tmp.catch$Date),]

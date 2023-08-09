@@ -5,22 +5,22 @@
 \alias{elementary}
 \title{Simulated elementary school size data}
 \format{
-A data frame with 16 rows and 7 variables
+A data frame with 18 rows and 7 variables
 }
 \usage{
 data(elementary)
 }
 \description{
-A data frame simulated from code the elementary_pop(catchment, 0.5, 0.015)
+A data frame simulated from code elementary_pop(catchment, 0.5, 0.015)
 }
 \details{
-\describe{
-\item {catchID}{ID associated with each catchment}
-\item {schoolID}{ID associated with schools in each catchment}
-\item {schoolPop}{Population of students in each school generated from a gamma distribution}
-\item {xStart}{Start x coordinate of catchment grid}
-\item {xEnd}{End x coordinate of catchment grid}
-\item {yStart}{Start y coordinate of catchment grid}
-\item {yEnd}{End y coordinate of catchment grid}
+\itemize{
+\item catchID,ID associated with each catchment
+\item schoolID, ID associated with schools in each catchment
+\item schoolPop, Population of students in each school generated from a gamma distribution
+\item xStart, Start x coordinate of catchment grid
+\item xEnd, End x coordinate of catchment grid
+\item yStart, Start y coordinate of catchment grid
+\item yEnd, End y coordinate of catchment grid
 }
 }
