@@ -159,7 +159,7 @@ NULL
 #'    \item sinterm, Seasonal sine term
 #'    \item costerm, Seasonal cosine term
 #'    \item window, 14 day true alarm window for ADD and FAR calculations (binary variable)
-#'    \item ref.date, reference date (first day where there are two lab confirmed cases in a 7 day period)
+#'    \item ref.date, Reference date (first day where there are two lab confirmed cases in a 7 day period)
 #'    \item lag0, lag1, ..., lag15, Lagged absenteeism values
 #'}
 #'
