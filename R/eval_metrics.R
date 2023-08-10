@@ -18,7 +18,6 @@
 #' #simulate elementary schools for each area
 #' elementary_df <- elementary_pop(catch_df, 0.5, 0.015)
 #'
-#'
 #' # Enters values for prompts from subpop_children() function
 #' f <- file()
 #' lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
@@ -37,11 +36,14 @@
 #' # simulate households and individuals data
 #' simulation <- simulate_households(house_children, house_nochildren)
 #'
+#' # randomly sampling 1000 rows to reduce simulation times
+#' individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),1000),]
+#'
 #' # simulate epidemic
-#' epidemic <- simepi(simulation$individual_sim, b=3, sus=.0019, spark=0, num_inf = 2)
+#' epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
 #'
 #' # simulate laboratory confirmed cases, and school absenteeism data sets
-#' data <- model_data(epidemic, simulation$individual_sim)
+#' data <- model_data(epidemic, individuals)
 #'
 #' # Fit Logistic Regression Models to Lagged Absenteeism Data
 #' regression <- log_reg(lagdata = data$region, 15, area = "region")
