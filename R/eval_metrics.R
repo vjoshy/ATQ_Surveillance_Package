@@ -25,6 +25,7 @@
 #' write(ans, f)
 #' options("usr_con" = f) # set connection option
 #'
+#' # simulating households without children
 #' house_children <- subpop_children(elementary_df)
 #'
 #' # Enters values for prompts from subpop_nochildren() function
@@ -32,6 +33,7 @@
 #' ans <- paste(lines, collapse = "\n")
 #' write(ans, f)
 #'
+#' # simulate households and individuals data
 #' house_nochildren <- subpop_noChildren(house_children, elementary_df)
 #'
 #' close(f) # close the file
@@ -52,7 +54,7 @@
 #' # Fit Logistic Regression Models to Lagged Absenteeism Data
 #' regression <- log_reg(lagdata = data$region, 15, area = "region")
 #'
-#'
+#' # calculate and return metrics in a list
 #' region_metric <- eval_metrics(lagdata = data$region, mod_resp = regression$resp,
 #'                        type = "r", lags = 1:15, thres = seq(0.1,0.6,by = 0.05),
 #'                        ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
