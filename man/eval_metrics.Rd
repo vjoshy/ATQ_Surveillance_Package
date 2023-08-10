@@ -37,10 +37,10 @@ Calculate evaluation metrics for lag, threshold, and yearly model
 }
 \examples{
 #Simulate catchment data
-catch_df <- catchment_sim(16, 0.5, 0.5, 5)
+catch_df <- catchment_sim(16, 4.12, 3.01, 20)
 
 #simulate elementary schools for each area
-elementary_df <- elementary_pop(catch_df, 0.5, 0.015)
+elementary_df <- elementary_pop(catch_df, 4.8, 0.015)
 
 # Enters values for prompts from subpop_children() function
 f <- file()
@@ -49,10 +49,14 @@ ans <- paste(lines, collapse = "\n")
 write(ans, f)
 options("usr_con" = f) # set connection option
 
+house_children <- subpop_children(elementary_df)
+
 # Enters values for prompts from subpop_nochildren() function
 lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
+
+house_nochildren <- subpop_noChildren(house_children, elementary_df)
 
 close(f) # close the file
 options("usr_con" = stdin()) # reset connection option
