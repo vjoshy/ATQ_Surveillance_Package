@@ -131,7 +131,7 @@ calc.metric.catchment <- function(lagdata, ScYr, yr.weights) {
 
       ScYr.data <- lagdata[which(lagdata$catchID == allcatchment[c] & lagdata$ScYr == ScYr[y])
                            ,c("Date", "catchID", "ScYr", "Actual.case", "case.elem", "Case.No", "Case", "pct.absent", "absent","absent.sick",  "window", "ref.date", "Alarm")]
-      refdate <- min(ScYr.data[ScYr.data$ref.date == 1,"Date"]) # beginning of influenza season date
+      refdate <- suppressWarnings(min(ScYr.data[ScYr.data$ref.date == 1,"Date"])) # beginning of influenza season date
 
       if(is.infinite(refdate)){ # Metric values if no reference date was defined in this catchment area during the given year
         num.alarm <- sum(ScYr.data$Alarm)
@@ -187,7 +187,7 @@ calc.metric.region <- function(lagdata, ScYr, yr.weights) {
     #subset data
     ScYr.data <- lagdata[lagdata$ScYr == ScYr[y]
                          ,c("Date", "ScYr", "Actual.case", "case.elem", "Case.No", "Case", "pct.absent", "absent","absent.sick",  "window", "ref.date", "Alarm")]
-    refdate <- min(ScYr.data[ScYr.data$ref.date == 1,"Date"]) # Reference date
+    refdate <- suppressWarnings(min(ScYr.data[ScYr.data$ref.date == 1,"Date"])) # Reference date
     ScYr.data <- ScYr.data[ScYr.data$Date <= refdate,] # only consider alarms prior to the reference date
 
     #calculate evaluation metrics
