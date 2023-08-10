@@ -232,7 +232,7 @@ calc.FAR <- function(data){
 #### Added Days Delayed (ADD) ####
 calc.ADD <- function(data){
   topt <- 14 # Optimal alarm day
-  refdate <- min(data[data$ref.date == 1,"Date"])
+  refdate <- suppressWarnings(min(data[data$ref.date == 1,"Date"]))
   TrueAlarm <- ifelse(data$window == 1 & data$Alarm == 1, 1, 0)
   first.true.alarm.date <- suppressWarnings(min(data[which(TrueAlarm == 1), "Date"]))
 
@@ -251,7 +251,7 @@ calc.ATQ <- function(data){
   fa.pow <- 2 # "False Alarm" power - ie power for alarms raised after optimal alarm day
   denom <- 21
 
-  refdate <- min(data[data$ref.date == 1,"Date"])
+  refdate <- suppressWarnings(min(data[data$ref.date == 1,"Date"]))
   RefDateDiff <- as.numeric(refdate - data$Date)
   OptDateDiff <- topt - RefDateDiff
 
@@ -274,7 +274,7 @@ calc.AATQ <- function(data){
 #### First Alarm Time Quality (FATQ) ####
 calc.FATQ <- function(data){
   num.alarms <- sum(data$Alarm)
-  first.alarm.date <- min(data[which(data$Alarm == 1), "Date"])
+  first.alarm.date <- suppressWarnings(min(data[which(data$Alarm == 1), "Date"]))
   first.alarm.index <- which(data$Date == first.alarm.date) #find index of first alarm
   FATQ <- ifelse(num.alarms == 0
                  , 1 # If no alarms, then FATQ = 1 for that year
