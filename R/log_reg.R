@@ -51,7 +51,7 @@ log_reg <- function(lagdata, maxlag = 15, area = "region"){
 
   for(i in seq_along(lags)){
     for(yr in unique(lagdata$ScYr)[-1]){ # remove the first year since it was only used for training
-      mod[[i]][[yr]] <- glm(forms[[i]], data = train[[yr]], family = "binomial") # train model
+      mod[[i]][[yr]] <- suppressWarnings(glm(forms[[i]], data = train[[yr]], family = "binomial")) # train model
       tmp.resp <- data.frame(resp = predict(mod[[i]][[yr]], pred[[yr]], type = "response")) # predict
 
       if(yr == unique(lagdata$ScYr)[2]){ #fixes error if trying to rbind() first element in list
