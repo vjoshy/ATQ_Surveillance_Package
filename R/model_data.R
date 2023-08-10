@@ -127,7 +127,7 @@ model_data <- function(epi.series, individual.data){
 
       # Option 1 - 2nd lab confirmed case within 10 days
       weekly.cases <- rollapply(tmp.data$Case.No, width = 10, sum, partial = TRUE, align = "right") # number of cases within a rolling window of 10 days
-      catch.ref <- min(which(weekly.cases > 1)) # first day in the catchment area and year where 2 confirmed influenza cases within 10 days
+      catch.ref <- suppressWarnings(min(which(weekly.cases > 1))) # first day in the catchment area and year where 2 confirmed influenza cases within 10 days
 
       # (Option 2 - first lab confirmed case in catchment area after region ref date)
       # catch.ref <- min(tmp.data[tmp.data$Case.No >0 & tmp.data$Date >= region.ref,'Date'])
