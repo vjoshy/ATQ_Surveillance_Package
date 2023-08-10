@@ -3,7 +3,6 @@
 #' A list of length 12 contains 6 matrices and 6 data frames
 #'
 #' @name metrics
-#' @docType list
 NULL
 
 #' Alarm Metrics Data
