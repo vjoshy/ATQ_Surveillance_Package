@@ -36,6 +36,43 @@ List of matrices for FAR, ADD, AATQ, FATQ, WAATQ, WFATQ
 Calculate evaluation metrics for lag, threshold, and yearly model
 }
 \examples{
-\dontrun{I need to update this}
+#Simulate catchment data
+catch_df <- catchment_sim(16, 0.5, 0.5, 5)
+
+#simulate elementary schools for each area
+elementary_df <- elementary_pop(catch_df, 0.5, 0.015)
+
+
+# Enters values for prompts from subpop_children() function
+f <- file()
+lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+ans <- paste(lines, collapse = "\n")
+write(ans, f)
+options("usr_con" = f) # set connection option
+
+# Enters values for prompts from subpop_nochildren() function
+lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+ans <- paste(lines, collapse = "\n")
+write(ans, f)
+
+close(f) # close the file
+options("usr_con" = stdin()) # reset connection option
+
+# simulate households and individuals data
+simulation <- simulate_households(house_children, house_nochildren)
+
+# simulate epidemic
+epidemic <- simepi(simulation$individual_sim, b=3, sus=.0019, spark=0, num_inf = 2)
+
+# simulate laboratory confirmed cases, and school absenteeism data sets
+data <- model_data(epidemic, simulation$individual_sim)
+
+# Fit Logistic Regression Models to Lagged Absenteeism Data
+regression <- log_reg(lagdata = data$region, 15, area = "region")
+
+
+region_metric <- eval_metrics(lagdata = data$region, mod_resp = regression$resp,
+                       type = "r", lags = 1:15, thres = seq(0.1,0.6,by = 0.05),
+                       ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
 
 }
