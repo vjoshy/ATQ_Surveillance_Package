@@ -234,7 +234,7 @@ calc.ADD <- function(data){
   topt <- 14 # Optimal alarm day
   refdate <- min(data[data$ref.date == 1,"Date"])
   TrueAlarm <- ifelse(data$window == 1 & data$Alarm == 1, 1, 0)
-  first.true.alarm.date <- min(data[which(TrueAlarm == 1), "Date"])
+  first.true.alarm.date <- suppressWarnings(min(data[which(TrueAlarm == 1), "Date"]))
 
   advnot <- as.numeric(refdate - first.true.alarm.date) # number of days advance notice
   advnot <- ifelse(advnot == "-Inf", NA ,advnot) # NA for years with no true alarms
