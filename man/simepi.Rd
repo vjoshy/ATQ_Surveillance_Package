@@ -4,7 +4,7 @@
 \alias{simepi}
 \title{Simulate epidemic}
 \usage{
-simepi(df, b, sus, spark, num_inf)
+simepi(df, b, sus, spark, num_inf, rep = 10)
 }
 \arguments{
 \item{df}{individuals data frame from household data simulation}
@@ -16,6 +16,8 @@ simepi(df, b, sus, spark, num_inf)
 \item{spark}{Sparks parameter (>=0), representing infections unexplained by other parts of the model.}
 
 \item{num_inf}{number of individuals that are infected initially in each catchment}
+
+\item{rep}{number of replications}
 }
 \value{
 list of 10 simulated epidemics
@@ -57,7 +59,7 @@ This function under Susceptible-Infectious-Removed (SIR) compartment framework. 
  simulation <- simulate_households(house_children, house_nochildren)
 
 # randomly sampling 1000 rows to reduce simulation times
- individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),1000),]
+ individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),500),]
 
  # simulate epidemic
  epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)

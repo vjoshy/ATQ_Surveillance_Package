@@ -3,7 +3,6 @@
 export(catchment_sim)
 export(elementary_pop)
 export(eval_metrics)
-export(log_reg)
 export(model_data)
 export(simepi)
 export(simulate_households)

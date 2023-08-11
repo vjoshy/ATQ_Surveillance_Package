@@ -6,6 +6,8 @@
 #' @param yr.weights weights for WFATQ and WAATQ metrics
 #' @param thres thresholds evaluated
 #'
+#' @importFrom stats as.formula glm predict
+#'
 #' @return List of matrices for FAR, ADD, AATQ, FATQ, WAATQ, WFATQ
 #' @export
 #'
@@ -44,7 +46,7 @@
 #' individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),500),]
 #'
 #' # simulate epidemic
-#' epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
+#' epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 5)
 #'
 #' # simulate laboratory confirmed cases, and school absenteeism data sets
 #' data <- model_data(epidemic, individuals)
@@ -52,7 +54,7 @@
 #' # calculate and return metrics in a list
 #' region_metric <- eval_metrics(lagdata = data$region,
 #'                        type = "r", thres = seq(0.1,0.6,by = 0.05),
-#'                        ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
+#'                        ScYr = c(2:), yr.weights = c(1:9)/sum(c(1:9)))
 #'
 eval_metrics <- function(type = "r", lagdata, ScYr, yr.weights, thres = seq(0.1,0.6,by = 0.05)){
 

@@ -7,6 +7,7 @@
 #' @param sus Susceptibility parameter (>0)
 #' @param spark Sparks parameter (>=0), representing infections unexplained by other parts of the model.
 #' @param num_inf number of individuals that are infected initially in each catchment
+#' @param rep number of replications
 #'
 #' @importFrom dplyr %>%
 #'
@@ -47,19 +48,19 @@
 #'  simulation <- simulate_households(house_children, house_nochildren)
 #'
 #' # randomly sampling 1000 rows to reduce simulation times
-#'  individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),1000),]
+#'  individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),500),]
 #'
 #'  # simulate epidemic
 #'  epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
 #'
-simepi <- function(df, b, sus, spark, num_inf){
+simepi <- function(df, b, sus, spark, num_inf, rep = 10){
 
   catchID <- individualID <- loc.x <- loc.y <- NULL
 
   runs <- list()
   num_catchment <- length(unique(df$catchID))
 
-  for(i in 1:10){
+  for(i in 1:rep){
 
     #   Select individuals from each catchment area for initial infections.
     #   Number of initial infections per catchment area = numinf.catch
