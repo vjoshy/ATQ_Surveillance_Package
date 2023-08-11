@@ -9,9 +9,9 @@ catchment_sim(n, alpha, beta, area)
 \arguments{
 \item{n}{number of catchments to be simulated}
 
-\item{alpha}{shape parameter of gamma distribution}
+\item{alpha}{shape parameter of gamma distribution for number of schools to be simulated}
 
-\item{beta}{rate parameter of gamma distribution}
+\item{beta}{rate parameter of gamma distribution for number of schools to be simulated}
 
 \item{area}{square dimension for catchment (if area = 20, then each catchment dimensions will be 20 x 20)}
 }
@@ -23,7 +23,7 @@ Function to simulate specified catchments of square area (a x a).
 Catchment areas are simulated via gamma distribution.
 }
 \examples{
-catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
+catch_df <- catchment_sim(16, 4.1, 2.7, 20)
 
 
 }

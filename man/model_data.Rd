@@ -4,12 +4,14 @@
 \alias{model_data}
 \title{Title}
 \usage{
-model_data(epi.series, individual.data)
+model_data(epi.series, individual.data, lags = 16)
 }
 \arguments{
 \item{epi.series}{simulated epidemic data frame}
 
 \item{individual.data}{individuals data frame}
+
+\item{lags}{number of lags to be evaluated}
 }
 \value{
 returns simulated data frame

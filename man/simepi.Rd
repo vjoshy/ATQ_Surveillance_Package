@@ -24,6 +24,42 @@ list of 10 simulated epidemics
 This function under Susceptible-Infectious-Removed (SIR) compartment framework. The time period for simulation is 270 days
 }
 \examples{
-\dontrun{I need to update this}
+# simulate catchment area
+ catch_df <- catchment_sim(8, 4.30, 3.6, 5)
+
+# simulate elementary schools for each area
+ elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
+
+# Establish a file connection for population proportion values when prompted by subpop_children()
+ f <- file()
+ lines <- c(0.77, 0.36, 0.43, 0.21,0.59, 0.31, 0.10, 0.49)
+ ans <- paste(lines, collapse = "\n")
+ write(ans, f)
+ options("usr_con" = f)#'
+
+# simulate household with children and assign them to elementary school
+ house_children <- subpop_children(elementary_df, n = 2)
+
+# Overwriting connection with population proportion values for households without children
+ lines <- c(0.23, 0.34, 0.17, 0.16, 0.1, 0.43)
+ ans <- paste(lines, collapse = "\n")
+ write(ans, f)
+
+# simulate household with no children and assign them to elementary school
+ house_nochildren <- subpop_noChildren(house_children, elementary_df)
+
+# close the file
+ close(f)
+# reset connection option
+ options("usr_con" = stdin())
+
+# simulate households and individuals data
+ simulation <- simulate_households(house_children, house_nochildren)
+
+# randomly sampling 1000 rows to reduce simulation times
+ individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),1000),]
+
+ # simulate epidemic
+ epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
 
 }

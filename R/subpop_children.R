@@ -1,5 +1,3 @@
-
-
 #' Simulate households with children
 #'
 #' Simulation of households with children via random uniform distribution. Number of observations is multiplied by a default value of five.
@@ -15,20 +13,20 @@
 #'
 #' @examples
 #' # simulate catchment area
-#'  catch_df <- catchment_sim(8, 4.30, 3.6, 5)
+#'  catch_df <- catchment_sim(4, 4.30, 3.6, 5)
 #'
 #' # simulate elementary schools for each area
 #'  elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
 #'
 #' # Establish a file connection for population proportion values when prompted by subpop_children()
 #'  f <- file()
-#'  lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+#'  lines <- c(0.77, 0.36, 0.43, 0.21,0.59, 0.31, 0.10, 0.49)
 #'  ans <- paste(lines, collapse = "\n")
 #'  write(ans, f)
 #'  options("usr_con" = f)#'
 #'
 #' # simulate household with children and assign them to elementary school
-#'  house_children <- subpop_children(elementary_df)
+#'  house_children <- subpop_children(elementary_df, n = 3)
 #'
 #'  # close the file
 #'  close(f)
@@ -39,8 +37,8 @@
 #'
 subpop_children <- function(df, n = 5){
 
-  if(n < 1 ){
-    stop("Please enter an integer greater than or equal to 1")
+  if(n <= 1 ){
+    stop("Please enter an integer greater than 1")
   }
 
 

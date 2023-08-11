@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' #Simulate catchment data
-#' catch_df <- catchment_sim(16, 4.12, 3.01, 20)
+#' catch_df <- catchment_sim(4, 4.12, 3.01, 5)
 #'
 #' #simulate elementary schools for each area
 #' elementary_df <- elementary_pop(catch_df, 4.8, 0.015)
@@ -26,7 +26,7 @@
 #' options("usr_con" = f) # set connection option
 #'
 #' # simulating households without children
-#' house_children <- subpop_children(elementary_df)
+#' house_children <- subpop_children(elementary_df, n = 2)
 #'
 #' # Enters values for prompts from subpop_nochildren() function
 #' lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
@@ -43,7 +43,7 @@
 #' simulation <- simulate_households(house_children, house_nochildren)
 #'
 #' # randomly sampling 1000 rows to reduce simulation times
-#' individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),1000),]
+#' individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),500),]
 #'
 #' # simulate epidemic
 #' epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)

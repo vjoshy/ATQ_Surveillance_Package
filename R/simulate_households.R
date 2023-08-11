@@ -9,23 +9,37 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' #' #simulate catchment area
-#' catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
+#' # simulate catchment area
+#'  catch_df <- catchment_sim(8, 4.30, 3.6, 5)
 #'
-#' #simulate elementary schools for each area
-#' elementary_df <- elementary_pop(catch_df, 5.27426341, 0.01427793)
+#' # simulate elementary schools for each area
+#'  elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
+#'
+#' # Establish a file connection for population proportion values when prompted by subpop_children()
+#'  f <- file()
+#'  lines <- c(0.77, 0.36, 0.43, 0.21,0.59, 0.31, 0.10, 0.49)
+#'  ans <- paste(lines, collapse = "\n")
+#'  write(ans, f)
+#'  options("usr_con" = f)
 #'
 #' # simulate household with children and assign them to elementary school
-#' house_children <- subpop_children(elementary_df)
+#'  house_children <- subpop_children(elementary_df, n = 2)
+#'
+#' # Overwriting connection with population proportion values for households without children
+#'  lines <- c(0.23, 0.34, 0.17, 0.16, 0.1, 0.43)
+#'  ans <- paste(lines, collapse = "\n")
+#'  write(ans, f)
 #'
 #' # simulate household with no children and assign them to elementary school
-#' house_noChild <- subpop_noChildren(house_children, elementary_df)
+#'  house_nochildren <- subpop_noChildren(house_children, elementary_df)
 #'
-#' #simulate total households and individuals
-#' simulation <- simulate_households(house_children, house_noChild)
-#' }
+#' # close the file
+#'  close(f)
+#' # reset connection option
+#'  options("usr_con" = stdin())
 #'
+#'  # simulate households and individuals data
+#'  simulation <- simulate_households(house_children, house_nochildren)
 #'
 simulate_households <- function(children_df, noChildren_df){
 

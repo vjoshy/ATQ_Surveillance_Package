@@ -30,16 +30,16 @@ To automate entering these prompts, establish a file connection where a vector o
 
 # Establish a file connection for population proportion values when prompted by subpop_children()
  f <- file()
- lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+ lines <- c(0.77, 0.36, 0.43, 0.21,0.59, 0.31, 0.10, 0.49)
  ans <- paste(lines, collapse = "\n")
  write(ans, f)
- options("usr_con" = f)#'
+ options("usr_con" = f)
 
 # simulate household with children and assign them to elementary school
- house_children <- subpop_children(elementary_df)
+ house_children <- subpop_children(elementary_df, n = 3)
 
 # Overwriting connection with population proportion values for households without children
- lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+ lines <- c(0.23, 0.34, 0.17, 0.16, 0.1, 0.43)
  ans <- paste(lines, collapse = "\n")
  write(ans, f)
 

@@ -5,14 +5,14 @@
 #' Catchment areas are simulated via gamma distribution.
 #'
 #' @param n number of catchments to be simulated
-#' @param alpha shape parameter of gamma distribution
-#' @param beta rate parameter of gamma distribution
+#' @param alpha shape parameter of gamma distribution for number of schools to be simulated
+#' @param beta rate parameter of gamma distribution for number of schools to be simulated
 #' @param area square dimension for catchment (if area = 20, then each catchment dimensions will be 20 x 20)
 #'
 #' @return data frame of n observations
 #' @export
 #'
-#' @examples catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
+#' @examples catch_df <- catchment_sim(16, 4.1, 2.7, 20)
 #'
 #'
 catchment_sim <- function(n, alpha, beta, area){

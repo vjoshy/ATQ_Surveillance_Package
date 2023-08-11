@@ -9,9 +9,9 @@ elementary_pop(df, alpha, beta)
 \arguments{
 \item{df}{output data frame from catchment_sim function}
 
-\item{alpha}{shape parameter of gamma distribution}
+\item{alpha}{shape parameter of gamma distribution to simulate school population}
 
-\item{beta}{rate parameter of gamma distribution}
+\item{beta}{rate parameter of gamma distribution to simulate school population}
 }
 \value{
 a data frame of simulated elementary school population
@@ -20,8 +20,8 @@ a data frame of simulated elementary school population
 Function to simulation elementary school size and then assigned to catchment areas.
 }
 \examples{
-catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
-elementary_df <- elementary_pop(catch_df, 5.27426341, 0.01427793)
+catch_df <- catchment_sim(16, 3.5, 2.8, 20)
+elementary_df <- elementary_pop(catch_df, 5.1, 0.015)
 
 
 }
