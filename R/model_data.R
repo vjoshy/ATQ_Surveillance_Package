@@ -2,7 +2,6 @@
 #'
 #' @param epi.series simulated epidemic data frame
 #' @param individual.data individuals data frame
-#' @param lags number of lags to be evaluated
 #'
 #' @importFrom stats aggregate filter runif time
 #' @importFrom zoo rollapply
@@ -14,7 +13,7 @@
 #' @examples
 #' #' \dontrun{I need to update this}
 #'
-model_data <- function(epi.series, individual.data, lags = 16){
+model_data <- function(epi.series, individual.data){
 
   #catchment area datasets
   actual.cases.catch <- data.frame(time=c(), catchID = c(), case.no = c(), case.elem = c(), ScYr = c())
@@ -146,7 +145,7 @@ model_data <- function(epi.series, individual.data, lags = 16){
   master.catch <- catchment.eval
 
   # Create lagged absenteeism columns
-  no.lags <- lags # Maximum number of lags (note that lag0 is included)
+  no.lags <- 16 # Maximum number of lags (note that lag0 is included)
   catch.lag <- data.frame()
   region.lag <- data.frame()
 
