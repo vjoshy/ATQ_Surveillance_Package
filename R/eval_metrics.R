@@ -2,10 +2,8 @@
 #'
 #' @param type 'c' for catchment area models, 'r' for region-wide models. Default is region-wide
 #' @param lagdata lagged dataframe used for modelling
-#' @param mod_resp output from "log_reg" function
 #' @param ScYr vector of all school years to be used for model evaluation (range of natural numbers)
 #' @param yr.weights weights for WFATQ and WAATQ metrics
-#' @param lags lags evaluated in model
 #' @param thres thresholds evaluated
 #'
 #' @return List of matrices for FAR, ADD, AATQ, FATQ, WAATQ, WFATQ
@@ -51,15 +49,20 @@
 #' # simulate laboratory confirmed cases, and school absenteeism data sets
 #' data <- model_data(epidemic, individuals)
 #'
-#' # Fit Logistic Regression Models to Lagged Absenteeism Data
-#' regression <- log_reg(lagdata = data$region, 15, area = "region")
-#'
 #' # calculate and return metrics in a list
-#' region_metric <- eval_metrics(lagdata = data$region, mod_resp = regression$resp,
-#'                        type = "r", lags = 1:15, thres = seq(0.1,0.6,by = 0.05),
+#' region_metric <- eval_metrics(lagdata = data$region,
+#'                        type = "r", thres = seq(0.1,0.6,by = 0.05),
 #'                        ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
 #'
-eval_metrics <- function(type = "r", lagdata, mod_resp, ScYr, yr.weights, lags = seq.int(1,15), thres = seq(0.1,0.6,by = 0.05)){
+eval_metrics <- function(type = "r", lagdata, ScYr, yr.weights, thres = seq(0.1,0.6,by = 0.05)){
+
+  if(type == "r"){
+    mod_resp <- (log_reg(lagdata, 15, area = "region"))$resp
+  } else {
+    mod_resp <- (log_reg(lagdata, 15, area = "catchment"))$resp
+  }
+
+  lags <- seq.int(1,15)
 
   lagdata <- lagdata[lagdata$ScYr %in% ScYr,] #subset data do evaluation years
   lagdata <- rep(list(lagdata), length(lags)) # lists of lagdata so that you can compare with model responses for each lag and year (also in list format)
@@ -300,5 +303,56 @@ best.mod <- function(mat, lags = lags, thres = thres, daily.results = daily.resu
                         & daily.results$thres == best.thres,]
   return(best)
 }
+
+
+#### Logistic regression model fitting function for simulated data ####
+log_reg <- function(lagdata, maxlag = 15, area = "region"){
+
+
+  lags = seq.int(1, maxlag)
+
+  #creates list of regression formulas for each iteration of lagged value from 0 to 15
+  if(area == "catchment"){
+    forms <- lapply(0:maxlag, function(lag) {
+      lag_formula <- as.formula(paste("Case ~ catchID + sinterm + costerm +", paste0("lag", 0:lag, collapse = "+")))
+      lag_formula
+    })
+  } else {
+    forms <- lapply(0:maxlag, function(lag) {
+      lag_formula <- as.formula(paste("Case ~ sinterm + costerm +", paste0("lag", 0:lag, collapse = "+")))
+      lag_formula
+    })
+  }
+
+
+  # Create lists of training and prediction datasets
+  # Training datasets - each year uses all data that temporally preceded that year
+  train <- list()
+  pred <- list()
+  for(yr in unique(lagdata$ScYr)[-1]){ # no predictions for the first year, it is only used for model training
+    train[[yr]] <- lagdata[lagdata$ScYr < yr,]
+    pred[[yr]] <- lagdata[which(lagdata$ScYr == yr),]
+  }
+
+  # Fit a model for each lag value and each year, then predict response
+  mod <- rep(list(list()), length(lags))
+  resp <- list()
+
+  for(i in seq_along(lags)){
+    for(yr in unique(lagdata$ScYr)[-1]){ # remove the first year since it was only used for training
+      mod[[i]][[yr]] <- suppressWarnings(glm(forms[[i]], data = train[[yr]], family = "binomial")) # train model
+      tmp.resp <- data.frame(resp = predict(mod[[i]][[yr]], pred[[yr]], type = "response")) # predict
+
+      if(yr == unique(lagdata$ScYr)[2]){ #fixes error if trying to rbind() first element in list
+        resp[[i]] <- tmp.resp
+      } else {
+        resp[[i]] <- rbind(resp[[i]], tmp.resp)
+      }
+    }
+  }
+
+  return(list(mod = mod, resp = resp))
+}
+
 
 

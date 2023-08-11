@@ -7,10 +7,8 @@
 eval_metrics(
   type = "r",
   lagdata,
-  mod_resp,
   ScYr,
   yr.weights,
-  lags = seq.int(1, 15),
   thres = seq(0.1, 0.6, by = 0.05)
 )
 }
@@ -19,13 +17,9 @@ eval_metrics(
 
 \item{lagdata}{lagged dataframe used for modelling}
 
-\item{mod_resp}{output from "log_reg" function}
-
 \item{ScYr}{vector of all school years to be used for model evaluation (range of natural numbers)}
 
 \item{yr.weights}{weights for WFATQ and WAATQ metrics}
-
-\item{lags}{lags evaluated in model}
 
 \item{thres}{thresholds evaluated}
 }
@@ -75,12 +69,9 @@ epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
 # simulate laboratory confirmed cases, and school absenteeism data sets
 data <- model_data(epidemic, individuals)
 
-# Fit Logistic Regression Models to Lagged Absenteeism Data
-regression <- log_reg(lagdata = data$region, 15, area = "region")
-
 # calculate and return metrics in a list
-region_metric <- eval_metrics(lagdata = data$region, mod_resp = regression$resp,
-                       type = "r", lags = 1:15, thres = seq(0.1,0.6,by = 0.05),
+region_metric <- eval_metrics(lagdata = data$region,
+                       type = "r", thres = seq(0.1,0.6,by = 0.05),
                        ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
 
 }
