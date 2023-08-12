@@ -11,7 +11,7 @@ A data frame with 3,000 rows and 29 variables
 data(region)
 }
 \description{
-A data frame simulated from code model_data(epidemic, individuals)
+A data frame simulated from code model_data(epidemic, individuals, type = "r")
 region is one of two data frames contained within output of model_data() function.
 region contains information about confirmed cases for the region.
 }

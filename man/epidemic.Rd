@@ -11,7 +11,7 @@ A data frame with 5,599 rows and 13 variables
 data(epidemic)
 }
 \description{
-A list of 10 lists simulated from code simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
+A list of 10 lists simulated from code simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 10)
 Simulated through epidata() from EpiILM package. Each data frame follows the format below:
 }
 \details{

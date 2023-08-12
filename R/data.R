@@ -124,7 +124,7 @@ NULL
 
 #' Simulated epidemics data
 #'
-#' A list of 10 lists simulated from code simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
+#' A list of 10 lists simulated from code simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 10)
 #' Simulated through epidata() from EpiILM package. Each data frame follows the format below:
 #'
 #'  \itemize{
@@ -142,7 +142,7 @@ NULL
 
 #' Simulated region data
 #'
-#' A data frame simulated from code model_data(epidemic, individuals)
+#' A data frame simulated from code model_data(epidemic, individuals, type = "r")
 #' region is one of two data frames contained within output of model_data() function.
 #' region contains information about confirmed cases for the region.
 #'

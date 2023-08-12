@@ -1,19 +1,57 @@
-#' Title
+#' Simulate laboratory confirmed cases, and school absenteeism data
 #'
-#' @param epi.series simulated epidemic data frame
-#' @param individual.data individuals data frame
+#' @param epi.series simulated epidemic data frame (output from simepi() function)
+#' @param individual.data individuals data frame (output from simulate_households() function)
+#' @param  type type of analysis (regional or catchment)
 #'
 #' @importFrom stats aggregate filter runif time
 #' @importFrom zoo rollapply
 #' @importFrom dplyr mutate rename
 #'
-#' @return returns simulated data frame
+#' @return returns data frame
 #' @export
 #'
 #' @examples
-#' #' \dontrun{I need to update this}
+#' #Simulate catchment data
+#' catch_df <- catchment_sim(4, 4.12, 3.01, 5)
 #'
-model_data <- function(epi.series, individual.data){
+#' #simulate elementary schools for each area
+#' elementary_df <- elementary_pop(catch_df, 4.8, 0.015)
+#'
+#' # Enters values for prompts from subpop_children() function
+#' f <- file()
+#' lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+#' ans <- paste(lines, collapse = "\n")
+#' write(ans, f)
+#' options("usr_con" = f) # set connection option
+#'
+#' # simulating households without children
+#' house_children <- subpop_children(elementary_df, n = 2)
+#'
+#' # Enters values for prompts from subpop_nochildren() function
+#' lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+#' ans <- paste(lines, collapse = "\n")
+#' write(ans, f)
+#'
+#' # simulate households and individuals data
+#' house_nochildren <- subpop_noChildren(house_children, elementary_df)
+#'
+#' close(f) # close the file
+#' options("usr_con" = stdin()) # reset connection option
+#'
+#' # simulate households and individuals data
+#' simulation <- simulate_households(house_children, house_nochildren)
+#'
+#' # randomly sampling 1000 rows to reduce simulation times
+#' individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),500),]
+#'
+#' # simulate epidemic
+#' epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 5)
+#'
+#' # simulate laboratory confirmed cases, and school absenteeism data sets
+#' data <- model_data(epidemic, individuals, type = "r")
+#'
+model_data <- function(epi.series, individual.data, type = 'r'){
 
   #catchment area datasets
   actual.cases.catch <- data.frame(time=c(), catchID = c(), case.no = c(), case.elem = c(), ScYr = c())
@@ -65,61 +103,92 @@ model_data <- function(epi.series, individual.data){
     absent.region <- rbind(absent.region, absent.merge)
   }
 
-  # Catchment area datasets
-  #   Combine lab confirmed cases, absenteeism and actual cases into one dataframe
-  master.catch <- merge(actual.cases.catch, absent.catch, by=c("time", "catchID", "ScYr"), all=TRUE)
-  master.catch <- merge(master.catch, labconf.catch, by=c("time", "catchID", "ScYr"), all=TRUE)
-  master.catch <- rename(master.catch, c("Actual.case" = "case", "Case.No" = "labconf", "Date" = "time"))
+  no.lags <- 16 # Maximum number of lags (note that lag0 is included)
 
-  master.catch$Case <- 1*(master.catch$Case.No > 0) # indicator for lab confirmed flu case in the catchment area on that day
-  master.catch$sinterm <- sin((2*pi*master.catch$Date)/365.25) # seasonal term
-  master.catch$costerm <- cos((2*pi*master.catch$Date)/365.25) # seasonal term
-  master.catch$window <- 0 # "True Alarm" window (to be calculated)
-  master.catch$ref.date <- 0 # reference date indicator (to be calculated)
-  master.catch$catchID <- as.factor(master.catch$catchID)
+  if(type == 'r'){
 
-  master.catch <- master.catch[order(master.catch$ScYr, master.catch$Date, master.catch$catchID),]
+    # Region wide datasets
+    #   Combine lab confirmed cases, absenteeism and actual cases into one dataframe
+    master.region <- merge(actual.cases.region, absent.region, by=c("time", "ScYr"), all=TRUE)
+    master.region <- merge(master.region, labconf.region, by=c("time", "ScYr"), all=TRUE)
+    master.region <- rename(master.region, c("Actual.case" = "case", "Case.No" = "labconf", "Date" = "time"))
 
-  # Region wide datasets
-  #   Combine lab confirmed cases, absenteeism and actual cases into one dataframe
-  master.region <- merge(actual.cases.region, absent.region, by=c("time", "ScYr"), all=TRUE)
-  master.region <- merge(master.region, labconf.region, by=c("time", "ScYr"), all=TRUE)
-  master.region <- rename(master.region, c("Actual.case" = "case", "Case.No" = "labconf", "Date" = "time"))
+    master.region$Case <- 1*(master.region$Case.No > 0) # indicator for lab confirmed flu case that day
+    master.region$sinterm <- sin((2*pi*master.region$Date)/365.25) # seasonal term
+    master.region$costerm <- cos((2*pi*master.region$Date)/365.25) # seasonal term
+    master.region$window <- 0 # "True Alarm" window (to be calculated)
+    master.region$ref.date <- 0 # reference date indicator (to be calculated)
 
-  master.region$Case <- 1*(master.region$Case.No > 0) # indicator for lab confirmed flu case that day
-  master.region$sinterm <- sin((2*pi*master.region$Date)/365.25) # seasonal term
-  master.region$costerm <- cos((2*pi*master.region$Date)/365.25) # seasonal term
-  master.region$window <- 0 # "True Alarm" window (to be calculated)
-  master.region$ref.date <- 0 # reference date indicator (to be calculated)
+    master.region <- master.region[order(master.region$ScYr, master.region$Date),]
 
-  master.region <- master.region[order(master.region$ScYr, master.region$Date),]
+    region.eval <- data.frame()
 
-  # Calculate reference date for each catchment area and year
-  # region ref date = 2nd lab confirmed case within 7 days
-  # catchment area ref date = 2nd lab confirmed case within 10 days (Option 1)
-  #     OR = first lab confirmed case in catchment area after region ref date (Option 2 - this option is currently commented out)
-  catchment.eval <- data.frame()
-  region.eval <- data.frame()
+    for(k in unique(master.region$ScYr)){
+      tmp.data <- master.region[master.region$ScYr == k,]
 
-  for(k in unique(master.region$ScYr)){
-    tmp.data <- master.region[master.region$ScYr == k,]
+      # Calculate region wide reference date
+      weekly.cases <- rollapply(tmp.data$Case.No, width = 7, sum, partial = TRUE, align = "right") # number of cases within a rolling window of 7 days
+      region.ref <- suppressWarnings(min(which(weekly.cases > 1))) # first day in the year where 2 confirmed influenza cases within 7 days
 
-    # Calculate region wide reference date
-    weekly.cases <- rollapply(tmp.data$Case.No, width = 7, sum, partial = TRUE, align = "right") # number of cases within a rolling window of 7 days
-    region.ref <- suppressWarnings(min(which(weekly.cases > 1))) # first day in the year where 2 confirmed influenza cases within 7 days
+      # If a reference date is defined for the region,
+      #   create an indicator to specify that day as the reference date,
+      #   and indicators for every day that is in the "True Alarm" window,
+      #   that is the 14 days prior to the reference date
+      #   (The "True Alarm" window is used for FAR and ADD calculations)
+      if(region.ref != Inf){
+        ref.row.start <- max(0, (region.ref-14))
+        tmp.data[tmp.data$Date >= ref.row.start & tmp.data$Date <= region.ref, "window"] <- 1 # 14 day window for ADD calculations
+        tmp.data[tmp.data$Date == region.ref, "ref.date"] <- 1
+      }
 
-    # If a reference date is defined for the region,
-    #   create an indicator to specify that day as the reference date,
-    #   and indicators for every day that is in the "True Alarm" window,
-    #   that is the 14 days prior to the reference date
-    #   (The "True Alarm" window is used for FAR and ADD calculations)
-    if(region.ref != Inf){
-      ref.row.start <- max(0, (region.ref-14))
-      tmp.data[tmp.data$Date >= ref.row.start & tmp.data$Date <= region.ref, "window"] <- 1 # 14 day window for ADD calculations
-      tmp.data[tmp.data$Date == region.ref, "ref.date"] <- 1
+      region.eval <- rbind(region.eval, tmp.data)
+
     }
 
-    region.eval <- rbind(region.eval, tmp.data)
+    master.region <- region.eval
+
+    # Create lagged absenteeism columns
+    region.lag <- data.frame()
+
+    # lagged absenteeism values for the entire region
+    x_t <- master.region[order(master.region$ScYr, master.region$Date), "pct.absent"]
+    n <- length(x_t)
+    lagmatrix <- matrix(0, nrow = n, ncol = no.lags)
+    colnames(lagmatrix) <- paste("lag", c(0:(no.lags-1)), sep="")
+
+    for(k in 1:no.lags){
+      lagmatrix[,k] = dplyr::lag(x_t, k-1)
+    }
+
+    master.region <- cbind(master.region, lagmatrix)
+
+    return(master.region)
+
+
+  } else if (type == 'c'){
+
+    # Catchment area datasets
+    #   Combine lab confirmed cases, absenteeism and actual cases into one dataframe
+    master.catch <- merge(actual.cases.catch, absent.catch, by=c("time", "catchID", "ScYr"), all=TRUE)
+    master.catch <- merge(master.catch, labconf.catch, by=c("time", "catchID", "ScYr"), all=TRUE)
+    master.catch <- rename(master.catch, c("Actual.case" = "case", "Case.No" = "labconf", "Date" = "time"))
+
+    master.catch$Case <- 1*(master.catch$Case.No > 0) # indicator for lab confirmed flu case in the catchment area on that day
+    master.catch$sinterm <- sin((2*pi*master.catch$Date)/365.25) # seasonal term
+    master.catch$costerm <- cos((2*pi*master.catch$Date)/365.25) # seasonal term
+    master.catch$window <- 0 # "True Alarm" window (to be calculated)
+    master.catch$ref.date <- 0 # reference date indicator (to be calculated)
+    master.catch$catchID <- as.factor(master.catch$catchID)
+
+    master.catch <- master.catch[order(master.catch$ScYr, master.catch$Date, master.catch$catchID),]
+
+
+
+    # Calculate reference date for each catchment area and year
+    # region ref date = 2nd lab confirmed case within 7 days
+    # catchment area ref date = 2nd lab confirmed case within 10 days (Option 1)
+    #     OR = first lab confirmed case in catchment area after region ref date (Option 2 - this option is currently commented out)
+    catchment.eval <- data.frame()
 
     # Calculate catchment area reference date
     for(j in unique(master.catch$catchID)){
@@ -139,49 +208,38 @@ model_data <- function(epi.series, individual.data){
       }
       catchment.eval <- rbind(catchment.eval, tmp.data)
     }
-  }
 
-  master.region <- region.eval
-  master.catch <- catchment.eval
+    master.catch <- catchment.eval
 
-  # Create lagged absenteeism columns
-  no.lags <- 16 # Maximum number of lags (note that lag0 is included)
-  catch.lag <- data.frame()
-  region.lag <- data.frame()
+    # Create lagged absenteeism columns
 
-  # lagged absenteeism values for each catchment catchment area
-  for(j in unique(master.catch$catchID)){
-    tmp.catch <- master.catch[master.catch$catchID == j,]
-    tmp.catch <- tmp.catch[order(tmp.catch$ScYr, tmp.catch$Date),]
-    x_t <- tmp.catch[, "pct.absent"]
-    n <- length(x_t)
-    lagmatrix <- matrix(0, nrow = n, ncol = no.lags)
-    colnames(lagmatrix) <- paste("lag", c(0:(no.lags-1)), sep="")
+    catch.lag <- data.frame()
 
-    for(k in 1:no.lags){
-      lagmatrix[,k] = dplyr::lag(x_t, k-1)
+
+    # lagged absenteeism values for each catchment catchment area
+    for(j in unique(master.catch$catchID)){
+      tmp.catch <- master.catch[master.catch$catchID == j,]
+      tmp.catch <- tmp.catch[order(tmp.catch$ScYr, tmp.catch$Date),]
+      x_t <- tmp.catch[, "pct.absent"]
+      n <- length(x_t)
+      lagmatrix <- matrix(0, nrow = n, ncol = no.lags)
+      colnames(lagmatrix) <- paste("lag", c(0:(no.lags-1)), sep="")
+
+      for(k in 1:no.lags){
+        lagmatrix[,k] = dplyr::lag(x_t, k-1)
+      }
+
+      tmp.catch <- cbind(tmp.catch, lagmatrix)
+      catch.lag <- rbind(catch.lag, tmp.catch)
     }
 
-    tmp.catch <- cbind(tmp.catch, lagmatrix)
-    catch.lag <- rbind(catch.lag, tmp.catch)
+    master.catch <- catch.lag
+
   }
 
-  master.catch <- catch.lag
-
-  # lagged absenteeism values for the entire region
-  x_t <- master.region[order(master.region$ScYr, master.region$Date), "pct.absent"]
-  n <- length(x_t)
-  lagmatrix <- matrix(0, nrow = n, ncol = no.lags)
-  colnames(lagmatrix) <- paste("lag", c(0:(no.lags-1)), sep="")
-
-  for(k in 1:no.lags){
-    lagmatrix[,k] = dplyr::lag(x_t, k-1)
-  }
-
-  master.region <- cbind(master.region, lagmatrix)
-
-  return(list(catchment = master.catch, region = master.region))
+  return(catchment = master.catch)
 }
+
 
 sim.lab.confirm <- function(epidata, individual.data){
 

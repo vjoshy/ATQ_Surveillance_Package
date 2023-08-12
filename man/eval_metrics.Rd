@@ -31,10 +31,10 @@ Calculate evaluation metrics for lag, threshold, and yearly model
 }
 \examples{
 #Simulate catchment data
-catch_df <- catchment_sim(4, 4.12, 3.01, 5)
+catch_df <- catchment_sim(4, 1.2, 3.01, 5)
 
 #simulate elementary schools for each area
-elementary_df <- elementary_pop(catch_df, 4.8, 0.015)
+elementary_df <- elementary_pop(catch_df, 0.5, 0.015)
 
 # Enters values for prompts from subpop_children() function
 f <- file()
@@ -60,18 +60,15 @@ options("usr_con" = stdin()) # reset connection option
 # simulate households and individuals data
 simulation <- simulate_households(house_children, house_nochildren)
 
-# randomly sampling 1000 rows to reduce simulation times
-individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),500),]
-
 # simulate epidemic
-epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 4)
+epidemic <- simepi(simulation$individual_sim, b=3, sus=.0019, spark=0, num_inf = 2, rep = 4)
 
 # simulate laboratory confirmed cases, and school absenteeism data sets
-data <- model_data(epidemic, individuals)
+data <- model_data(epidemic, simulation$individual_sim, type = "r")
 
 # calculate and return metrics in a list
-region_metric <- eval_metrics(lagdata = data$region,
-                       type = "r", thres = seq(0.1,0.6,by = 0.05),
-                       ScYr = c(2:4), yr.weights = c(1:9)/sum(c(1:9)))
+region_metric <- eval_metrics(lagdata = data,
+                       type = "r", thres = seq(0.1,0.25,by = 0.05),
+                       ScYr = c(2:4), yr.weights = c(1:3)/sum(c(1:3)))
 
 }
