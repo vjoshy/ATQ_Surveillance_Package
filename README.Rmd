@@ -26,12 +26,12 @@ You can install the development version of ATQ from [Github](https://github.com/
 
 ``` r
 install.packages("devtools")
-install_github("https://github.com/vjoshy/ATQ_Surveillance_Package.git")
+install_github("vjoshy/ATQ_Surveillance_Package.git")
 ```
 
 ## Usage
 
-ATQ contains eight funcions which are to be used in sequentially in the following order:\
+ATQ contains eight funcions which are to be used sequentially in the following order:\
 
 1. catchment_sim()
 2. elementary_pop()
@@ -42,23 +42,53 @@ ATQ contains eight funcions which are to be used in sequentially in the followin
 7. model_data()
 8. eval_metrics()
 
+The output data frame one function is to be used as input for the next function. Please see example below:
+
 ```{r example}
 library(ATQ)
-## basic example code
+
+#Simulate catchment data
+catch_df <- catchment_sim(16, 4.12, 3.01, 5)
+
+#simulate elementary schools for each area
+elementary_df <- elementary_pop(catch_df, 4.8, 0.015)
+
+# Enters values for prompts from subpop_children() function
+f <- file()
+lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+ans <- paste(lines, collapse = "\n")
+write(ans, f)
+options("usr_con" = f) # set connection option
+
+# simulating households with children
+house_children <- subpop_children(elementary_df, n = 2)
+
+# Enters values for prompts from subpop_nochildren() function
+lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+ans <- paste(lines, collapse = "\n")
+write(ans, f)
+
+# simulating households without children
+house_nochildren <- subpop_noChildren(house_children, elementary_df)
+
+close(f) # close the file
+options("usr_con" = stdin()) # reset connection option
+
+# simulate households and individuals data
+simulation <- simulate_households(house_children, house_nochildren)
+
+# randomly sampling 1000 rows to reduce simulation times
+individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),1000),]
+
+# simulate epidemic %>% 
+epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
+
+# simulate laboratory confirmed cases, and school absenteeism data sets
+data <- model_data(epidemic, individuals)
+
+# calculate and return metrics in a list
+region_metric <- eval_metrics(lagdata = data,
+                              type = "r", thres = seq(0.1,0.6,by = 0.05),
+                                                            ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
-
-```{r cars}
-summary(cars)
-```
-
-You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this. You could also use GitHub Actions to re-render `README.Rmd` every time you push. An example workflow can be found here: <https://github.com/r-lib/actions/tree/v1/examples>.
-
-You can also embed plots, for example:
-
-```{r pressure, echo = FALSE}
-plot(pressure)
-```
-
-In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
