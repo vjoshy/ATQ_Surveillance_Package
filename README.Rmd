@@ -15,9 +15,6 @@ knitr::opts_chunk$set(
 
 # ATQ: Assesing Evaluation Metrics for Timely Epidemic Detection Models
 
-<!-- badges: start -->
-<!-- badges: end -->
-
 The goal of ATQ is to provide accurate alert metrics for epidemics using school absenteeism data. This package will allow users to simulate school absenteeism, epidemics, and spread of people within a region using population proportions from census data. Using these simulated data, an optimal alert metric can be determined.
 
 ## Installation:
@@ -42,7 +39,9 @@ ATQ contains eight funcions which are to be used sequentially in the following o
 7. model_data()
 8. eval_metrics()
 
-The output data frame one function is to be used as input for the next function. Please see example below:
+The output data frame from the first function is to be used as input for the next function and so forth.
+
+Please see example below:
 
 ```{r example}
 library(ATQ)
@@ -87,8 +86,20 @@ epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
 data <- model_data(epidemic, individuals)
 
 # calculate and return metrics in a list
-region_metric <- eval_metrics(lagdata = data,
-                              type = "r", thres = seq(0.1,0.6,by = 0.05),
-                                                            ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
+region_metric <- eval_metrics(lagdata = data, type = "r", thres = seq(0.1,0.6,by = 0.05),
+                                        ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
 ```
 
+## Data
+
+ATQ contains example output data frames from each function. To view data and information about them run the following code:
+
+```{r data}
+
+#View all datasets 
+data(package = 'ATQ')
+
+#View help file on a dataframe
+?region
+
+```
