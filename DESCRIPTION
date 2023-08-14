@@ -6,7 +6,7 @@ Authors@R: c(
     person("Zeny", "Feng", email = "zfeng@uoguelph.ca", role = c("aut", "cph", "ths")),
     person("Lorna", "Deeth", email = "ldeeth@uoguelph.ca", role = c("aut", "cph", "ths")),
     person("Kayla", "Vanderkruk", email = "kayla.vanderkruk@gmail.com", role = c("aut", "com", "ctb")))
-Description: What the package does (one paragraph).
+Description: Alert time quality (ATQ) is an evaluation metric for assessing timely epidemic detection models within a school absenteeism-based surveillance system. This package will allow users to simulate populations and epidemics from which six epidemic alerts can be determined.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

@@ -1,0 +1,30 @@
+citHeader("ATQ Package References:")
+
+citEntry(
+  entry    = "Article",
+  title    = "ATQ: alert time quality, an evaluation metric for assessing timely epidemic detection models within a school absenteeism-based surveillance system",
+  author   = "Vanderkruk, Kayla R.", "Deeth, Lorna E.", "Feng, Zeny", "Trotz-Williams, Lise A.",
+  journal  = "BMC Public Health",
+  year     = "2023",
+  volume   = "23",
+  number   = "1",
+  pages    = "850",
+  url      = "https://doi.org/10.1186/s12889-023-15747-z",
+  textVersion = paste("Vanderkruk, K.R., Deeth, L.E., Feng, Z. et al. ATQ: alert time quality, an evaluation metric for assessing timely epidemic detection models within a school absenteeism-based surveillance system. BMC Public Health 23, 850 (2023). https://doi.org/10.1186/s12889-023-15747-z"
+
+  )
+)
+
+citEntry(
+  entry    = "Article",
+  title    = "Methods for detecting seasonal influenza epidemics using a school absenteeism surveillance system",
+  author   = "Ward, Madeline A.", "Deeth, Lorna E.", "Feng, Zeny", "Stanley, Anu", "Deardon, Rob",
+  journal  = "BMC Public Health",
+  year     = "2019",
+  volume   = "19",
+  number   = "1",
+  pages    = "1232",
+  url      = "https://doi.org/10.1186/s12889-019-7521-7",
+  textVersion = paste("Ward, M.A., Stanley, A., Deeth, L.E. et al. Methods for detecting seasonal influenza epidemics using a school absenteeism surveillance system. BMC Public Health 19, 1232 (2019). https://doi.org/10.1186/s12889-019-7521-7"
+  )
+)
