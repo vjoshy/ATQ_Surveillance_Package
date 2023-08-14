@@ -3,9 +3,9 @@ Title: Alert Time Quality - Surveillance Simulation Modelling for Infectious Dis
 Version: 0.0.0.9000
 Authors@R: c(
     person("Vinay", "Joshy", email = "joshy@uoguelph.ca", role = c("aut", "cre")),
-    person("Zeny", "Feng", email = "zfeng@uoguelph.ca", role = "aut"),
-    person("Lorna", "Deeth", email = "ldeeth@uoguelph.ca", role = "aut"),
-    person("Kayla", "Vanderkruk", email = "kayla.vanderkruk@gmail.com", role = "aut"))
+    person("Zeny", "Feng", email = "zfeng@uoguelph.ca", role = c("aut", "cph", "ths")),
+    person("Lorna", "Deeth", email = "ldeeth@uoguelph.ca", role = c("aut", "cph", "ths")),
+    person("Kayla", "Vanderkruk", email = "kayla.vanderkruk@gmail.com", role = c("aut", "com", "ctb")))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
