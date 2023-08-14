@@ -13,24 +13,34 @@ knitr::opts_chunk$set(
 )
 ```
 
-# ATQ
+# ATQ: Assesing Evaluation Metrics for Timely Epidemic Detection Models
 
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of ATQ is to ...
+The goal of ATQ is to provide accurate alert metrics for epidemics using school absenteeism data. This package will allow users to simulate school absenteeism, epidemics, and spread of people within a region using population proportions from census data. Using these simulated data, an optimal alert metric can be determined.
 
-## Installation
+## Installation:
 
-You can install the development version of ATQ like so:
+You can install the development version of ATQ from [Github](https://github.com/vjoshy/ATQ_Surveillance_Package)
 
 ``` r
-install_github(...)
+install.packages("devtools")
+install_github("https://github.com/vjoshy/ATQ_Surveillance_Package.git")
 ```
 
-## Example
+## Usage
 
-This is a basic example which shows you how to solve a common problem:
+ATQ contains eight funcions which are to be used in sequentially in the following order:\
+
+1. catchment_sim()
+2. elementary_pop()
+3. subpop_children()
+4. subpop_noChildren()
+5. simulate_households()
+6. simepi()
+7. model_data()
+8. eval_metrics()
 
 ```{r example}
 library(ATQ)
