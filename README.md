@@ -15,8 +15,9 @@ You can install the development version of ATQ from
 [Github](https://github.com/vjoshy/ATQ_Surveillance_Package)
 
 ``` r
-install.packages("devtools")
-install_github("vjoshy/ATQ_Surveillance_Package.git")
+#install.packages("devtools")
+library(devtools)
+install_github("vjoshy/ATQ_Surveillance_Package")
 ```
 
 ## Usage
