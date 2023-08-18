@@ -18,36 +18,34 @@ list of two data frames; simulated individuals data and simulated households dat
 Creates two simulated populations, households and individuals
 }
 \examples{
-# simulate catchment area
- catch_df <- catchment_sim(8, 4.30, 3.6, 5)
+#Simulate catchment data
+catch_df <- catchment_sim(4, 1.2, 3.01, 5)
 
-# simulate elementary schools for each area
- elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
+#simulate elementary schools for each area
+elementary_df <- elementary_pop(catch_df, 0.5, 0.015)
 
-# Establish a file connection for population proportion values when prompted by subpop_children()
- f <- file()
- lines <- c(0.77, 0.36, 0.43, 0.21,0.59, 0.31, 0.10, 0.49)
- ans <- paste(lines, collapse = "\n")
- write(ans, f)
- options("usr_con" = f)
+# Enters values for prompts from subpop_children() function
+f <- file()
+lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+ans <- paste(lines, collapse = "\n")
+write(ans, f)
+options("usr_con" = f) # set connection option
 
-# simulate household with children and assign them to elementary school
- house_children <- subpop_children(elementary_df, n = 2)
+# simulating households without children
+house_children <- subpop_children(elementary_df, n = 2)
 
-# Overwriting connection with population proportion values for households without children
- lines <- c(0.23, 0.34, 0.17, 0.16, 0.1, 0.43)
- ans <- paste(lines, collapse = "\n")
- write(ans, f)
+# Enters values for prompts from subpop_nochildren() function
+lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+ans <- paste(lines, collapse = "\n")
+write(ans, f)
 
-# simulate household with no children and assign them to elementary school
- house_nochildren <- subpop_noChildren(house_children, elementary_df)
+# simulate households and individuals data
+house_nochildren <- subpop_noChildren(house_children, elementary_df)
 
-# close the file
- close(f)
-# reset connection option
- options("usr_con" = stdin())
+close(f) # close the file
+options("usr_con" = stdin()) # reset connection option
 
- # simulate households and individuals data
- simulation <- simulate_households(house_children, house_nochildren)
+# simulate households and individuals data
+simulation <- simulate_households(house_children, house_nochildren)
 
 }

@@ -17,7 +17,7 @@ elementary_pop(df, alpha, beta)
 a data frame of simulated elementary school population
 }
 \description{
-Function to simulation elementary school size and then assigned to catchment areas.
+Function to simulate elementary school size and assigns it to catchments
 }
 \examples{
 catch_df <- catchment_sim(16, 3.5, 2.8, 20)

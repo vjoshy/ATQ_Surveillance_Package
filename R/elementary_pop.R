@@ -1,6 +1,6 @@
 #' Create Elementary Schools population size
 #'
-#' Function to simulation elementary school size and then assigned to catchment areas.
+#' Function to simulate elementary school size and assigns it to catchments
 #'
 #' @param df output data frame from catchment_sim function
 #' @param alpha shape parameter of gamma distribution to simulate school population
