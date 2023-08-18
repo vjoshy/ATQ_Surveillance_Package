@@ -43,10 +43,10 @@
 #' simulation <- simulate_households(house_children, house_nochildren)
 #'
 #' # randomly sampling 1000 rows to reduce simulation times
-#' individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),500),]
+#' individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),400),]
 #'
 #' # simulate epidemic
-#' epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 5)
+#' epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 3)
 #'
 #' # simulate laboratory confirmed cases, and school absenteeism data sets
 #' data <- model_data(epidemic, individuals, type = "r")
