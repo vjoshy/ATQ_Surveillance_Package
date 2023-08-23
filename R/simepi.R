@@ -1,17 +1,17 @@
-#' Simulate epidemic
+#' Simulate epidemics
 #'
-#' This function under Susceptible-Infectious-Removed (SIR) compartment framework. The time period for simulation is 270 days
+#' This function simulates epidemics under a Susceptible-Infectious-Removed (SIR) compartment framework. The time period for simulation is 270 days
 #'
 #' @param df individuals data frame from household data simulation
 #' @param b Spatial parameter(s) (>0) or network parameter (s) (>0) if contact network is used.
 #' @param sus Susceptibility parameter (>0)
 #' @param spark Sparks parameter (>=0), representing infections unexplained by other parts of the model.
-#' @param num_inf number of individuals that are infected initially in each catchment
-#' @param rep number of replications
+#' @param num_inf number of individuals that are infected initially in each catchment.
+#' @param rep number of replications of epidemics, default is 10.
 #'
 #' @importFrom dplyr %>%
 #'
-#' @return list of 10 simulated epidemics
+#' @return List of simulated epidemics
 #' @export
 #'
 #' @examples

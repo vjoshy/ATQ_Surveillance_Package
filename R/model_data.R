@@ -1,4 +1,6 @@
-#' Simulate laboratory confirmed cases, and school absenteeism data
+#' Simulate laboratory confirmed cases and school absenteeism data
+#'
+#' Simulates lab confirmed cases and absenteeism information using epidemics and individuals data. Simulation can be performed at the regional or catchment level.
 #'
 #' @param epi.series simulated epidemic data frame (output from simepi() function)
 #' @param individual.data individuals data frame (output from simulate_households() function)
@@ -43,10 +45,10 @@
 #' simulation <- simulate_households(house_children, house_nochildren)
 #'
 #' # randomly sampling 1000 rows to reduce simulation times
-#' individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),400),]
+#' individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),200),]
 #'
 #' # simulate epidemic
-#' epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 3)
+#' epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 1)
 #'
 #' # simulate laboratory confirmed cases, and school absenteeism data sets
 #' data <- model_data(epidemic, individuals, type = "r")

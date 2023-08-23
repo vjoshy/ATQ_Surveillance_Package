@@ -1,10 +1,12 @@
 #' Calculate evaluation metrics for lag, threshold, and yearly model
 #'
+#' Evaluates alarm metrics using lab confirmed cases and absenteeism data. Metrics can be evaluated at the regional and catchment level. Metrics include ADD, FAR, ATQ, AATQ, FATQ, WATQ and WFATQ. Optimal lag and thresholds will be selected so as to minimize values of metrics.
+#'
 #' @param type 'c' for catchment area models, 'r' for region-wide models. Default is region-wide
-#' @param lagdata lagged dataframe used for modelling
+#' @param lagdata data with lab confirmed cases and absenteeism data
 #' @param ScYr vector of all school years to be used for model evaluation (range of natural numbers)
 #' @param yr.weights weights for WFATQ and WAATQ metrics
-#' @param thres thresholds evaluated
+#' @param thres thresholds evaluated, default value is a vector. (seq(0.1,0.6,by = 0.05))
 #'
 #' @importFrom stats as.formula glm predict
 #'
@@ -16,7 +18,7 @@
 #' catch_df <- catchment_sim(4, 1.2, 3.01, 5)
 #'
 #' #simulate elementary schools for each area
-#' elementary_df <- elementary_pop(catch_df, 0.5, 0.015)
+#' elementary_df <- elementary_pop(catch_df, 0.4, 0.008)
 #'
 #' # Enters values for prompts from subpop_children() function
 #' f <- file()

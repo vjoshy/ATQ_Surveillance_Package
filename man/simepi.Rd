@@ -2,7 +2,7 @@
 % Please edit documentation in R/simepi.R
 \name{simepi}
 \alias{simepi}
-\title{Simulate epidemic}
+\title{Simulate epidemics}
 \usage{
 simepi(df, b, sus, spark, num_inf, rep = 10)
 }
@@ -15,15 +15,15 @@ simepi(df, b, sus, spark, num_inf, rep = 10)
 
 \item{spark}{Sparks parameter (>=0), representing infections unexplained by other parts of the model.}
 
-\item{num_inf}{number of individuals that are infected initially in each catchment}
+\item{num_inf}{number of individuals that are infected initially in each catchment.}
 
-\item{rep}{number of replications}
+\item{rep}{number of replications of epidemics, default is 10.}
 }
 \value{
-list of 10 simulated epidemics
+List of simulated epidemics
 }
 \description{
-This function under Susceptible-Infectious-Removed (SIR) compartment framework. The time period for simulation is 270 days
+This function simulates epidemics under a Susceptible-Infectious-Removed (SIR) compartment framework. The time period for simulation is 270 days
 }
 \examples{
 #Simulate catchment data

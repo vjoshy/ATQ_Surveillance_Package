@@ -34,7 +34,7 @@ Calculate evaluation metrics for lag, threshold, and yearly model
 catch_df <- catchment_sim(4, 1.2, 3.01, 5)
 
 #simulate elementary schools for each area
-elementary_df <- elementary_pop(catch_df, 0.5, 0.015)
+elementary_df <- elementary_pop(catch_df, 0.4, 0.008)
 
 # Enters values for prompts from subpop_children() function
 f <- file()
