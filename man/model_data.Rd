@@ -7,9 +7,11 @@
 model_data(epi.series, individual.data, type = "r")
 }
 \arguments{
-\item{epi.series}{simulated epidemic data frame (output from simepi() function)}
+\item{epi.series}{simulated epidemic data frame
+(output from simepi() function)}
 
-\item{individual.data}{individuals data frame (output from simulate_households() function)}
+\item{individual.data}{individuals data frame
+(output from simulate_households() function)}
 
 \item{type}{type of analysis (regional or catchment)}
 }
@@ -17,7 +19,9 @@ model_data(epi.series, individual.data, type = "r")
 returns data frame
 }
 \description{
-Simulates lab confirmed cases and absenteeism information using epidemics and individuals data. Simulation can be performed at the regional or catchment level.
+Simulates lab confirmed cases and absenteeism information using epidemics
+and individuals data. Simulation can be performed at the regional
+or catchment level.
 }
 \examples{
 #Simulate catchment data
@@ -28,7 +32,9 @@ elementary_df <- elementary_pop(catch_df, 4.8, 0.015)
 
 # Enters values for prompts from subpop_children() function
 f <- file()
-lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515, 0.5857832,
+              0.3071523, 0.1070645,0.4976825)
+
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
 options("usr_con" = f) # set connection option
@@ -37,7 +43,9 @@ options("usr_con" = f) # set connection option
 house_children <- subpop_children(elementary_df, n = 2)
 
 # Enters values for prompts from subpop_nochildren() function
-lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239,
+               0.09953358, 0.4277052)
+
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
 
@@ -51,10 +59,12 @@ options("usr_con" = stdin()) # reset connection option
 simulation <- simulate_households(house_children, house_nochildren)
 
 # randomly sampling 1000 rows to reduce simulation times
-individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),200),]
+individuals <- simulation$individual_sim[sample(nrow(
+                                          simulation$individual_sim),200),]
 
 # simulate epidemic
-epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2, rep = 1)
+epidemic <- simepi(individuals, b=3, sus=.0019, spark=0,
+                     num_inf = 2, rep = 1)
 
 # simulate laboratory confirmed cases, and school absenteeism data sets
 data <- model_data(epidemic, individuals, type = "r")

@@ -9,11 +9,14 @@ catchment_sim(n, alpha, beta, area)
 \arguments{
 \item{n}{number of catchments to be simulated}
 
-\item{alpha}{shape parameter of gamma distribution for number of schools to be simulated}
+\item{alpha}{shape parameter of gamma distribution for number of schools to
+be simulated}
 
-\item{beta}{rate parameter of gamma distribution for number of schools to be simulated}
+\item{beta}{rate parameter of gamma distribution for number of schools to be
+simulated}
 
-\item{area}{square dimension for catchment (if area = 20, then each catchment dimensions will be 20 x 20)}
+\item{area}{square dimension for catchment (if area = 20, then each catchment
+dimensions will be 20 x 20)}
 }
 \value{
 data frame of n observations

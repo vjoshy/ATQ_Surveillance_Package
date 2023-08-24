@@ -15,35 +15,43 @@ subpop_noChildren(df, df2)
 simulated population of households without children
 }
 \description{
-Simulation of households without children via random uniform distribution using data frames from elementary_pop() and house_children() functions
+Simulation of households without children via random uniform distribution
+using data frames from elementary_pop() and house_children() functions
 }
 \details{
-This is an interactive function where user has to enter 6 population proportion values as prompted.
-To automate entering these prompts, establish a file connection where a vector of the eight population proportion values are written to an open file. Refer to examples section.
+This is an interactive function where user has to enter 6
+population proportion values as prompted.To automate entering these prompts,
+establish a file connection where a vector of the eight population
+proportion values are written to an open file.
 }
 \examples{
-# simulate catchment area
+ # simulate catchment area
  catch_df <- catchment_sim(8, 4.30, 3.6, 5)
 
-# simulate elementary schools for each area
+ # simulate elementary schools for each area
  elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
 
-# Establish a file connection for population proportion values when prompted by subpop_children()
+ # Establish a file connection for population proportion values when
+ # prompted by subpop_children()
  f <- file()
+
  lines <- c(0.77, 0.36, 0.43, 0.21,0.59, 0.31, 0.10, 0.49)
+
  ans <- paste(lines, collapse = "\n")
  write(ans, f)
+
  options("usr_con" = f)
 
-# simulate household with children and assign them to elementary school
+ # simulate household with children and assign them to elementary school
  house_children <- subpop_children(elementary_df, n = 3)
 
-# Overwriting connection with population proportion values for households without children
+ # Overwriting connection with population proportion values for
+ # households without children
  lines <- c(0.23, 0.34, 0.17, 0.16, 0.1, 0.43)
  ans <- paste(lines, collapse = "\n")
  write(ans, f)
 
-# simulate household with no children and assign them to elementary school
+ # simulate household with no children and assign them to elementary school
  house_noChild <- subpop_noChildren(house_children, elementary_df)
 
 # close the file

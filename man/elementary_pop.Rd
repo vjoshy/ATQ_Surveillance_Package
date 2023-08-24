@@ -9,9 +9,11 @@ elementary_pop(df, alpha, beta)
 \arguments{
 \item{df}{output data frame from catchment_sim function}
 
-\item{alpha}{shape parameter of gamma distribution to simulate school population}
+\item{alpha}{shape parameter of gamma distribution to simulate
+school population}
 
-\item{beta}{rate parameter of gamma distribution to simulate school population}
+\item{beta}{rate parameter of gamma distribution to simulate
+school population}
 }
 \value{
 a data frame of simulated elementary school population

@@ -13,21 +13,28 @@ eval_metrics(
 )
 }
 \arguments{
-\item{type}{'c' for catchment area models, 'r' for region-wide models. Default is region-wide}
+\item{type}{'c' for catchment area models, 'r' for region-wide models.
+Default is region-wide}
 
-\item{lagdata}{lagged dataframe used for modelling}
+\item{lagdata}{data with lab confirmed cases and absenteeism data}
 
-\item{ScYr}{vector of all school years to be used for model evaluation (range of natural numbers)}
+\item{ScYr}{vector of all school years to be used for
+model evaluation (range of natural numbers)}
 
 \item{yr.weights}{weights for WFATQ and WAATQ metrics}
 
-\item{thres}{thresholds evaluated}
+\item{thres}{thresholds evaluated,
+default value is a vector (seq(0.1,0.6,by = 0.05))}
 }
 \value{
 List of matrices for FAR, ADD, AATQ, FATQ, WAATQ, WFATQ
 }
 \description{
-Calculate evaluation metrics for lag, threshold, and yearly model
+Evaluates alarm metrics using lab confirmed cases and absenteeism data.
+Metrics can be evaluated at the regional and catchment level.
+Metrics include ADD, FAR, ATQ, AATQ, FATQ, WATQ and WFATQ.
+Optimal lag and thresholds will be selected so
+as to minimize values of metrics.
 }
 \examples{
 #Simulate catchment data
@@ -38,7 +45,9 @@ elementary_df <- elementary_pop(catch_df, 0.4, 0.008)
 
 # Enters values for prompts from subpop_children() function
 f <- file()
-lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,
+            0.5857832, 0.3071523, 0.1070645,0.4976825)
+
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
 options("usr_con" = f) # set connection option
@@ -47,7 +56,9 @@ options("usr_con" = f) # set connection option
 house_children <- subpop_children(elementary_df, n = 2)
 
 # Enters values for prompts from subpop_nochildren() function
-lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+lines <- c(0.23246269, 0.34281716, 0.16091418,
+              0.16427239, 0.09953358, 0.4277052)
+
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
 
@@ -61,7 +72,8 @@ options("usr_con" = stdin()) # reset connection option
 simulation <- simulate_households(house_children, house_nochildren)
 
 # simulate epidemic
-epidemic <- simepi(simulation$individual_sim, b=3, sus=.0019, spark=0, num_inf = 2, rep = 4)
+epidemic <- simepi(simulation$individual_sim, b=3, sus=.0019,
+                     spark=0, num_inf = 2, rep = 4)
 
 # simulate laboratory confirmed cases, and school absenteeism data sets
 data <- model_data(epidemic, simulation$individual_sim, type = "r")

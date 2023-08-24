@@ -5,9 +5,12 @@
 #' Catchment areas are simulated via gamma distribution.
 #'
 #' @param n number of catchments to be simulated
-#' @param alpha shape parameter of gamma distribution for number of schools to be simulated
-#' @param beta rate parameter of gamma distribution for number of schools to be simulated
-#' @param area square dimension for catchment (if area = 20, then each catchment dimensions will be 20 x 20)
+#' @param alpha shape parameter of gamma distribution for number of schools to
+#' be simulated
+#' @param beta rate parameter of gamma distribution for number of schools to be
+#' simulated
+#' @param area square dimension for catchment (if area = 20, then each catchment
+#' dimensions will be 20 x 20)
 #'
 #' @return data frame of n observations
 #' @export
@@ -29,7 +32,8 @@ catchment_sim <- function(n, alpha, beta, area){
   yEnd <- c()
 
 
-  # for loop that populates the start and end values for x and y coordinates of the boundaries of catchment areas
+  # for loop that populates the start and end values for x and y coordinates
+  # of the boundaries of catchment areas
   for(i in 1:n){
 
     xStart[i] <- (i-1) %/% (n/4) * area

@@ -12,7 +12,8 @@ simulate_households(children_df, noChildren_df)
 \item{noChildren_df}{data frame output from house_noChildren() function}
 }
 \value{
-list of two data frames; simulated individuals data and simulated households data
+list of two data frames; simulated individuals data
+and simulated households data
 }
 \description{
 Creates two simulated populations, households and individuals
@@ -26,7 +27,9 @@ elementary_df <- elementary_pop(catch_df, 0.5, 0.015)
 
 # Enters values for prompts from subpop_children() function
 f <- file()
-lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832,
+                0.3071523, 0.1070645,0.4976825)
+
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
 options("usr_con" = f) # set connection option
@@ -35,7 +38,9 @@ options("usr_con" = f) # set connection option
 house_children <- subpop_children(elementary_df, n = 2)
 
 # Enters values for prompts from subpop_nochildren() function
-lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+lines <- c(0.23246269, 0.34281716, 0.16091418,
+                0.16427239, 0.09953358, 0.4277052)
+
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
 

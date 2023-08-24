@@ -9,13 +9,16 @@ simepi(df, b, sus, spark, num_inf, rep = 10)
 \arguments{
 \item{df}{individuals data frame from household data simulation}
 
-\item{b}{Spatial parameter(s) (>0) or network parameter (s) (>0) if contact network is used.}
+\item{b}{Spatial parameter(s) (>0) or network parameter (s) (>0)
+if contact network is used.}
 
 \item{sus}{Susceptibility parameter (>0)}
 
-\item{spark}{Sparks parameter (>=0), representing infections unexplained by other parts of the model.}
+\item{spark}{Sparks parameter (>=0), representing infections unexplained
+by other parts of the model.}
 
-\item{num_inf}{number of individuals that are infected initially in each catchment.}
+\item{num_inf}{number of individuals that are infected
+initially in each catchment.}
 
 \item{rep}{number of replications of epidemics, default is 10.}
 }
@@ -23,7 +26,8 @@ simepi(df, b, sus, spark, num_inf, rep = 10)
 List of simulated epidemics
 }
 \description{
-This function simulates epidemics under a Susceptible-Infectious-Removed (SIR) compartment framework. The time period for simulation is 270 days
+This function simulates epidemics under a Susceptible-Infectious-Removed
+(SIR) compartment framework. The time period for simulation is 270 days
 }
 \examples{
 #Simulate catchment data
@@ -34,7 +38,9 @@ elementary_df <- elementary_pop(catch_df, 0.5, 0.015)
 
 # Enters values for prompts from subpop_children() function
 f <- file()
-lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
+lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,
+              0.5857832, 0.3071523, 0.1070645,0.4976825)
+
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
 options("usr_con" = f) # set connection option
@@ -43,7 +49,9 @@ options("usr_con" = f) # set connection option
 house_children <- subpop_children(elementary_df, n = 2)
 
 # Enters values for prompts from subpop_nochildren() function
-lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
+lines <- c(0.23246269, 0.34281716, 0.16091418,
+            0.16427239, 0.09953358, 0.4277052)
+
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
 
@@ -57,6 +65,7 @@ options("usr_con" = stdin()) # reset connection option
 simulation <- simulate_households(house_children, house_nochildren)
 
 # simulate epidemic
-epidemic <- simepi(simulation$individual_sim, b=3, sus=.0019, spark=0, num_inf = 2, rep = 4)
+epidemic <- simepi(simulation$individual_sim, b=3, sus=.0019,
+                     spark=0, num_inf = 2, rep = 4)
 
 }
