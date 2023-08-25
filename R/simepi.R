@@ -80,6 +80,7 @@ simepi <- function(df, b, sus, spark, num_inf, rep = 10){
     # mean and standard deviation can change with infection types
     # infection period can also change
     start <- max(round(stats::rnorm(1, mean = 45, sd=15)), 20)
+
     first.inf[df$individualID %in% sample] <- start +
                  floor(stats::runif(num_inf*num_catchment, 0, 15))
 

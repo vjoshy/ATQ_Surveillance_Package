@@ -184,9 +184,11 @@ calc.metric.catchment <- function(lagdata, ScYr, yr.weights) {
       # catchment area during the given year
       if(is.infinite(refdate)){
         num.alarm <- sum(ScYr.data$Alarm)
+
         if(num.alarm > 0){ # assign values of 1 if alarms were raised
           FAR[y,c] <- ADD[y,c] <- AATQ[y,c]<- FATQ[y,c]<- 1
           ScYr.data$ATQ <- NA
+
         } else { # assign values of 0 if no alarms were raised
           FAR[y,c] <- ADD[y,c] <- AATQ[y,c]<- FATQ[y,c]<- 0
           ScYr.data$ATQ <- NA
@@ -261,6 +263,7 @@ calc.metric.region <- function(lagdata, ScYr, yr.weights) {
                       , ADD = ADD[y]
                       , AATQ = AATQ[y]
                       , FATQ = FATQ[y])
+
     daily.results <- rbind(daily.results, tmp)
   }
 
@@ -276,21 +279,26 @@ calc.metric.region <- function(lagdata, ScYr, yr.weights) {
 
 #### False alarm rate (FAR) ####
 calc.FAR <- function(data){
+
   TrueAlarm <- ifelse(data$window == 1 & data$Alarm == 1, 1, 0)
   FalseAlarm <- ifelse(data$window == 0 & data$Alarm == 1, 1, 0)
 
   num.true.alarm <- sum(TrueAlarm)
   num.false.alarm <-  sum(FalseAlarm)
-  FAR <- ifelse(num.true.alarm > 0
-                , num.false.alarm/(num.false.alarm + 1)
-                , 1)
+
+  FAR <- ifelse(num.true.alarm > 0,
+                num.false.alarm/(num.false.alarm + 1), 1)
+
   return(FAR)
 }
 
 #### Added Days Delayed (ADD) ####
 calc.ADD <- function(data){
+
   topt <- 14 # Optimal alarm day
+
   refdate <- suppressWarnings(min(data[data$ref.date == 1,"Date"]))
+
   TrueAlarm <- ifelse(data$window == 1 & data$Alarm == 1, 1, 0)
 
   first.true.alarm.date <- suppressWarnings(min(data[which(TrueAlarm == 1),
@@ -335,7 +343,9 @@ calc.ATQ <- function(data){
 
 #### Average Alarm Time Quality (AATQ) ####
 calc.AATQ <- function(data){
+
   AATQ <- mean(data$ATQ, na.rm = TRUE)
+
   if (is.na(AATQ)) AATQ <- 1 # If no alarms, then AATQ = 1 for that year
 
   return(AATQ)

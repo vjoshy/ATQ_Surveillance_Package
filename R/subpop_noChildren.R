@@ -66,7 +66,7 @@ subpop_noChildren <- function(df, df2){
 
   prop_house_Children <- scan(con, n = 1, what = double())
 
-  prop_house_size_nochildren <- c(prop_house_size[1]/(1-prop_house_Children)) # proportion households of size 1
+  prop_house_size_nochildren <- c(prop_house_size[1]/(1-prop_house_Children))
 
 
   # calculate proportion of households of sizes 2-5
