@@ -4,11 +4,12 @@
 #' and individuals data. Simulation can be performed at the regional
 #' or catchment level.
 #'
-#' @param epi.series simulated epidemic data frame
+#' @param epi.series Simulated epidemic data frame
 #'  (output from simepi() function)
-#' @param individual.data individuals data frame
+#' @param individual.data Simulated individuals data frame
 #' (output from simulate_households() function)
-#' @param  type type of analysis (regional or catchment)
+#' @param  type Type of analysis (regional or catchment)
+#' @param no.lags  Maximum number of lags, default = 16 (note that lag of zero 0 is included)
 #'
 #' @importFrom stats aggregate filter runif time
 #' @importFrom zoo rollapply
@@ -63,7 +64,7 @@
 #' # simulate laboratory confirmed cases, and school absenteeism data sets
 #' data <- model_data(epidemic, individuals, type = "r")
 #'
-model_data <- function(epi.series, individual.data, type = 'r'){
+model_data <- function(epi.series, individual.data, type = 'r', no.lags = 16){
 
   #catchment area datasets
   actual.cases.catch <- data.frame(time=c(), catchID = c(), case.no = c(),
@@ -135,7 +136,6 @@ model_data <- function(epi.series, individual.data, type = 'r'){
     absent.region <- rbind(absent.region, absent.merge)
   }
 
-  no.lags <- 16 # Maximum number of lags (note that lag0 is included)
 
   if(type == 'r'){
 

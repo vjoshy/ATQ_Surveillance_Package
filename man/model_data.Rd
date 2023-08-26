@@ -4,16 +4,18 @@
 \alias{model_data}
 \title{Simulate laboratory confirmed cases and school absenteeism data}
 \usage{
-model_data(epi.series, individual.data, type = "r")
+model_data(epi.series, individual.data, type = "r", no.lags = 16)
 }
 \arguments{
-\item{epi.series}{simulated epidemic data frame
+\item{epi.series}{Simulated epidemic data frame
 (output from simepi() function)}
 
-\item{individual.data}{individuals data frame
+\item{individual.data}{Simulated individuals data frame
 (output from simulate_households() function)}
 
-\item{type}{type of analysis (regional or catchment)}
+\item{type}{Type of analysis (regional or catchment)}
+
+\item{no.lags}{Maximum number of lags, default = 16 (note that lag of zero 0 is included)}
 }
 \value{
 returns data frame
