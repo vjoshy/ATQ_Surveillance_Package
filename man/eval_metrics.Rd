@@ -7,8 +7,9 @@
 eval_metrics(
   type = "r",
   lagdata,
-  ScYr,
-  yr.weights,
+  ScYr = c(2:10),
+  maxlag = 15,
+  yr.weights = c(1:9)/sum(c(1:9)),
   thres = seq(0.1, 0.6, by = 0.05)
 )
 }
@@ -20,6 +21,8 @@ Default is region-wide}
 
 \item{ScYr}{vector of all school years to be used for
 model evaluation (range of natural numbers)}
+
+\item{maxlag}{no. of maximum lags, default = 15}
 
 \item{yr.weights}{weights for WFATQ and WAATQ metrics}
 

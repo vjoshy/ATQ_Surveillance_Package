@@ -14,6 +14,7 @@
 #' @param yr.weights weights for WFATQ and WAATQ metrics
 #' @param thres thresholds evaluated,
 #' default value is a vector (seq(0.1,0.6,by = 0.05))
+#' @param maxlag no. of maximum lags, default = 15
 #'
 #' @importFrom stats as.formula glm predict
 #'
@@ -67,8 +68,8 @@
 #'                        type = "r", thres = seq(0.1,0.25,by = 0.05),
 #'                        ScYr = c(2:4), yr.weights = c(1:3)/sum(c(1:3)))
 #'
-eval_metrics <- function(type = "r", lagdata, ScYr,
-                         yr.weights, thres = seq(0.1,0.6,by = 0.05)){
+eval_metrics <- function(type = "r", lagdata, ScYr = c(2:10), maxlag = 15,
+                         yr.weights = c(1:9)/sum(c(1:9)), thres = seq(0.1,0.6,by = 0.05)){
 
   if(type == "r"){
     mod_resp <- (log_reg(lagdata, 15, area = "region"))$resp
@@ -76,14 +77,14 @@ eval_metrics <- function(type = "r", lagdata, ScYr,
     mod_resp <- (log_reg(lagdata, 15, area = "catchment"))$resp
   }
 
-  lags <- seq.int(1,15)
+  lags <- seq.int(1,maxlag)
 
   #subset data do evaluation years
   lagdata <- lagdata[lagdata$ScYr %in% ScYr,]
 
   # lists of lagdata so that you can compare with model responses
   # for each lag and year (also in list format)
-  lagdata <- rep(list(lagdata), length(lags))
+  lagdata <- rep(list(lagdata), length(thres))
 
   # Matrices of each metric to determine which lag and
   # threshold minimizes the respective metric
@@ -113,7 +114,7 @@ eval_metrics <- function(type = "r", lagdata, ScYr,
              type = r for region-wide models")
       }
 
-      #update lag and threshold metric matricies
+      #update lag and threshold metric matrices
       FAR.mat[i,t] <- performance.metric$FAR
       ADD.mat[i,t] <- performance.metric$ADD
       AATQ.mat[i,t] <- performance.metric$AATQ
