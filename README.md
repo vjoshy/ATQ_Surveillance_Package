@@ -3,11 +3,38 @@
 
 # ATQ: Assesing Evaluation Metrics for Timely Epidemic Detection Models
 
-The goal of ATQ is to provide accurate alert metrics for epidemics using
-school absenteeism data. This package will allow users to simulate
-school absenteeism, epidemics, and spread of people within a region
-using population proportions from census data. Using these simulated
-data, an optimal alert metric can be determined.
+## Background
+
+Madeline A. Ward published a
+[paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-019-7521-7)
+on methods for detecting seasonal influenza epidemics using school
+absenteeism data. The premise is that there is a school absenteeism
+surveillance system established in Wellington-Dufferin-Guelph which uses
+a threshold-based (10% of students absent) approach to raise alarms for
+school illness outbreaks to implement mitigating measures. Two metrics
+(FAR and ADD) are proposed in that study that were found to be more
+accurate.
+
+Based on the work of Madeline, in 2021 Kayla Vanderkruk along with Drs.
+Deeth and Feng wrote a
+[paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z)
+on improved metrics, namely ATQ (alert time quality), that are more
+accurate and timely than the FAR-selected models. This package is based
+off Kayla’s work that can be found
+[here](https://github.com/vanderkk/School_Abstenteeism_Based_Influenza_Surveillance_Simulation_Study).
+ATQ study assessed alarms on a gradient, where alarms were raised
+incrementally before or after an optimal date were penalized for lack of
+timeliness.
+
+This ATQ package will allow users to perform simulation studies and
+evaluate ATQ & FAR based metrics from them. The simulation study will
+require information from census data for a region such as distribution
+of number of household members, households with and without children,
+and age category, etc.
+
+This package is still a work in progress and future considerations
+include streamlining simulation study workflow and generalizing
+evaluation of metrics to include real data sets.
 
 ## Installation:
 
@@ -57,7 +84,7 @@ options("usr_con" = f) # set connection option
 
 # simulating households with children
 house_children <- subpop_children(elementary_df, n = 2)
-#> Please enter proportion of parents as a couple: Please enter proportion of coupled parents with 1, 2, 3+ children separated by space:Please enter proportion of single parents with 1, 2, 3+ children separated by space:Please enter proportion of children that are of elementary school age:
+#> Please enter proportion of parents as a couple: Enter proportion of coupled parents with 1, 2, 3+ children separated by space:Enter proportion of single parents with 1, 2, 3+ children separated by space:Please enter proportion of children that are of elementary school age:
 
 # Enters values for prompts from subpop_nochildren() function
 lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
@@ -86,18 +113,4 @@ data <- model_data(epidemic, individuals)
 # calculate and return metrics in a list
 region_metric <- eval_metrics(lagdata = data, type = "r", thres = seq(0.1,0.6,by = 0.05),
                                         ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
-```
-
-## Data
-
-ATQ contains example output data frames from each function. To view data
-and information about them run the following code:
-
-``` r
-
-#View all datasets 
-data(package = 'ATQ')
-
-#View help file on a dataframe
-?region
 ```
