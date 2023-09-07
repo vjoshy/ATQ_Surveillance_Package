@@ -100,3 +100,28 @@ region_metric <- eval_metrics(lagdata = data, type = "r", thres = seq(0.1,0.6,by
                                         ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
 ```
 
+The final output 'region_metric' will be a list of 6 matrices and 6 data frames. The matrices describe the values of metrics for respective lag and thresholds. 
+
+An optimal lag and threshold value that minimizes each metric is selected and these optimal parameters are used to generate the 6 data frames associated with the metrics. Simulated information like number of lab confirmed cases, number of students absent, etc, are included in the output.
+
+These data frames contain 19 variables and are as follows:
+
+\item lag, Best selected lagged absenteeism value.
+\item thres, Best selected threshold value.
+\item Data, Day (1-300).
+\item ScYr, School year.
+\item Actual.case, Total number of true cases (unconfirmed).
+\item case.elem, Number of true cases that are elementary school children.
+\item Case.No, Number of lab confirmed cases.
+\item Case, Binary variable to indicate whether there has been a lab confirmed case for the day.
+\item pct.absent, Percent of students absent in total school population.
+\item absent, Total number of students absent.
+\item absent.sick, Total number of students absent due to illness.
+\item window, 14 day true alarm window for ADD and FAR calculations (binary variable).
+\item ref.date, Reference date (first day where there are two lab confirmed cases in a 7 day period).
+\item Alarm, Binary variable indicating whether alarm was raised (1 - raised, 0 - not raised).
+\item ATQ, Alert time quality (metric).
+\item FAR, False alarm rate (metric).
+\item ADD, Accumulated days delayed (metric).
+\item AATQ, Average alarm time quality (metric).
+\item FATQ, First alarm time quality (metric).
