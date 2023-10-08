@@ -1,45 +1,20 @@
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # ATQ: Assesing Evaluation Metrics for Timely Epidemic Detection Models
 
 ## Background
 
-Madeline A. Ward published a
-[paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-019-7521-7)
-on methods for detecting seasonal influenza epidemics using school
-absenteeism data. The premise is that there is a school absenteeism
-surveillance system established in Wellington-Dufferin-Guelph which uses
-a threshold-based (10% of students absent) approach to raise alarms for
-school illness outbreaks to implement mitigating measures. Two metrics
-(FAR and ADD) are proposed in that study that were found to be more
-accurate.
+Madeline A. Ward published a [paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-019-7521-7) on methods for detecting seasonal influenza epidemics using school absenteeism data. The premise is that there is a school absenteeism surveillance system established in Wellington-Dufferin-Guelph which uses a threshold-based (10% of students absent) approach to raise alarms for school illness outbreaks to implement mitigating measures. Two metrics (FAR and ADD) are proposed in that study that were found to be more accurate.
 
-Based on the work of Madeline, in 2021 Kayla Vanderkruk along with Drs.
-Deeth and Feng wrote a
-[paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z)
-on improved metrics, namely ATQ (alert time quality), that are more
-accurate and timely than the FAR-selected models. This package is based
-off Kayla’s work that can be found
-[here](https://github.com/vanderkk/School_Abstenteeism_Based_Influenza_Surveillance_Simulation_Study).
-ATQ study assessed alarms on a gradient, where alarms were raised
-incrementally before or after an optimal date were penalized for lack of
-timeliness.
+Based on the work of Madeline, in 2021 Kayla Vanderkruk along with Drs. Deeth and Feng wrote a [paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z) on improved metrics, namely ATQ (alert time quality), that are more accurate and timely than the FAR-selected models. This package is based off Kayla's work that can be found [here](https://github.com/vanderkk/School_Abstenteeism_Based_Influenza_Surveillance_Simulation_Study). ATQ study assessed alarms on a gradient, where alarms were raised incrementally before or after an optimal date were penalized for lack of timeliness.
 
-This ATQ package will allow users to perform simulation studies and
-evaluate ATQ & FAR based metrics from them. The simulation study will
-require information from census data for a region such as distribution
-of number of household members, households with and without children,
-and age category, etc.
+This ATQ package will allow users to perform simulation studies and evaluate ATQ & FAR based metrics from them. The simulation study will require information from census data for a region such as distribution of number of household members, households with and without children, and age category, etc.
 
-This package is still a work in progress and future considerations
-include streamlining simulation study workflow and generalizing
-evaluation of metrics to include real data sets.
+This package is still a work in progress and future considerations include streamlining simulation study workflow and generalizing evaluation of metrics to include real data sets.
 
 ## Installation:
 
-You can install the development version of ATQ from
-[Github](https://github.com/vjoshy/ATQ_Surveillance_Package)
+You can install the development version of ATQ from [Github](https://github.com/vjoshy/ATQ_Surveillance_Package)
 
 ``` r
 #install.packages("devtools")
@@ -49,8 +24,7 @@ install_github("vjoshy/ATQ_Surveillance_Package")
 
 ## Usage
 
-ATQ contains eight funcions which are to be used sequentially in the
-following order:  
+ATQ contains eight funcions which are to be used sequentially in the following order:
 
 1.  catchment_sim()
 2.  elementary_pop()
@@ -61,8 +35,7 @@ following order:
 7.  model_data()
 8.  eval_metrics()
 
-The output data frame from the first function is to be used as input for
-the next function and so forth.
+The output data frame from the first function is to be used as input for the next function and so forth.
 
 Please see example below:
 
@@ -115,14 +88,28 @@ region_metric <- eval_metrics(lagdata = data, type = "r", thres = seq(0.1,0.6,by
                                         ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
 ```
 
-The final output ‘region_metric’ will be a list of 6 matrices and 6 data
-frames. The matrices describe the values of metrics for respective lag
-and thresholds.
+The final output 'region_metric' will be a list of 6 matrices and 6 data frames. The matrices describe the values of metrics for respective lag and thresholds.
 
-An optimal lag and threshold value that minimizes each metric is
-selected and these optimal parameters are used to generate the 6 data
-frames associated with the metrics. Simulated information like number of
-lab confirmed cases, number of students absent, etc, are included in the
-output.
+An optimal lag and threshold value that minimizes each metric is selected and these optimal parameters are used to generate the 6 data frames associated with the metrics. Simulated information like number of lab confirmed cases, number of students absent, etc, are included in the output.
 
 These data frames contain 19 variables and are as follows:
+
+-   lag, Best selected lagged absenteeism value.
+-   thres, Best selected threshold value.
+-   Data, Day (1-300).
+-   ScYr, School year.
+-   Actual.case, Total number of true cases (unconfirmed).
+-   case.elem, Number of true cases that are elementary school children.
+-   Case.No, Number of lab confirmed cases.
+-   Case, Binary variable to indicate whether there has been a lab confirmed case for the day.
+-   pct.absent, Percent of students absent in total school population.
+-   absent, Total number of students absent.
+-   absent.sick, Total number of students absent due to illness.
+-   window, 14 day true alarm window for ADD and FAR calculations (binary variable).
+-   ref.date, Reference date (first day where there are two lab confirmed cases in a 7 day period).
+-   Alarm, Binary variable indicating whether alarm was raised (1 - raised, 0 - not raised).
+-   ATQ, Alert time quality (metric).
+-   FAR, False alarm rate (metric).
+-   ADD, Accumulated days delayed (metric).
+-   AATQ, Average alarm time quality (metric).
+-   FATQ, First alarm time quality (metric).
