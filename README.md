@@ -126,27 +126,3 @@ lab confirmed cases, number of students absent, etc, are included in the
 output.
 
 These data frames contain 19 variables and are as follows:
-
-lag, Best selected lagged absenteeism value.
-thres, Best selected threshold value.
-Data, Day (1-300).
-ScYr, School year.
-Actual.case, Total number of true cases (unconfirmed).
-case.elem, Number of true cases that are elementary school children.
-Case.No, Number of lab confirmed cases.
-Case, Binary variable to indicate whether there has been a lab confirmed
-case for the day.
-pct.absent, Percent of students absent in total school population.
-absent, Total number of students absent.
-absent.sick, Total number of students absent due to illness.
-window, 14 day true alarm window for ADD and FAR calculations (binary
-variable).
-ref.date, Reference date (first day where there are two lab confirmed
-cases in a 7 day period).
-Alarm, Binary variable indicating whether alarm was raised (1 - raised,
-0 - not raised).
-ATQ, Alert time quality (metric).
-FAR, False alarm rate (metric).
-ADD, Accumulated days delayed (metric).
-AATQ, Average alarm time quality (metric).
-FATQ, First alarm time quality (metric).
