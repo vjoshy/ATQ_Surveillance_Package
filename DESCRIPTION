@@ -1,16 +1,14 @@
 Package: ATQ
 Title: Alert Time Quality - Evaluating Timely Epidemic Metrics
-Version: 0.0.0.9000
+Version: 0.1.0
 Date: 2023-10-07
 Authors@R: c(
     person("Vinay", "Joshy", email = "joshy@uoguelph.ca", role = c("aut", "cre")),
     person("Zeny", "Feng", email = "zfeng@uoguelph.ca", role = c("aut", "cph", "ths")),
     person("Lorna", "Deeth", email = "ldeeth@uoguelph.ca", role = c("aut", "cph", "ths")),
     person("Kayla", "Vanderkruk", email = "kayla.vanderkruk@gmail.com", role = c("aut", "com", "ctb")))
-Description: Alert time quality (ATQ) is an evaluation metric for assessing timely epidemic detection models within a school absenteeism-based surveillance system. 
-    Will allow users with population census data to simulate populations, epidemics, and alert metrics associated with epidemic spread. 
-    References: Vanderkruk et al. (2023) <doi:10.1186/s12889-023-15747-z>;
-    Ward et al. (2019) <doi:10.1186/s12889-019-7521-7>.
+Description: Alert time quality is an evaluation metric for assessing timely epidemic detection models within a school absenteeism-based surveillance system. Will allow users with population census data to simulate populations, epidemics and alert metrics associated with epidemic spread. 
+    References: <doi:10.1186/s12889-023-15747-z> , <doi:10.1186/s12889-019-7521-7>
 License: GPL (>= 3) + file LICENSE
 URL: https://github.com/vjoshy/ATQ_Surveillance_Package
 Encoding: UTF-8

@@ -67,10 +67,10 @@ simepi <- function(df, b, sus, spark, num_inf, rep = 10){
   for(i in 1:rep){
 
     #   Select individuals from each catchment area for initial infections.
-    #   Number of initial infections per catchment area = numinf.catch
+    #   Number of initial infections per catchment area = num_inf
     sample <- (df %>%
                  dplyr::group_by(catchID) %>%
-                 dplyr::slice_sample(n = 2))$individualID
+                 dplyr::slice_sample(n = num_inf))$individualID
 
     #   Set Initial infection time for the sampled individuals
     #   Start is the "epidemic start time"
@@ -80,6 +80,7 @@ simepi <- function(df, b, sus, spark, num_inf, rep = 10){
     # mean and standard deviation can change with infection types
     # infection period can also change
     start <- max(round(stats::rnorm(1, mean = 45, sd=15)), 20)
+
 
     first.inf[df$individualID %in% sample] <- start +
                  floor(stats::runif(num_inf*num_catchment, 0, 15))
@@ -93,8 +94,8 @@ simepi <- function(df, b, sus, spark, num_inf, rep = 10){
                    , sus.par= sus
                    , beta= b
                    , spark = spark
-                   , x=df$loc.x
-                   , y=df$loc.y
+                   , x=df$loc.x*2
+                   , y=df$loc.y*2
                    , inftime = first.inf
                    , infperiod=rep(4, nrow(df)))
 
@@ -112,8 +113,8 @@ simepi <- function(df, b, sus, spark, num_inf, rep = 10){
                      , sus.par= sus
                      , beta= b
                      , spark = spark
-                     , x=df$loc.x
-                     , y=df$loc.y
+                     , x=df$loc.x*2
+                     , y=df$loc.y*2
                      , inftime = first.inf
                      , infperiod=rep(4, nrow(df)))
     }

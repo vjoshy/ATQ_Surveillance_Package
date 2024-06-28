@@ -323,11 +323,11 @@ model_data <- function(epi.series, individual.data, type = 'r', no.lags = 16){
 
 sim.lab.confirm <- function(epidata, individual.data){
 
-  #combine dataframes to have individual and infection information
+  #combine data frames to have individual and infection information
   epidata.df <- cbind(individual.data, inftime = epidata$inftime,
                       remtime = epidata$remtime)
 
-  # Simulate labortoary case confirmation
+  # Simulate laboratory case confirmation
   #   0.5% chance that an infected individual will
   #   have a medical visit each day they are sick (4 days)
   lab.unif <- runif(length(epidata$inftime))
@@ -423,11 +423,11 @@ sim.absent <- function(epidata, individual.data){
   return(time.absent)
 }
 
-#### Total Infulenza Case Data (including non-lab confirmed cases) ####
+#### Total Influenza Case Data (including non-lab confirmed cases) ####
 # Output: The number of influenza cases each day, per catchment area
-# Note: This includes cases that were not laboraotry confirmed.
+# Note: This includes cases that were not laboratory confirmed.
 #   This is not required for modelling, but can provide useful information.
-# Input: simulated epidemic, indiviudal information
+# Input: simulated epidemic, individual information
 
 sim.actual.case <- function(epidata, individual.data){
 
