@@ -7,8 +7,7 @@ Authors@R: c(
     person("Zeny", "Feng", email = "zfeng@uoguelph.ca", role = c("aut", "cph", "ths")),
     person("Lorna", "Deeth", email = "ldeeth@uoguelph.ca", role = c("aut", "cph", "ths")),
     person("Kayla", "Vanderkruk", email = "kayla.vanderkruk@gmail.com", role = c("aut", "com", "ctb")))
-Description: Alert time quality is an evaluation metric for assessing timely epidemic detection models within a school absenteeism-based surveillance system. Will allow users with population census data to simulate populations, epidemics and alert metrics associated with epidemic spread. 
-    References: <doi:10.1186/s12889-023-15747-z> , <doi:10.1186/s12889-019-7521-7>
+Description: This package provides tools for evaluating timely epidemic detection models within a school absenteeism-based surveillance system. It introduces the concept of alert time quality as an evaluation metric. Users can simulate populations, epidemics, and alert metrics associated with epidemic spread using population census data. The methods implemented in this package are based on research published in the following papers: <doi:10.1186/s12889-023-15747-z> and <doi:10.1186/s12889-019-7521-7>.    References: <doi:10.1186/s12889-023-15747-z> , <doi:10.1186/s12889-019-7521-7>
 License: GPL (>= 3) + file LICENSE
 URL: https://github.com/vjoshy/ATQ_Surveillance_Package
 Encoding: UTF-8
@@ -19,7 +18,10 @@ Suggests:
 Config/testthat/edition: 3
 Imports: 
     dplyr,
-    EpiILM, zoo
+    EpiILM,
+    zoo,
+    ggplot2,
+    gridExtra
 Depends: 
     R (>= 2.10)
 LazyData: true
