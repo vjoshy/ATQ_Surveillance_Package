@@ -24,7 +24,7 @@
 #'   If rep > 1, returns an object of class "ssir_epidemic_multi" containing
 #'   multiple simulation results.
 #'
-#' @import stats
+#' @importFrom stats rnorm runif rbinom rexp
 #' @import utils
 #'
 #' @export
