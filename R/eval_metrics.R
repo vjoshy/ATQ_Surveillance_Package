@@ -90,7 +90,7 @@ eval_metrics <- function(type = "r", lagdata, ScYr = c(2:10), maxlag = 15,
   # threshold minimizes the respective metric
   modmat <- matrix(nrow = length(lags), ncol = length(thres),
                    dimnames = list(paste("Lag", lags),
-                                     c(paste("thres", thres))))
+                                   c(paste("thres", thres))))
 
   FAR.mat <- ADD.mat <- AATQ.mat <- FATQ.mat <- WAATQ.mat <- WFATQ.mat <- modmat
   daily.results <- data.frame() # detailed daily data for output
@@ -145,17 +145,17 @@ eval_metrics <- function(type = "r", lagdata, ScYr = c(2:10), maxlag = 15,
                          daily.results = daily.results)
 
   return(list("FAR" = FAR.mat
-           , "ADD" = ADD.mat
-           , "AATQ" = AATQ.mat
-           , "FATQ" = FATQ.mat
-           , "WAATQ" = WAATQ.mat
-           , "WFATQ" = WFATQ.mat
-           , "best.AATQ" = best.AATQ
-           , "best.FATQ" = best.FATQ
-           , "best.FAR" = best.FAR
-           , "best.ADD" = best.ADD
-           , "best.WFATQ" = best.WFATQ
-           , "best.WAATQ" = best.WAATQ))
+              , "ADD" = ADD.mat
+              , "AATQ" = AATQ.mat
+              , "FATQ" = FATQ.mat
+              , "WAATQ" = WAATQ.mat
+              , "WFATQ" = WFATQ.mat
+              , "best.AATQ" = best.AATQ
+              , "best.FATQ" = best.FATQ
+              , "best.FAR" = best.FAR
+              , "best.ADD" = best.ADD
+              , "best.WFATQ" = best.WFATQ
+              , "best.WAATQ" = best.WAATQ))
 }
 
 #### Catchment Area Alarm - metric calculation ####
@@ -172,10 +172,10 @@ calc.metric.catchment <- function(lagdata, ScYr, yr.weights) {
     for(y in seq_along(ScYr)){
 
       ScYr.data <- lagdata[which(lagdata$catchID == allcatchment[c] &
-                      lagdata$ScYr == ScYr[y]),c("Date", "catchID", "ScYr",
-                         "Actual.case", "case.elem", "Case.No", "Case",
-                         "pct.absent", "absent","absent.sick",  "window",
-                         "ref.date", "Alarm")]
+                                   lagdata$ScYr == ScYr[y]),c("Date", "catchID", "ScYr",
+                                                              "Actual.case", "case.elem", "Case.No", "Case",
+                                                              "pct.absent", "absent","absent.sick",  "window",
+                                                              "ref.date", "Alarm")]
 
       # beginning of influenza season date
       refdate <- suppressWarnings(min(ScYr.data[ScYr.data$ref.date == 1,
@@ -335,7 +335,7 @@ calc.ATQ <- function(data){
   #calculate ATQ values for every day
   ATQ <- ifelse(OptDateDiff < 0,ifelse((abs(OptDateDiff)/denom)^fa.pow > 1,1,
                                        (abs(OptDateDiff)/denom)^fa.pow),
-                                        (abs(OptDateDiff)/denom)^ta.pow)
+                (abs(OptDateDiff)/denom)^ta.pow)
 
   ATQ <- ifelse(data$Alarm == 1, ATQ, NA) # if no alarm raised, NA
 
@@ -446,6 +446,5 @@ log_reg <- function(lagdata, maxlag = 15, area = "region"){
 
   return(list(mod = mod, resp = resp))
 }
-
 
 
