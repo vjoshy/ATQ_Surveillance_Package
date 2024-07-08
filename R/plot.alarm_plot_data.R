@@ -17,24 +17,33 @@
 #'
 #' @examples
 #' # Generate sample data
-#' set.seed(123)
-#' sample_data <- data.frame(
-#'   Date = rep(1:300, 3),
-#'   ScYr = rep(1:3, each = 300),
-#'   pct_absent = runif(900, 0, 0.1),
-#'   lab_conf = rpois(900, lambda = 5),
-#'   ref_date = rep(c(rep(0, 299), 1), 3),
-#'   Case = rbinom(900, 1, 0.1),
-#'   window = rep(c(rep(0, 280), rep(1, 20)), 3)
+#' # Generate simulated epidemic data
+#' n_rows <- 7421
+#' n_houses <- 1000
+#'
+#' epidemic_new <- ssir(n_rows, T = 300, alpha =0.298, inf_init = 32, rep = 3)
+#'
+#'  individual_data <- data.frame(
+#' houseID = rep(1:n_houses, each = ceiling(n_rows / n_houses))[1:n_rows],
+#' catchID = sample(1:10, n_rows, replace = TRUE),
+#' schoolID = sample(1:10, n_rows, replace = TRUE),
+#' num_people = round(rnorm(n_rows, mean = 4, sd = 1)),  # Normal distribution for num_people
+#' num_elem_child = round(rnorm(n_rows, mean = 1, sd = 1)),  # Normal distribution for num_elem_child
+#' xStart = 0,
+#' xEnd = 5,
+#' yStart = 0,
+#' yEnd = 5,
+#' loc.x = rnorm(n_rows, mean = 2.5, sd = 1),  # Normal distribution for loc.x
+#' loc.y = rnorm(n_rows, mean = 2.5, sd = 1),  # Normal distribution for loc.y
+#' individualID = 1:n_rows,
+#' elem_child_ind = sample(0:1, n_rows, replace = TRUE)
 #' )
 #'
-#' # Add necessary lagged variables
-#' for(i in 0:15) {
-#'   sample_data[paste0("lag", i)] <- c(rep(NA, i), head(sample_data$pct_absent, -i))
-#' }
+#' compiled_data <- compile_epi(epidemic_new, individual_data)
 #'
-#' # Run eval_alarm_metrics
-#' results <- eval_alarm_metrics(sample_data, ScYr = 1:3)
+#' # Evaluate alarm metrics
+#' results <- eval_metrics(compiled_data, thres = seq(0.1,0.6,by = 0.05),
+#'                   ScYr = c(2:3), yr.weights = c(1:2)/sum(c(1:2)))
 #'
 #' # Generate plots
 #' plots <- plot(results$plot_data)

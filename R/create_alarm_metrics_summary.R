@@ -94,21 +94,10 @@ create_alarm_metrics_summary <- function(metrics, best_models, epidemic_data) {
   names(best_values) <- metric_names
   epidemic_years <- unique(epidemic_data$ScYr)
 
-  # Debug prints
-  print("Epidemic years:")
-  print(epidemic_years)
-
-  print("Structure of epidemic_data:")
-  str(epidemic_data)
-
-  print("Structure of a best model (e.g., FAR):")
-  str(best_models$best.FAR)
-
   # Extract reference dates and best prediction dates
   ref_dates <- sapply(epidemic_years, function(year) {
     dates <- epidemic_data$Date[epidemic_data$ScYr == year & epidemic_data$ref_date == 1]
-    print(paste("Ref dates for year", year, ":"))
-    print(dates)
+
     if(length(dates) > 0) min(dates) else NA
   })
 
@@ -116,8 +105,7 @@ create_alarm_metrics_summary <- function(metrics, best_models, epidemic_data) {
     sapply(epidemic_years, function(year) {
       best_model <- best_models[[paste0("best.", metric)]]
       dates <- best_model$Date[best_model$ScYr == year & best_model$Alarm == 1]
-      print(paste("Best prediction dates for", metric, "year", year, ":"))
-      print(dates)
+
       if(length(dates) > 0) min(dates) else NA
     })
   })

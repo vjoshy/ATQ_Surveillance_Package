@@ -1,89 +1,123 @@
-#' Calculate evaluation metrics for lag, threshold, and yearly model
+#' Evaluate Alarm Metrics for Epidemic Models
 #'
-#' Evaluates alarm metrics using lab confirmed cases and absenteeism data.
-#' Metrics can be evaluated at the regional and catchment level.
-#' Metrics include ADD, FAR, ATQ, AATQ, FATQ, WATQ and WFATQ.
-#' Optimal lag and thresholds will be selected so
-#' as to minimize values of metrics.
+#' This function calculates various performance metrics for epidemic alarm systems
+#' across different lags and thresholds. It evaluates False Alarm Rate (FAR),
+#' Added Days Delayed (ADD), Average Alarm Time Quality (AATQ), First Alarm Time
+#' Quality (FATQ), and their weighted versions (WAATQ, WFATQ).
 #'
-#' @param type 'c' for catchment area models, 'r' for region-wide models.
-#' Default is region-wide
-#' @param lagdata data with lab confirmed cases and absenteeism data
-#' @param ScYr vector of all school years to be used for
-#' model evaluation (range of natural numbers)
-#' @param yr.weights weights for WFATQ and WAATQ metrics
-#' @param thres thresholds evaluated,
-#' default value is a vector (seq(0.1,0.6,by = 0.05))
-#' @param maxlag no. of maximum lags, default = 15
+#' @param data A data frame containing the epidemic data with lagged variables,
+#'             typically output from the compile_epi function.
+#' @param ScYr A vector of school years to be used for model evaluation (default: 2:10).
+#' @param maxlag The maximum number of lags to consider (default: 15).
+#' @param yr.weights Weights for calculating WFATQ and WAATQ metrics (default: (1:9)/sum(1:9)).
+#' @param thres A vector of threshold values to evaluate (default: seq(0.1, 0.6, by = 0.05)).
+#'
+#' @return A list containing three elements:
+#'   \item{metrics}{An object of class "alarm_metrics" with the following components:
+#'     \itemize{
+#'       \item FAR: Matrix of False Alarm Rates for each lag and threshold
+#'       \item ADD: Matrix of Added Days Delayed for each lag and threshold
+#'       \item AATQ: Matrix of Average Alarm Time Quality for each lag and threshold
+#'       \item FATQ: Matrix of First Alarm Time Quality for each lag and threshold
+#'       \item WAATQ: Matrix of Weighted Average Alarm Time Quality for each lag and threshold
+#'       \item WFATQ: Matrix of Weighted First Alarm Time Quality for each lag and threshold
+#'       \item best.AATQ: Best model according to AATQ
+#'       \item best.FATQ: Best model according to FATQ
+#'       \item best.FAR: Best model according to FAR
+#'       \item best.ADD: Best model according to ADD
+#'       \item best.WFATQ: Best model according to WFATQ
+#'       \item best.WAATQ: Best model according to WAATQ
+#'     }
+#'   }
+#'   \item{plot_data}{An object of class "alarm_plot_data" for generating plots}
+#'   \item{summary}{An object of class "alarm_metrics_summary" containing summary statistics}
 #'
 #' @importFrom stats as.formula glm predict
 #'
-#' @return List of matrices for FAR, ADD, AATQ, FATQ, WAATQ, WFATQ
 #' @export
 #'
 #' @examples
-#' #Simulate catchment data
-#' catch_df <- catchment_sim(4, 1.2, 3.01, 5)
+#' # Generate simulated epidemic data
+#' n_rows <- 7421
+#' n_houses <- 1000
 #'
-#' #simulate elementary schools for each area
-#' elementary_df <- elementary_pop(catch_df, 0.4, 0.008)
+#' epidemic_new <- ssir(n_rows, T = 300, alpha = 0.298, inf_init = 32, rep = 3)
 #'
-#' # Enters values for prompts from subpop_children() function
-#' f <- file()
-#' lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,
-#'             0.5857832, 0.3071523, 0.1070645,0.4976825)
+#' individual_data <- data.frame(
+#'   houseID = rep(1:n_houses, each = ceiling(n_rows / n_houses))[1:n_rows],
+#'   catchID = sample(1:10, n_rows, replace = TRUE),
+#'   schoolID = sample(1:10, n_rows, replace = TRUE),
+#'   num_people = round(rnorm(n_rows, mean = 4, sd = 1)),
+#'   num_elem_child = round(rnorm(n_rows, mean = 1, sd = 1)),
+#'   xStart = 0,
+#'   xEnd = 5,
+#'   yStart = 0,
+#'   yEnd = 5,
+#'   loc.x = rnorm(n_rows, mean = 2.5, sd = 1),
+#'   loc.y = rnorm(n_rows, mean = 2.5, sd = 1),
+#'   individualID = 1:n_rows,
+#'   elem_child_ind = sample(0:1, n_rows, replace = TRUE)
+#' )
 #'
-#' ans <- paste(lines, collapse = "\n")
-#' write(ans, f)
-#' options("usr_con" = f) # set connection option
+#' compiled_data <- compile_epi(epidemic_new, individual_data)
 #'
-#' # simulating households without children
-#' house_children <- subpop_children(elementary_df, n = 2)
+#' # Evaluate alarm metrics
+#' alarm_metrics <- eval_metrics(compiled_data,
+#'                               thres = seq(0.1, 0.6, by = 0.05),
+#'                               ScYr = c(2:3),
+#'                               yr.weights = c(1:2)/sum(c(1:2)))
 #'
-#' # Enters values for prompts from subpop_nochildren() function
-#' lines <- c(0.23246269, 0.34281716, 0.16091418,
-#'               0.16427239, 0.09953358, 0.4277052)
+#' # Access the results
+#' print(alarm_metrics$metrics)
+#' plot(alarm_metrics$plot_data)
+#' summary(alarm_metrics$summary)
 #'
-#' ans <- paste(lines, collapse = "\n")
-#' write(ans, f)
+#' @seealso \code{\link{ssir}}, \code{\link{compile_epi}}
 #'
-#' # simulate households and individuals data
-#' house_nochildren <- subpop_noChildren(house_children, elementary_df)
 #'
-#' close(f) # close the file
-#' options("usr_con" = stdin()) # reset connection option
-#'
-#' # simulate households and individuals data
-#' simulation <- simulate_households(house_children, house_nochildren)
-#'
-#' # simulate epidemic
-#' epidemic <- simepi(simulation$individual_sim, b=3, sus=.0019,
-#'                      spark=0, num_inf = 2, rep = 4)
-#'
-#' # simulate laboratory confirmed cases, and school absenteeism data sets
-#' data <- model_data(epidemic, simulation$individual_sim, type = "r")
-#'
-#' # calculate and return metrics in a list
-#' region_metric <- eval_metrics(lagdata = data,
-#'                        type = "r", thres = seq(0.1,0.25,by = 0.05),
-#'                        ScYr = c(2:4), yr.weights = c(1:3)/sum(c(1:3)))
-#'
-eval_metrics <- function(type = "r", lagdata, ScYr = c(2:10), maxlag = 15,
-                         yr.weights = c(1:9)/sum(c(1:9)), thres = seq(0.1,0.6,by = 0.05)){
+eval_metrics <- function(data, ScYr = c(2:10), maxlag = 15,
+                               yr.weights = c(1:9)/sum(c(1:9)), thres = seq(0.1,0.6,by = 0.05)){
 
-  if(type == "r"){
-    mod_resp <- (log_reg(lagdata, 15, area = "region"))$resp
-  } else {
-    mod_resp <- (log_reg(lagdata, 15, area = "catchment"))$resp
+
+  # Input validation
+  if (!is.data.frame(data)) {
+    stop("data must be a data frame")
   }
+
+  required_cols <- c("ScYr", "Date", "Case", "window", "ref_date")
+  missing_cols <- setdiff(required_cols, names(data))
+  if (length(missing_cols) > 0) {
+    stop(paste("data is missing required columns:", paste(missing_cols, collapse = ", ")))
+  }
+
+  if (!is.numeric(ScYr) || any(ScYr %% 1 != 0) || any(ScYr < 1)) {
+    stop("ScYr must be a vector of positive integers")
+  }
+
+  if (!is.numeric(maxlag) || maxlag < 1) {
+    stop("maxlag must be a positive integer")
+  }
+
+  if (!is.numeric(yr.weights) || any(yr.weights < 0) || length(yr.weights) != length(ScYr)) {
+    stop("yr.weights must be a numeric vector of non-negative values with the same length as ScYr")
+  }
+
+  if (!is.numeric(thres) || any(thres < 0) || any(thres > 1)) {
+    stop("thres must be a numeric vector with values between 0 and 1")
+  }
+
+
+  mod_resp <- (log_reg(data, 15, area = "region"))$resp
 
   lags <- seq.int(1,maxlag)
 
   #subset data do evaluation years
-  lagdata <- lagdata[lagdata$ScYr %in% ScYr,]
+  lagdata <- data[data$ScYr %in% ScYr,]
 
-  # lists of lagdata so that you can compare with model responses
-  # for each lag and year (also in list format)
+  if (nrow(lagdata) == 0) {
+    stop("No data left after filtering for specified ScYr values")
+  }
+
   lagdata <- rep(list(lagdata), length(thres))
 
   # Matrices of each metric to determine which lag and
@@ -95,24 +129,27 @@ eval_metrics <- function(type = "r", lagdata, ScYr = c(2:10), maxlag = 15,
   FAR.mat <- ADD.mat <- AATQ.mat <- FATQ.mat <- WAATQ.mat <- WFATQ.mat <- modmat
   daily.results <- data.frame() # detailed daily data for output
 
-  # For each lag model, and threshold value, calculate evaluation metrics
   for(i in seq_along(lags)){
-    for(t in seq_along(thres)){
-      # Determine if alarm was raised based on threshold
-      # (if predicted probability > threshold ==> alarm raised)
-      lagdata[[t]]$Alarm <- ifelse(mod_resp[[i]]$resp > thres[t], 1,0)
 
-      # Calculate performance metrics
-      if(type == "c"){ #catchment area
-        performance.metric <- calc.metric.catchment(lagdata[[t]],
-                                                    ScYr, yr.weights)
-      } else if(type == "r") { # region wide model
-        performance.metric <- calc.metric.region(lagdata[[t]],
-                                                 ScYr, yr.weights)
-      } else {
-        stop("type = c for cathcment area models,
-             type = r for region-wide models")
+    for(t in seq_along(thres)){
+
+      combined_resp <- do.call(rbind, mod_resp[[i]][ScYr])
+
+
+      if(is.null(combined_resp) || nrow(combined_resp) == 0) {
+        stop("combined_resp is empty. Check mod_resp structure and ScYr values.")
       }
+
+      if(nrow(combined_resp) != nrow(lagdata[[t]])) {
+        stop(paste("Mismatch in dimensions: combined_resp has", nrow(combined_resp), "rows,
+                     lagdata has", nrow(lagdata[[t]]), "rows"))
+      }
+
+      lagdata[[t]]$Alarm <- ifelse(combined_resp$resp > thres[t], 1, 0)
+
+      # calculate metrics
+      performance.metric <- calc.metric.region(lagdata[[t]],
+                                               ScYr, yr.weights)
 
       #update lag and threshold metric matrices
       FAR.mat[i,t] <- performance.metric$FAR
@@ -130,6 +167,7 @@ eval_metrics <- function(type = "r", lagdata, ScYr = c(2:10), maxlag = 15,
     }
   }
 
+
   #output selected models according to each metric
   best.FAR <- best.mod(FAR.mat, lags = lags, thres = thres,
                        daily.results = daily.results)
@@ -144,90 +182,42 @@ eval_metrics <- function(type = "r", lagdata, ScYr = c(2:10), maxlag = 15,
   best.WFATQ <- best.mod(WFATQ.mat, lags = lags, thres = thres,
                          daily.results = daily.results)
 
-  return(list("FAR" = FAR.mat
-              , "ADD" = ADD.mat
-              , "AATQ" = AATQ.mat
-              , "FATQ" = FATQ.mat
-              , "WAATQ" = WAATQ.mat
-              , "WFATQ" = WFATQ.mat
-              , "best.AATQ" = best.AATQ
-              , "best.FATQ" = best.FATQ
-              , "best.FAR" = best.FAR
-              , "best.ADD" = best.ADD
-              , "best.WFATQ" = best.WFATQ
-              , "best.WAATQ" = best.WAATQ))
+  result <- list(
+    "FAR" = FAR.mat,
+    "ADD" = ADD.mat,
+    "AATQ" = AATQ.mat,
+    "FATQ" = FATQ.mat,
+    "WAATQ" = WAATQ.mat,
+    "WFATQ" = WFATQ.mat,
+    "best.AATQ" = best_model(best.AATQ),
+    "best.FATQ" = best_model(best.FATQ),
+    "best.FAR" = best_model(best.FAR),
+    "best.ADD" = best_model(best.ADD),
+    "best.WFATQ" = best_model(best.WFATQ),
+    "best.WAATQ" = best_model(best.WAATQ)
+  )
+
+  metrics <- alarm_metrics(result)
+
+  # Create alarm_plot_data object
+  plot_data <- alarm_plot_data(
+    epidemic_data = lagdata,
+    best_models = list(
+      "AATQ" = best.AATQ,
+      "FATQ" = best.FATQ,
+      "FAR" = best.FAR,
+      "ADD" = best.ADD,
+      "WFATQ" = best.WFATQ,
+      "WAATQ" = best.WAATQ
+    )
+  )
+
+  summary <- create_alarm_metrics_summary(metrics, result, data)
+
+  list(metrics = metrics, plot_data = plot_data, summary = summary)
 }
 
-#### Catchment Area Alarm - metric calculation ####
-calc.metric.catchment <- function(lagdata, ScYr, yr.weights) {
 
-  allcatchment <- unique(lagdata$catchID)
-  daily.results <- data.frame()
-  FAR <- ADD <- AATQ <- FATQ <-  matrix(nrow=length(ScYr)
-                                        , ncol=length(allcatchment)
-                                        , dimnames = list(ScYr, allcatchment))
-
-  # for each catchment area and school year, calculate evaluation metrics
-  for(c in seq_along(allcatchment)){
-    for(y in seq_along(ScYr)){
-
-      ScYr.data <- lagdata[which(lagdata$catchID == allcatchment[c] &
-                                   lagdata$ScYr == ScYr[y]),c("Date", "catchID", "ScYr",
-                                                              "Actual.case", "case.elem", "Case.No", "Case",
-                                                              "pct.absent", "absent","absent.sick",  "window",
-                                                              "ref.date", "Alarm")]
-
-      # beginning of influenza season date
-      refdate <- suppressWarnings(min(ScYr.data[ScYr.data$ref.date == 1,
-                                                "Date"]))
-
-      # Metric values if no reference date was defined in this
-      # catchment area during the given year
-      if(is.infinite(refdate)){
-        num.alarm <- sum(ScYr.data$Alarm)
-
-        if(num.alarm > 0){ # assign values of 1 if alarms were raised
-          FAR[y,c] <- ADD[y,c] <- AATQ[y,c]<- FATQ[y,c]<- 1
-          ScYr.data$ATQ <- NA
-
-        } else { # assign values of 0 if no alarms were raised
-          FAR[y,c] <- ADD[y,c] <- AATQ[y,c]<- FATQ[y,c]<- 0
-          ScYr.data$ATQ <- NA
-        }
-        # If a reference date was defined in this catchment area
-        # during the given year, proceed normally
-      } else {
-
-        # only consider alarms prior to the reference date
-        ScYr.data <- ScYr.data[ScYr.data$Date <= refdate,]
-
-        #calculate evaluation metrics
-        FAR[y,c] <- calc.FAR(ScYr.data)
-        ADD[y,c] <- calc.ADD(ScYr.data)
-
-        ScYr.data$ATQ <- calc.ATQ(ScYr.data)
-        AATQ[y,c] <- calc.AATQ(ScYr.data)
-        FATQ[y,c] <- calc.FATQ(ScYr.data)
-      }
-
-      # Output detailed result
-      tmp <- data.frame(ScYr.data
-                        , FAR = FAR[y,c]
-                        , ADD = ADD[y,c]
-                        , AATQ = AATQ[y,c]
-                        , FATQ = FATQ[y,c])
-      daily.results <- rbind(daily.results, tmp)
-    }
-  }
-  # Mean of catchment area metrics for each year
-  return(list("ADD" = mean(ADD)
-              , "FAR" = mean(FAR)
-              , "AATQ" = mean(rowMeans(AATQ))
-              , "FATQ" = mean(rowMeans(FATQ))
-              , "WAATQ" = sum(rowMeans(AATQ) * yr.weights)
-              , "WFATQ" = sum(rowMeans(FATQ) * yr.weights)
-              , "daily.results" = daily.results))
-}
 
 #### Region-Wide Alarm - metric calculation ####
 calc.metric.region <- function(lagdata, ScYr, yr.weights) {
@@ -241,12 +231,12 @@ calc.metric.region <- function(lagdata, ScYr, yr.weights) {
 
     #subset data
     ScYr.data <- lagdata[lagdata$ScYr == ScYr[y],
-                         c("Date", "ScYr", "Actual.case", "case.elem",
-                           "Case.No", "Case", "pct.absent", "absent",
-                           "absent.sick",  "window", "ref.date", "Alarm")]
+                         c("Date", "ScYr", "new_inf",
+                           "lab_conf", "Case", "pct_absent", "absent",
+                           "absent_sick",  "window", "ref_date", "Alarm")]
 
     # Reference date
-    refdate <- suppressWarnings(min(ScYr.data[ScYr.data$ref.date == 1,"Date"]))
+    refdate <- suppressWarnings(min(ScYr.data[ScYr.data$ref_date == 1,"Date"]))
 
     # only consider alarms prior to the reference date
     ScYr.data <- ScYr.data[ScYr.data$Date <= refdate,]
@@ -298,7 +288,7 @@ calc.ADD <- function(data){
 
   topt <- 14 # Optimal alarm day
 
-  refdate <- suppressWarnings(min(data[data$ref.date == 1,"Date"]))
+  refdate <- suppressWarnings(min(data[data$ref_date == 1,"Date"]))
 
   TrueAlarm <- ifelse(data$window == 1 & data$Alarm == 1, 1, 0)
 
@@ -328,7 +318,7 @@ calc.ATQ <- function(data){
   fa.pow <- 2
   denom <- 21
 
-  refdate <- suppressWarnings(min(data[data$ref.date == 1,"Date"]))
+  refdate <- suppressWarnings(min(data[data$ref_date == 1,"Date"]))
   RefDateDiff <- as.numeric(refdate - data$Date)
   OptDateDiff <- topt - RefDateDiff
 
@@ -385,66 +375,32 @@ best.mod <- function(mat, lags = lags, thres = thres,
 
 #### Logistic regression model fitting function for simulated data ####
 log_reg <- function(lagdata, maxlag = 15, area = "region"){
-
-
   lags <- seq.int(1, maxlag)
+  forms <- lapply(0:maxlag, function(lag) {
+    lag_formula <- as.formula(paste("Case ~ sinterm + costerm +",
+                                    paste0("lag", 0:lag, collapse = "+")))
+    return(lag_formula)
+  })
 
-  # creates list of regression formulas for each iteration of
-  # lagged value from 0 to 15
-  if(area == "catchment"){
-    forms <- lapply(0:maxlag, function(lag) {
-      lag_formula <- as.formula(paste("Case ~ catchID + sinterm + costerm +",
-                                      paste0("lag", 0:lag, collapse = "+")))
-      return(lag_formula)
-    })
-  } else {
-    forms <- lapply(0:maxlag, function(lag) {
-      lag_formula <- as.formula(paste("Case ~ sinterm + costerm +",
-                                      paste0("lag", 0:lag, collapse = "+")))
-      return(lag_formula)
-    })
-  }
-
-
-  # Create lists of training and prediction datasets
-  # Training datasets - each year uses all data that
-  # temporally preceded that year
   train <- list()
   pred <- list()
-
-  # no predictions for the first year, it is only used for model training
   for(yr in unique(lagdata$ScYr)[-1]){
     train[[yr]] <- lagdata[lagdata$ScYr < yr,]
     pred[[yr]] <- lagdata[which(lagdata$ScYr == yr),]
   }
 
-  # Fit a model for each lag value and each year, then predict response
   mod <- rep(list(list()), length(lags))
-  resp <- list()
+  resp <- rep(list(list()), length(lags))
 
   for(i in seq_along(lags)){
-
-    # remove the first year since it was only used for training
     for(yr in unique(lagdata$ScYr)[-1]){
-
-      # train model
       mod[[i]][[yr]] <- suppressWarnings(glm(forms[[i]], data = train[[yr]],
                                              family = "binomial"))
-
-      # predict
-      tmp.resp <- data.frame(resp = predict(mod[[i]][[yr]], pred[[yr]],
-                                            type = "response"))
-
-      #fixes error if trying to rbind() first element in list
-      if(yr == unique(lagdata$ScYr)[2]){
-        resp[[i]] <- tmp.resp
-      } else {
-        resp[[i]] <- rbind(resp[[i]], tmp.resp)
-      }
+      resp[[i]][[yr]] <- data.frame(resp = predict(mod[[i]][[yr]], pred[[yr]],
+                                                   type = "response"))
     }
   }
 
   return(list(mod = mod, resp = resp))
 }
-
 

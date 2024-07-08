@@ -2,11 +2,10 @@
 % Please edit documentation in R/eval_metrics.R
 \name{eval_metrics}
 \alias{eval_metrics}
-\title{Calculate evaluation metrics for lag, threshold, and yearly model}
+\title{Evaluate Alarm Metrics for Epidemic Models}
 \usage{
 eval_metrics(
-  type = "r",
-  lagdata,
+  data,
   ScYr = c(2:10),
   maxlag = 15,
   yr.weights = c(1:9)/sum(c(1:9)),
@@ -14,76 +13,69 @@ eval_metrics(
 )
 }
 \arguments{
-\item{type}{'c' for catchment area models, 'r' for region-wide models.
-Default is region-wide}
+\item{data}{A data frame containing the epidemic data with lagged variables,
+typically output from the compile_epi function.}
 
-\item{lagdata}{data with lab confirmed cases and absenteeism data}
+\item{ScYr}{A vector of school years to be used for model evaluation (default: 2:10).}
 
-\item{ScYr}{vector of all school years to be used for
-model evaluation (range of natural numbers)}
+\item{maxlag}{The maximum number of lags to consider (default: 15).}
 
-\item{maxlag}{no. of maximum lags, default = 15}
+\item{yr.weights}{Weights for calculating WFATQ and WAATQ metrics (default: (1:9)/sum(1:9)).}
 
-\item{yr.weights}{weights for WFATQ and WAATQ metrics}
-
-\item{thres}{thresholds evaluated,
-default value is a vector (seq(0.1,0.6,by = 0.05))}
+\item{thres}{A vector of threshold values to evaluate (default: seq(0.1, 0.6, by = 0.05)).}
 }
 \value{
-List of matrices for FAR, ADD, AATQ, FATQ, WAATQ, WFATQ
+A list containing:
+\item{FAR}{Matrix of False Alarm Rates for each lag and threshold}
+\item{ADD}{Matrix of Added Days Delayed for each lag and threshold}
+\item{AATQ}{Matrix of Average Alarm Time Quality for each lag and threshold}
+\item{FATQ}{Matrix of First Alarm Time Quality for each lag and threshold}
+\item{WAATQ}{Matrix of Weighted Average Alarm Time Quality for each lag and threshold}
+\item{WFATQ}{Matrix of Weighted First Alarm Time Quality for each lag and threshold}
+\item{best.AATQ}{Best model according to AATQ}
+\item{best.FATQ}{Best model according to FATQ}
+\item{best.FAR}{Best model according to FAR}
+\item{best.ADD}{Best model according to ADD}
+\item{best.WFATQ}{Best model according to WFATQ}
+\item{best.WAATQ}{Best model according to WAATQ}
 }
 \description{
-Evaluates alarm metrics using lab confirmed cases and absenteeism data.
-Metrics can be evaluated at the regional and catchment level.
-Metrics include ADD, FAR, ATQ, AATQ, FATQ, WATQ and WFATQ.
-Optimal lag and thresholds will be selected so
-as to minimize values of metrics.
+This function calculates various performance metrics for epidemic alarm systems
+across different lags and thresholds. It evaluates False Alarm Rate (FAR),
+Added Days Delayed (ADD), Average Alarm Time Quality (AATQ), First Alarm Time
+Quality (FATQ), and their weighted versions (WAATQ, WFATQ).
 }
 \examples{
-#Simulate catchment data
-catch_df <- catchment_sim(4, 1.2, 3.01, 5)
+# Generate simulated epidemic data
+n_rows <- 7421
+n_houses <- 1000
 
-#simulate elementary schools for each area
-elementary_df <- elementary_pop(catch_df, 0.4, 0.008)
+epidemic_new <- ssir(n_rows, T = 300, alpha =0.298, inf_init = 32, rep = 3)
 
-# Enters values for prompts from subpop_children() function
-f <- file()
-lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,
-            0.5857832, 0.3071523, 0.1070645,0.4976825)
+ individual_data <- data.frame(
+houseID = rep(1:n_houses, each = ceiling(n_rows / n_houses))[1:n_rows],
+catchID = sample(1:10, n_rows, replace = TRUE),
+schoolID = sample(1:10, n_rows, replace = TRUE),
+num_people = round(rnorm(n_rows, mean = 4, sd = 1)),  # Normal distribution for num_people
+num_elem_child = round(rnorm(n_rows, mean = 1, sd = 1)),  # Normal distribution for num_elem_child
+xStart = 0,
+xEnd = 5,
+yStart = 0,
+yEnd = 5,
+loc.x = rnorm(n_rows, mean = 2.5, sd = 1),  # Normal distribution for loc.x
+loc.y = rnorm(n_rows, mean = 2.5, sd = 1),  # Normal distribution for loc.y
+individualID = 1:n_rows,
+elem_child_ind = sample(0:1, n_rows, replace = TRUE)
+)
 
-ans <- paste(lines, collapse = "\n")
-write(ans, f)
-options("usr_con" = f) # set connection option
+compiled_data <- compile_epi(epidemic_new, individual_data)
 
-# simulating households without children
-house_children <- subpop_children(elementary_df, n = 2)
+# Evaluate alarm metrics
+alarm_metrics <- eval_metrics(compiled_data, thres = seq(0.1,0.6,by = 0.05),
+                  ScYr = c(2:3), yr.weights = c(1:2)/sum(c(1:2)))
 
-# Enters values for prompts from subpop_nochildren() function
-lines <- c(0.23246269, 0.34281716, 0.16091418,
-              0.16427239, 0.09953358, 0.4277052)
 
-ans <- paste(lines, collapse = "\n")
-write(ans, f)
-
-# simulate households and individuals data
-house_nochildren <- subpop_noChildren(house_children, elementary_df)
-
-close(f) # close the file
-options("usr_con" = stdin()) # reset connection option
-
-# simulate households and individuals data
-simulation <- simulate_households(house_children, house_nochildren)
-
-# simulate epidemic
-epidemic <- simepi(simulation$individual_sim, b=3, sus=.0019,
-                     spark=0, num_inf = 2, rep = 4)
-
-# simulate laboratory confirmed cases, and school absenteeism data sets
-data <- model_data(epidemic, simulation$individual_sim, type = "r")
-
-# calculate and return metrics in a list
-region_metric <- eval_metrics(lagdata = data,
-                       type = "r", thres = seq(0.1,0.25,by = 0.05),
-                       ScYr = c(2:4), yr.weights = c(1:3)/sum(c(1:3)))
-
+}
+\seealso{
+\code{\link{ssir}}, \code{\link{compile_epi}}
 }

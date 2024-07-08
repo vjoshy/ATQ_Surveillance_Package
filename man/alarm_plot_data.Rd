@@ -56,4 +56,6 @@ plot_data <- alarm_plot_data(epidemic_data, best_models)
 
 # Check the structure of the resulting object
 str(plot_data)
+
+
 }

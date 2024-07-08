@@ -47,9 +47,8 @@
 #'
 #' # Check the structure of the resulting object
 #' str(plot_data)
-alarm_plot_data <- function(epidemic_data, best_models) {
-  # Function body remains the same
-}
+#'
+#'
 alarm_plot_data <- function(epidemic_data, best_models) {
 
   # Ensure epidemic_data is a data frame
