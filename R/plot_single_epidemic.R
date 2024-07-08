@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @import ggplot2
-#' @import gridExtra
+#' @importFrom gridExtra grid.arrange
 #'
 #' @examples
 #' # Assuming you have run a simulation:

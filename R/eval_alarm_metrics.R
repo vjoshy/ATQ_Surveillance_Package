@@ -32,78 +32,119 @@
 #'
 #' @examples
 #' # Generate simulated epidemic data
-#' sim_data <- ssir(pop_size = 10000, beta = 0.3, gamma = 0.1,
-#'                  init_infected = 10, time_steps = 100)
+#' epidemic <- list(year1 = list(new_inf = rnorm(300), reported_cases = rnorm(300)),
+#'                  year2 = list(new_inf = rnorm(300), reported_cases = rnorm(300)))
+#' individual_data <- data.frame(elem_child_ind = sample(0:1, 1000, replace = TRUE),
+#'                               schoolID = sample(1:10, 1000, replace = TRUE))
 #'
-#' # Compile epidemic data
-#' compiled_data <- compile_epi(sim_data)
+#' compiled_data <- compile_epi(epidemic, individual_data)
 #'
 #' # Evaluate alarm metrics
-#' alarm_metrics <- eval_alarm_metrics(lagdata = compiled_data,
-#'                                     ScYr = 2:5,
-#'                                     thres = seq(0.1, 0.3, by = 0.05))
+#' alarm_metrics <- eval_alarm_metrics(compiled_data, thres = seq(0.1,0.6,by = 0.05),
+#'                                   ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
 #'
 #' # View the best model according to AATQ
 #' print(alarm_metrics$best.AATQ)
-eval_alarm_metrics <- function(lagdata, ScYr = c(2:10), maxlag = 15,
-                         yr.weights = c(1:9)/sum(c(1:9)), thres = seq(0.1,0.6,by = 0.05)){
+#'
+#' @seealso \code{\link{ssir}}, \code{\link{compile_epi}}
+#'
+#'
+eval_alarm_metrics <- function(data, ScYr = c(2:10), maxlag = 15,
+                               yr.weights = c(1:9)/sum(c(1:9)), thres = seq(0.1,0.6,by = 0.05)){
 
 
-  mod_resp <- (log_reg(lagdata, 15, area = "region"))$resp
-
-  lags <- seq.int(1,maxlag)
-
-  #subset data do evaluation years
-  lagdata <- lagdata[lagdata$ScYr %in% ScYr,]
-
-  lagdata <- rep(list(lagdata), length(thres))
-
-  # Matrices of each metric to determine which lag and
-  # threshold minimizes the respective metric
-  modmat <- matrix(nrow = length(lags), ncol = length(thres),
-                   dimnames = list(paste("Lag", lags),
-                                   c(paste("thres", thres))))
-
-  FAR.mat <- ADD.mat <- AATQ.mat <- FATQ.mat <- WAATQ.mat <- WFATQ.mat <- modmat
-  daily.results <- data.frame() # detailed daily data for output
-
-  for(i in seq_along(lags)){
-
-    for(t in seq_along(thres)){
-
-      combined_resp <- do.call(rbind, mod_resp[[i]][ScYr])
-
-
-      if(is.null(combined_resp) || nrow(combined_resp) == 0) {
-        stop("combined_resp is empty. Check mod_resp structure and ScYr values.")
-      }
-
-      if(nrow(combined_resp) != nrow(lagdata[[t]])) {
-        stop(paste("Mismatch in dimensions: combined_resp has", nrow(combined_resp), "rows,
-                   lagdata has", nrow(lagdata[[t]]), "rows"))
-      }
-
-      lagdata[[t]]$Alarm <- ifelse(combined_resp$resp > thres[t], 1, 0)
-
-      # calculate metrics
-      performance.metric <- calc.metric.region(lagdata[[t]],
-                                               ScYr, yr.weights)
-
-      #update lag and threshold metric matrices
-      FAR.mat[i,t] <- performance.metric$FAR
-      ADD.mat[i,t] <- performance.metric$ADD
-      AATQ.mat[i,t] <- performance.metric$AATQ
-      FATQ.mat[i,t] <- performance.metric$FATQ
-      WAATQ.mat[i,t] <- performance.metric$WAATQ
-      WFATQ.mat[i,t] <- performance.metric$WFATQ
-
-      # Update detailed daily results
-      tmp <- data.frame(lag = lags[i]
-                        , thres = thres[t]
-                        , performance.metric$daily.results)
-      daily.results <- rbind(daily.results, tmp)
-    }
+  # Input validation
+  if (!is.data.frame(data)) {
+    stop("data must be a data frame")
   }
+
+  required_cols <- c("ScYr", "Date", "Case", "window", "ref_date")
+  missing_cols <- setdiff(required_cols, names(data))
+  if (length(missing_cols) > 0) {
+    stop(paste("data is missing required columns:", paste(missing_cols, collapse = ", ")))
+  }
+
+  if (!is.numeric(ScYr) || any(ScYr %% 1 != 0) || any(ScYr < 1)) {
+    stop("ScYr must be a vector of positive integers")
+  }
+
+  if (!is.numeric(maxlag) || maxlag < 1) {
+    stop("maxlag must be a positive integer")
+  }
+
+  if (!is.numeric(yr.weights) || any(yr.weights < 0) || length(yr.weights) != length(ScYr)) {
+    stop("yr.weights must be a numeric vector of non-negative values with the same length as ScYr")
+  }
+
+  if (!is.numeric(thres) || any(thres < 0) || any(thres > 1)) {
+    stop("thres must be a numeric vector with values between 0 and 1")
+  }
+
+
+  tryCatch({
+    mod_resp <- (log.reg(data, 15))$resp
+
+    lags <- seq.int(1,maxlag)
+
+    #subset data do evaluation years
+    lagdata <- data[data$ScYr %in% ScYr,]
+
+    if (nrow(lagdata) == 0) {
+      stop("No data left after filtering for specified ScYr values")
+    }
+
+    lagdata <- rep(list(lagdata), length(thres))
+
+    # Matrices of each metric to determine which lag and
+    # threshold minimizes the respective metric
+    modmat <- matrix(nrow = length(lags), ncol = length(thres),
+                     dimnames = list(paste("Lag", lags),
+                                     c(paste("thres", thres))))
+
+    FAR.mat <- ADD.mat <- AATQ.mat <- FATQ.mat <- WAATQ.mat <- WFATQ.mat <- modmat
+    daily.results <- data.frame() # detailed daily data for output
+
+    for(i in seq_along(lags)){
+
+      for(t in seq_along(thres)){
+
+        combined_resp <- do.call(rbind, mod_resp[[i]][ScYr])
+
+
+        if(is.null(combined_resp) || nrow(combined_resp) == 0) {
+          stop("combined_resp is empty. Check mod_resp structure and ScYr values.")
+        }
+
+        if(nrow(combined_resp) != nrow(lagdata[[t]])) {
+          stop(paste("Mismatch in dimensions: combined_resp has", nrow(combined_resp), "rows,
+                     lagdata has", nrow(lagdata[[t]]), "rows"))
+        }
+
+        lagdata[[t]]$Alarm <- ifelse(combined_resp$resp > thres[t], 1, 0)
+
+        # calculate metrics
+        performance.metric <- calc.metric.region(lagdata[[t]],
+                                                 ScYr, yr.weights)
+
+        #update lag and threshold metric matrices
+        FAR.mat[i,t] <- performance.metric$FAR
+        ADD.mat[i,t] <- performance.metric$ADD
+        AATQ.mat[i,t] <- performance.metric$AATQ
+        FATQ.mat[i,t] <- performance.metric$FATQ
+        WAATQ.mat[i,t] <- performance.metric$WAATQ
+        WFATQ.mat[i,t] <- performance.metric$WFATQ
+
+        # Update detailed daily results
+        tmp <- data.frame(lag = lags[i]
+                          , thres = thres[t]
+                          , performance.metric$daily.results)
+        daily.results <- rbind(daily.results, tmp)
+      }
+    }
+
+  }, error = function(e) {
+    stop(paste("An error occurred in eval_alarm_metrics:", e$message))
+  })
 
   #output selected models according to each metric
   best.FAR <- best.mod(FAR.mat, lags = lags, thres = thres,
@@ -119,18 +160,41 @@ eval_alarm_metrics <- function(lagdata, ScYr = c(2:10), maxlag = 15,
   best.WFATQ <- best.mod(WFATQ.mat, lags = lags, thres = thres,
                          daily.results = daily.results)
 
-  return(list("FAR" = FAR.mat
-              , "ADD" = ADD.mat
-              , "AATQ" = AATQ.mat
-              , "FATQ" = FATQ.mat
-              , "WAATQ" = WAATQ.mat
-              , "WFATQ" = WFATQ.mat
-              , "best.AATQ" = best.AATQ
-              , "best.FATQ" = best.FATQ
-              , "best.FAR" = best.FAR
-              , "best.ADD" = best.ADD
-              , "best.WFATQ" = best.WFATQ
-              , "best.WAATQ" = best.WAATQ))
+  result <- list(
+    "FAR" = FAR.mat,
+    "ADD" = ADD.mat,
+    "AATQ" = AATQ.mat,
+    "FATQ" = FATQ.mat,
+    "WAATQ" = WAATQ.mat,
+    "WFATQ" = WFATQ.mat,
+    "best.AATQ" = best_model(best.AATQ),
+    "best.FATQ" = best_model(best.FATQ),
+    "best.FAR" = best_model(best.FAR),
+    "best.ADD" = best_model(best.ADD),
+    "best.WFATQ" = best_model(best.WFATQ),
+    "best.WAATQ" = best_model(best.WAATQ)
+  )
+
+  metrics <- alarm_metrics(result)
+
+  # Create alarm_plot_data object
+  plot_data <- alarm_plot_data(
+    epidemic_data = lagdata,
+    best_models = list(
+      "AATQ" = best.AATQ,
+      "FATQ" = best.FATQ,
+      "FAR" = best.FAR,
+      "ADD" = best.ADD,
+      "WFATQ" = best.WFATQ,
+      "WAATQ" = best.WAATQ
+    )
+  )
+
+  summary <- create_alarm_metrics_summary(metrics, result, data)
+
+  return(list(metrics = metrics, plot_data = plot_data, summary = summary))
+
+
 }
 
 
@@ -290,7 +354,7 @@ best.mod <- function(mat, lags = lags, thres = thres,
 
 
 #### Logistic regression model fitting function for simulated data ####
-log_reg <- function(lagdata, maxlag = 15, area = "region"){
+log.reg <- function(lagdata, maxlag = 15){
   lags <- seq.int(1, maxlag)
   forms <- lapply(0:maxlag, function(lag) {
     lag_formula <- as.formula(paste("Case ~ sinterm + costerm +",
