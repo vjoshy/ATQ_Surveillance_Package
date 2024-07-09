@@ -83,9 +83,11 @@ alarm_metrics <- eval_metrics(compiled_data,
                               yr.weights = c(1:2)/sum(c(1:2)))
 
 # Access the results
-print(alarm_metrics$metrics)
-plot(alarm_metrics$plot_data)
 summary(alarm_metrics$summary)
+alarm_plots <- plot(alarm_metrics$plot_data)
+
+for(i in seq_along(alarm_plots)) { print(alarm_plots[[i]]) }
+
 
 }
 \seealso{

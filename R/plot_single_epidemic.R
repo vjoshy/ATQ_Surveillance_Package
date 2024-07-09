@@ -44,7 +44,7 @@ plot_single_epidemic <- function(epidemic, epidemic_num) {
   )
 
   # Plot for new infections
-  p1 <- ggplot(df_new_inf, aes(x = df_new_inf$time, y = df_new_inf$value)) +
+  p1 <- ggplot(df_new_inf, aes(x = .data$time, y = .data$value)) +
     geom_line(color = "blue") +
     labs(title = paste("Epidemic", epidemic_num, "- New Infections (Start: Day", start_date, ")"),
          x = "Time",
@@ -52,7 +52,7 @@ plot_single_epidemic <- function(epidemic, epidemic_num) {
     theme_bw()
 
   # Plot for reported cases
-  p2 <- ggplot(df_reported, aes(x = df_reported$time, y = df_reported$value)) +
+  p2 <- ggplot(df_reported, aes(x = .data$time, y = .data$value)) +
     geom_line(color = "red") +
     labs(title = paste("Epidemic", epidemic_num, "- Reported Cases (Start: Day", start_date, ")"),
          x = "Time",

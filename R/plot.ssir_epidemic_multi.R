@@ -23,6 +23,5 @@
 #' plots[[1]]
 plot.ssir_epidemic_multi <- function(x, ...) {
   num_epidemics <- x$parameters$rep
-  plot_list <- lapply(1:num_epidemics, function(i) plot_single_epidemic(x[[i]], epidemic_num = i))
-  return(plot_list)
+  invisible(lapply(1:num_epidemics, function(i) plot_single_epidemic(x[[i]], epidemic_num = i)))
 }
