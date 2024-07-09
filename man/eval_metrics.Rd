@@ -25,19 +25,25 @@ typically output from the compile_epi function.}
 \item{thres}{A vector of threshold values to evaluate (default: seq(0.1, 0.6, by = 0.05)).}
 }
 \value{
-A list containing:
-\item{FAR}{Matrix of False Alarm Rates for each lag and threshold}
-\item{ADD}{Matrix of Added Days Delayed for each lag and threshold}
-\item{AATQ}{Matrix of Average Alarm Time Quality for each lag and threshold}
-\item{FATQ}{Matrix of First Alarm Time Quality for each lag and threshold}
-\item{WAATQ}{Matrix of Weighted Average Alarm Time Quality for each lag and threshold}
-\item{WFATQ}{Matrix of Weighted First Alarm Time Quality for each lag and threshold}
-\item{best.AATQ}{Best model according to AATQ}
-\item{best.FATQ}{Best model according to FATQ}
-\item{best.FAR}{Best model according to FAR}
-\item{best.ADD}{Best model according to ADD}
-\item{best.WFATQ}{Best model according to WFATQ}
-\item{best.WAATQ}{Best model according to WAATQ}
+A list containing three elements:
+\item{metrics}{An object of class "alarm_metrics" with the following components:
+\itemize{
+\item FAR: Matrix of False Alarm Rates for each lag and threshold
+\item ADD: Matrix of Added Days Delayed for each lag and threshold
+\item AATQ: Matrix of Average Alarm Time Quality for each lag and threshold
+\item FATQ: Matrix of First Alarm Time Quality for each lag and threshold
+\item WAATQ: Matrix of Weighted Average Alarm Time Quality for each lag and threshold
+\item WFATQ: Matrix of Weighted First Alarm Time Quality for each lag and threshold
+\item best.AATQ: Best model according to AATQ
+\item best.FATQ: Best model according to FATQ
+\item best.FAR: Best model according to FAR
+\item best.ADD: Best model according to ADD
+\item best.WFATQ: Best model according to WFATQ
+\item best.WAATQ: Best model according to WAATQ
+}
+}
+\item{plot_data}{An object of class "alarm_plot_data" for generating plots}
+\item{summary}{An object of class "alarm_metrics_summary" containing summary statistics}
 }
 \description{
 This function calculates various performance metrics for epidemic alarm systems
@@ -50,30 +56,36 @@ Quality (FATQ), and their weighted versions (WAATQ, WFATQ).
 n_rows <- 7421
 n_houses <- 1000
 
-epidemic_new <- ssir(n_rows, T = 300, alpha =0.298, inf_init = 32, rep = 3)
+epidemic_new <- ssir(n_rows, T = 300, alpha = 0.298, inf_init = 32, rep = 3)
 
- individual_data <- data.frame(
-houseID = rep(1:n_houses, each = ceiling(n_rows / n_houses))[1:n_rows],
-catchID = sample(1:10, n_rows, replace = TRUE),
-schoolID = sample(1:10, n_rows, replace = TRUE),
-num_people = round(rnorm(n_rows, mean = 4, sd = 1)),  # Normal distribution for num_people
-num_elem_child = round(rnorm(n_rows, mean = 1, sd = 1)),  # Normal distribution for num_elem_child
-xStart = 0,
-xEnd = 5,
-yStart = 0,
-yEnd = 5,
-loc.x = rnorm(n_rows, mean = 2.5, sd = 1),  # Normal distribution for loc.x
-loc.y = rnorm(n_rows, mean = 2.5, sd = 1),  # Normal distribution for loc.y
-individualID = 1:n_rows,
-elem_child_ind = sample(0:1, n_rows, replace = TRUE)
+individual_data <- data.frame(
+  houseID = rep(1:n_houses, each = ceiling(n_rows / n_houses))[1:n_rows],
+  catchID = sample(1:10, n_rows, replace = TRUE),
+  schoolID = sample(1:10, n_rows, replace = TRUE),
+  num_people = round(rnorm(n_rows, mean = 4, sd = 1)),
+  num_elem_child = round(rnorm(n_rows, mean = 1, sd = 1)),
+  xStart = 0,
+  xEnd = 5,
+  yStart = 0,
+  yEnd = 5,
+  loc.x = rnorm(n_rows, mean = 2.5, sd = 1),
+  loc.y = rnorm(n_rows, mean = 2.5, sd = 1),
+  individualID = 1:n_rows,
+  elem_child_ind = sample(0:1, n_rows, replace = TRUE)
 )
 
 compiled_data <- compile_epi(epidemic_new, individual_data)
 
 # Evaluate alarm metrics
-alarm_metrics <- eval_metrics(compiled_data, thres = seq(0.1,0.6,by = 0.05),
-                  ScYr = c(2:3), yr.weights = c(1:2)/sum(c(1:2)))
+alarm_metrics <- eval_metrics(compiled_data,
+                              thres = seq(0.1, 0.6, by = 0.05),
+                              ScYr = c(2:3),
+                              yr.weights = c(1:2)/sum(c(1:2)))
 
+# Access the results
+print(alarm_metrics$metrics)
+plot(alarm_metrics$plot_data)
+summary(alarm_metrics$summary)
 
 }
 \seealso{

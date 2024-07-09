@@ -3,7 +3,7 @@
 #' This function provides a summary of the alarm metrics, including mean and variance for each metric,
 #' the best lag and threshold values, and lists of reference dates and best prediction dates.
 #'
-#' @param x A list of class `alarm_metrics_summary` containing the alarm metrics summary data.
+#' @param object A list of class `alarm_metrics_summary` containing the alarm metrics summary data.
 #' @param ... Additional arguments passed to the function (currently unused).
 #'
 #' @return A printed summary of the alarm metrics.
@@ -64,27 +64,28 @@
 #' # Print summary
 #' summary(data)
 #'
-summary.alarm_metrics_summary <- function(x, ...) {
+summary.alarm_metrics_summary <- function(object, ...) {
+
   cat("Alarm Metrics Summary\n")
   cat("=====================\n\n")
 
-  for (metric in names(x$summary_stats)) {
+  for (metric in names(object$summary_stats)) {
     cat(metric, ":\n")
-    cat("  Mean:", round(x$summary_stats[[metric]]$mean, 4), "\n")
-    cat("  Variance:", round(x$summary_stats[[metric]]$variance, 4), "\n")
-    cat("  Best lag:", x$best_values[[metric]]$best_lag, "\n")
-    cat("  Best threshold:", round(x$best_values[[metric]]$best_threshold, 4), "\n")
-    cat("  Best value:", round(x$best_values[[metric]]$best_value, 4), "\n\n")
+    cat("  Mean:", round(object$summary_stats[[metric]]$mean, 4), "\n")
+    cat("  Variance:", round(object$summary_stats[[metric]]$variance, 4), "\n")
+    cat("  Best lag:", object$best_values[[metric]]$best_lag, "\n")
+    cat("  Best threshold:", round(object$best_values[[metric]]$best_threshold, 4), "\n")
+    cat("  Best value:", round(object$best_values[[metric]]$best_value, 4), "\n\n")
   }
 
   cat("Reference Dates:\n")
-  print(x$ref_dates)
+  print(object$ref_dates)
   cat("\n")
 
   cat("Best Prediction Dates:\n")
-  for (metric in names(x$best_prediction_dates)) {
+  for (metric in names(object$best_prediction_dates)) {
     cat(metric, ":\n")
-    print(x$best_prediction_dates[[metric]])
+    print(object$best_prediction_dates[[metric]])
     cat("\n")
   }
 }

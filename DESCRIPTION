@@ -22,7 +22,8 @@ Imports:
     purrr,
     zoo,
     ggplot2,
-    gridExtra
+    gridExtra,
+    rlang
 Depends: 
     R (>= 2.10)
 LazyData: true

@@ -14,6 +14,8 @@
 #' @import purrr
 #'
 #' @importFrom dplyr left_join  distinct mutate group_by group_map
+#' @importFrom stats setNames
+#' @importFrom rlang .data
 #'
 #' @examples
 #' # Generate sample data
@@ -52,70 +54,67 @@
 #' if(interactive()) print(plots[[1]])
 #'
 plot.alarm_plot_data <- function(x, ...) {
+
   # Extract data
   data <- x$epidemic_data
   best_models <- x$best_models
 
   # Prepare alert data
-  alert_data <- purrr::map_dfr(names(best_models), function(model_name) {
-    best_models[[model_name]] %>%
-      dplyr::filter(Alarm == 1) %>%
-      dplyr::mutate(Model = model_name)
-  }) %>%
-    dplyr::distinct(Date, ScYr, Model, .keep_all = TRUE)  # Remove any duplicates
+  alert_data <- do.call(rbind, lapply(names(best_models), function(model_name) {
+    model_data <- best_models[[model_name]]
+    subset(model_data, model_data$Alarm == 1, select = c("Date", "ScYr"))
+  }))
+  alert_data$Model <- rep(names(best_models), sapply(best_models, function(x) sum(x$Alarm == 1)))
+
+  alert_data <- unique(alert_data)
 
   # Assign consistent y-positions to each model
   unique_models <- unique(alert_data$Model)
   model_positions <- setNames(seq(-1, -length(unique_models), by = -1), unique_models)
 
-  alert_data <- alert_data %>%
-    dplyr::mutate(y_position = model_positions[Model])
+  alert_data$y_position <- model_positions[alert_data$Model]
 
   # Combine epidemic data with alert data
-  plot_data <- data %>%
-    dplyr::left_join(alert_data, by = c("Date", "ScYr"), suffix = c("", ".alert")) %>%
-    dplyr::distinct(Date, ScYr, Model, .keep_all = TRUE)  # Remove any duplicates that might have been created
+  plot_data <- merge(data, alert_data, by = c("Date", "ScYr"), all.x = TRUE)
+  plot_data <- unique(plot_data)
 
   # Create a plot for each year
-  plots <- plot_data %>%
-    dplyr::group_by(ScYr) %>%
-    dplyr::group_map(function(data, key) {
-      year <- key$ScYr
+  plots <- lapply(split(plot_data, plot_data$ScYr), function(year_data) {
 
-      # Calculate y-axis limits
-      y_max <- max(data$lab_conf, data$pct_absent * 100, na.rm = TRUE)
-      y_min <- min(model_positions) - 1  # Adjust y_min to accommodate all model points
+    year <- unique(year_data$ScYr)
 
-      p <- ggplot(data, aes(x = Date)) +
-        # Absenteeism percentage
-        geom_col(aes(y = pct_absent * 100), fill = "grey70", alpha = 0.7) +
-        # Lab confirmed cases
-        geom_col(aes(y = lab_conf), fill = "black", alpha = 0.7) +
-        # Reference date
-        geom_vline(data = dplyr::filter(data, ref_date == 1),
-                   aes(xintercept = Date),
-                   linetype = "dashed", color = "orange") +
-        # Alert points (stacked)
-        geom_point(data = dplyr::filter(data, !is.na(Model)),
-                   aes(y = y_position, color = Model), shape = 15,
-                   size = 3) +
-        scale_color_brewer(palette = "Set1") +
-        #scale_x_continuous(breaks = seq(0, 300, by = 50)) +
-        scale_y_continuous(
-          name = "Average Absenteeism Percentage",
-          sec.axis = sec_axis(~., name = "Confirmed Influenza Cases"),
-          limits = c(y_min, y_max * 1.1)  # Extend y-axis below 0 to accommodate stacked points
-        ) +
-        labs(title = paste("Epidemic Data with Alerts - Year", year),
-             x = "Time") +
-        theme_bw() +
-        theme(legend.position = "bottom",
-              axis.title.y.right = element_text(color = "black"),
-              axis.title.y.left = element_text(color = "grey50"))
+    # Calculate y-axis limits
+    y_max <- max(c(year_data$lab_conf, year_data$pct_absent * 100), na.rm = TRUE)
+    y_min <- min(model_positions) - 1
 
-      return(p)
-    })
+    p <- ggplot(year_data, aes(x = .data$Date)) +
+      # Absenteeism percentage
+      geom_col(aes(y = .data$pct_absent * 100), fill = "grey70", alpha = 0.7) +
+      # Lab confirmed cases
+      geom_col(aes(y = .data$lab_conf), fill = "black", alpha = 0.7) +
+      # Reference date
+      geom_vline(data = dplyr::filter(year_data, .data$ref_date == 1),
+                 aes(xintercept = .data$Date),
+                 linetype = "dashed", color = "orange") +
+      # Alert points (stacked)
+      geom_point(data = dplyr::filter(year_data, !is.na(.data$Model)),
+                 aes(y = .data$y_position, color = .data$Model), shape = 15,
+                 size = 3) +
+      scale_color_brewer(palette = "Set1") +
+      scale_y_continuous(
+        name = "Average Absenteeism Percentage",
+        sec.axis = sec_axis(~., name = "Confirmed Influenza Cases"),
+        limits = c(y_min, y_max * 1.1)  # Extend y-axis below 0 for stacked points
+      ) +
+      labs(title = paste("Epidemic Data with Alerts - Year", year),
+           x = "Time") +
+      theme_bw() +
+      theme(legend.position = "bottom",
+            axis.title.y.right = element_text(color = "black"),
+            axis.title.y.left = element_text(color = "grey50"))
 
-  # Return the list of plots
+    return(p)
+  })
+
   return(plots)
 }

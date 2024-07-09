@@ -11,6 +11,8 @@
 #' @return A heatmap plot of the specified metric.
 #' @export
 #'
+#' @importFrom graphics image
+#'
 #' @examples
 #' # Generate sample alarm metrics data
 #' set.seed(123)

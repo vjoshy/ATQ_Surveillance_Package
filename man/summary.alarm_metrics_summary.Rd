@@ -4,10 +4,10 @@
 \alias{summary.alarm_metrics_summary}
 \title{Summary of Alarm Metrics}
 \usage{
-\method{summary}{alarm_metrics_summary}(x, ...)
+\method{summary}{alarm_metrics_summary}(object, ...)
 }
 \arguments{
-\item{x}{A list of class \code{alarm_metrics_summary} containing the alarm metrics summary data.}
+\item{object}{A list of class \code{alarm_metrics_summary} containing the alarm metrics summary data.}
 
 \item{...}{Additional arguments passed to the function (currently unused).}
 }

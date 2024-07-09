@@ -11,6 +11,8 @@
 #'         reference dates, and best prediction dates for each metric and epidemic year.
 #' @export
 #'
+#' @importFrom stats var
+#'
 #' @examples
 #' # Generate sample data
 #' set.seed(123)
@@ -78,7 +80,7 @@ create_alarm_metrics_summary <- function(metrics, best_models, epidemic_data) {
   summary_stats <- lapply(metric_matrices, function(mat) {
     data.frame(
       mean = mean(mat, na.rm = TRUE),
-      variance = var(as.vector(mat), na.rm = TRUE)
+      variance = stats::var(as.vector(mat), na.rm = TRUE)
     )
   })
 
