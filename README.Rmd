@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 
 Madeline A. Ward published a [paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-019-7521-7) on methods for detecting seasonal influenza epidemics using school absenteeism data. The premise is that there is a school absenteeism surveillance system established in Wellington-Dufferin-Guelph which uses a threshold-based (10% of students absent) approach to raise alarms for school illness outbreaks to implement mitigating measures. Two metrics (FAR and ADD) are proposed in that study that were found to be more accurate.
 
-Based on the work of Madeline, in 2021 Kayla Vanderkruk along with Drs. Deeth and Feng wrote a [paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z) on improved metrics, namely ATQ (alert time quality), that are more accurate and timely than the FAR-selected models. This package is based off Kayla's work that can be found [here](https://github.com/vanderkk/School_Abstenteeism_Based_Influenza_Surveillance_Simulation_Study). ATQ study assessed alarms on a gradient, where alarms were raised incrementally before or after an optimal date were penalized for lack of timeliness. 
+Based on the work of Madeline, in 2021 Kayla Vanderkruk along with Drs. Deeth and Feng wrote a [paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z) on improved metrics, namely ATQ (alert time quality), that are more accurate and timely than the FAR-selected models. This package is based off Kayla's work that can be found [here](https://github.com/vanderkk/School_Abstenteeism_Based_Influenza_Surveillance_Simulation_Study). ATQ study assessed alarms on a gradient, where alarms raised incrementally before or after an optimal date were penalized for lack of timeliness. 
 
 This ATQ package will allow users to perform simulation studies and evaluate ATQ & FAR based metrics from them. The simulation study will require information from census data for a region such as distribution of number of household members, households with and without children, and age category, etc. 
 
@@ -36,68 +36,113 @@ library(devtools)
 install_github("vjoshy/ATQ_Surveillance_Package")
 ```
 
-## Usage
+## Key Functions
 
-ATQ contains eight funcions which are to be used sequentially in the following order:\
+The ATQ package includes the following main functions:
 
-1. catchment_sim()
-2. elementary_pop()
-3. subpop_children()
-4. subpop_noChildren()
-5. simulate_households()
-6. simepi()
-7. model_data()
-8. eval_metrics()
+1. `catchment_sim()`
+    - Simulates catchment area data
+2. `elementary_pop()`
+    - Simulates elementary school populations
+3. `subpop_children()`
+    - Simulates households with children
+4. `subpop_noChildren()`
+    - Simulates households without children
+5. `simulate_households()`
+    - Combines household simulations
+6. `ssir()`
+    - Simulates epidemic using SSIR model
+7. `compile_epi()`
+    - Compiles absenteeism data
+8. `eval_metrics()`
+    - Evaluates alarm metrics
+9. `plot()` and `summary()`
+    - Methods for visualizing and summarizing results
 
-The output data frame from the first function is to be used as input for the next function and so forth.
+Additionally, the package implements S3 methods for generic functions:
+
+9. `plot()` and `summary()`
+    - These methods are extended for objects returned by `ssir()` and `eval_metrics()`
+    - `plot()` provides visualizations of epidemic simulations and metric evaluations
+    - `summary()` offers concise summaries of the simulation results and metric assessments
+
+These functions and methods work together to facilitate comprehensive epidemic simulation and evaluation of detection models
+
 
 Please see example below:
 
 ```{r example}
+# Load the ATQ package
 library(ATQ)
 
-#Simulate catchment data
-catch_df <- catchment_sim(16, 4.12, 3.01, 5)
+#Simulate number of elementary schools in each catchment
+catch_df <- catchment_sim(16, 4.68, 3.01, 5)
 
-#simulate elementary schools for each area
-elementary_df <- elementary_pop(catch_df, 4.8, 0.015)
+# Simulate elementary school populations for each catchment area
+elementary_df <- elementary_pop(catch_df, 5.86, 0.01)
 
-# Enters values for prompts from subpop_children() function
+# Set up file connection to simulate user input for subpop_children() function
 f <- file()
 lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
-options("usr_con" = f) # set connection option
+options("usr_con" = f) # Set connection option to use file instead of stdin
 
-# simulating households with children
+# Simulate households with children
 house_children <- subpop_children(elementary_df, n = 2)
 
-# Enters values for prompts from subpop_nochildren() function
+# Prepare input for subpop_noChildren() function
 lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
 ans <- paste(lines, collapse = "\n")
 write(ans, f)
 
-# simulating households without children
+# Simulate households without children
 house_nochildren <- subpop_noChildren(house_children, elementary_df)
 
-close(f) # close the file
-options("usr_con" = stdin()) # reset connection option
+# Clean up file connection
+close(f)
+options("usr_con" = stdin()) # Reset connection option to standard input
 
-# simulate households and individuals data
+# Combine household simulations and generate individual-level data
 simulation <- simulate_households(house_children, house_nochildren)
 
-# randomly sampling 1000 rows to reduce simulation times
-individuals <- simulation$individual_sim[sample(nrow(simulation$individual_sim),1000),]
+# Extract individual-level data
+individuals <- simulation$individual_sim
 
-# simulate epidemic %>% 
-epidemic <- simepi(individuals, b=3, sus=.0019, spark=0, num_inf = 2)
+# Simulate epidemic using SSIR (Stochastic Susceptible-Infectious-Recovered) model
+epidemic <- ssir(nrow(individuals), T = 300, alpha = 0.298, inf_init = 32, rep = 10)
 
-# simulate laboratory confirmed cases, and school absenteeism data sets
-data <- model_data(epidemic, individuals)
+# Summarize and plot the epidemic simulation results
+summary(epidemic)
+plot(epidemic)
 
-# calculate and return metrics in a list
-region_metric <- eval_metrics(lagdata = data, type = "r", thres = seq(0.1,0.6,by = 0.05),
-                                        ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
+# Compile absenteeism data based on epidemic simulation and individual data
+absent_data <- compile_epi(epidemic, individuals)
+
+# Display structure of absenteeism data
+dplyr::glimpse(absent_data)
+
+# Evaluate alarm metrics for epidemic detection
+alarm_metrics <- eval_metrics(absent_data, thres = seq(0.1,0.6,by = 0.05),
+                              ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
+
+# Plot various alarm metrics
+plot(alarm_metrics$metrics, "FAR")   # False Alert Rate
+plot(alarm_metrics$metrics, "FATQ")  # First Alert Time Quality
+plot(alarm_metrics$metrics, "AATQ")  # Average Alert Time Quality
+plot(alarm_metrics$metrics, "WAATQ") # Weighted Average Alert Time Quality
+plot(alarm_metrics$metrics, "WFATQ") # Weighted First Alert Time Quality
+plot(alarm_metrics$metrics, "ADD")   # Accumulated Delay Days
+
+
+# Summarize alarm metrics
+summary(alarm_metrics$summary)
+
+# Generate and display plots for alarm metrics across epidemic years
+alarm_plots <- plot(alarm_metrics$plot_data)
+for(i in seq_along(alarm_plots)) { 
+  print(alarm_plots[[i]]) 
+}
 ```
 
 The final output 'region_metric' will be a list of 6 matrices and 6 data frames. The matrices describe the values of metrics for respective lag and thresholds. 

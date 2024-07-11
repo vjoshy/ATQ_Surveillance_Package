@@ -1,13 +1,14 @@
 Package: ATQ
 Title: Alert Time Quality - Evaluating Timely Epidemic Metrics
-Version: 0.1.0
-Date: 2023-10-07
+Version: 0.2.0
+Date: 2024-07-09
 Authors@R: c(
-    person("Vinay", "Joshy", email = "joshy@uoguelph.ca", role = c("aut", "cre")),
+    person("Vinay", "Joshy", email = "joshy@uoguelph.ca", role = c("aut", "cre", "cph")),
     person("Zeny", "Feng", email = "zfeng@uoguelph.ca", role = c("aut", "cph", "ths")),
     person("Lorna", "Deeth", email = "ldeeth@uoguelph.ca", role = c("aut", "cph", "ths")),
+    person("Justin", "Slater", email = "jslate04@uoguelph.ca", role = c("aut", "cph", "ths")),
     person("Kayla", "Vanderkruk", email = "kayla.vanderkruk@gmail.com", role = c("aut", "com", "ctb")))
-Description: This package provides tools for evaluating timely epidemic detection models within a school absenteeism-based surveillance system. It introduces the concept of alert time quality as an evaluation metric. Users can simulate populations, epidemics, and alert metrics associated with epidemic spread using population census data. The methods implemented in this package are based on research published in the following papers: <doi:10.1186/s12889-023-15747-z> and <doi:10.1186/s12889-019-7521-7>.    References: <doi:10.1186/s12889-023-15747-z> , <doi:10.1186/s12889-019-7521-7>
+Description: Provides tools for evaluating timely epidemic detection models within school absenteeism-based surveillance systems. Introduces the concept of alert time quality as an evaluation metric. Includes functions to simulate populations, epidemics, and alert metrics associated with epidemic spread using population census data. The methods are based on research published in Vanderkruk et al. (2023) <doi:10.1186/s12889-023-15747-z> and Jarvis et al. (2019) <doi:10.1186/s12889-019-7521-7>.
 License: GPL (>= 3) + file LICENSE
 URL: https://github.com/vjoshy/ATQ_Surveillance_Package
 Encoding: UTF-8
