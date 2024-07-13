@@ -1,48 +1,70 @@
 #' Simulate households with children
 #'
-#' Simulation of households with children via random uniform distribution.
+#' Simulation of households with children using specified random distributions.
 #' Number of observations is multiplied by a default value of five.
 #'
 #' @param df simulated output data frame from elementary_pop function
-#' @param n population multiplier, default value = 5,
+#' @param n population multiplier, default value = 5
+#' @param prop_parent_couple proportion of parents as a couple (optional)
+#' @param prop_children_couple vector of proportions for coupled parents with 1, 2, 3+ children (optional)
+#' @param prop_children_lone vector of proportions for single parents with 1, 2, 3+ children (optional)
+#' @param prop_elem_age proportion of children that are of elementary school age (optional)
+#' @param parent_dist distribution function for parent type, default is stats::runif
+#' @param child_dist distribution function for number of children, default is stats::runif
+#' @param age_dist distribution function for child age, default is stats::runif
+#' @param ... additional arguments passed to the distribution functions
 #'
-#' @details This is an interactive function where user has to enter eight
-#' population proportion values as prompted.To automate entering these prompts,
-#' establish a file connection where a vector of the eight population
-#' proportion values are written to an open file. Refer to examples section.
+#' @details This function can be used interactively or with pre-specified parameters.
+#' If proportions are not provided, the user will be prompted to enter them.
+#' Custom distribution functions can be specified for parent type, number of children, and child age.
+#' The total number of simulations (n * sum of school populations) is automatically passed as the first argument to each distribution function.
 #'
-#' @return simulated population of households with children
+#' @return A data frame representing the simulated population of households with children, including:
+#'   \item{schoolID}{Assigned school ID for the household}
+#'   \item{houseID}{Unique identifier for each household}
+#'   \item{num_parent}{Number of parents in the household (1 or 2)}
+#'   \item{num_child}{Total number of children in the household}
+#'   \item{num_elem_child}{Number of elementary school-aged children in the household}
+#'   \item{catchID}{Assigned catchment ID for the household}
+#'   \item{schoolPop}{Total population of elementary school assigned for the household}
+#'   \item{xStart}{Starting X-coordindate for assigned catchment}
+#'   \item{xEnd}{End X-coordindate for assigned catchment}
+#'   \item{yStart}{Starting Y-coordindate for assigned catchment}
+#'   \item{yEnd}{End Y-coordindate for assigned catchment}
+#'   \item{schoolID}{Assigned school ID for the household}
+#'   \item{num_people}{Total number of people in the household}
+#'
 #' @export
 #'
 #' @examples
-#'  # simulate catchment area
-#'  catch_df <- catchment_sim(4, 4.30, 3.6, 5)
+#' # Simulate catchment area
+#' catch_df <- catchment_sim(4, 4.30, 3.6, 5)
 #'
-#'  # simulate elementary schools for each area
-#'  elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
+#' # Simulate elementary schools for each area
+#' elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
 #'
-#'  # Establish a file connection for population proportion values when
-#'  # prompted by subpop_children()
-#'  f <- file()
+#' # Using default uniform distributions with pre-specified proportions
+#' house_children1 <- subpop_children(elementary_df, n = 3,
+#'                                    prop_parent_couple = 0.7,
+#'                                    prop_children_couple = c(0.3, 0.5, 0.2),
+#'                                    prop_children_lone = c(0.4, 0.4, 0.2),
+#'                                    prop_elem_age = 0.6)
 #'
-#'  lines <- c(0.77, 0.36, 0.43, 0.21,0.59, 0.31, 0.10, 0.49)
+#' # Using custom distributions
+#' house_children2 <- subpop_children(elementary_df, n = 3,
+#'                                    parent_dist = stats::rnorm, mean = 0.5, sd = 0.1,
+#'                                    child_dist = stats::rbeta, shape1 = 2, shape2 = 2,
+#'                                    age_dist = stats::runif)
 #'
-#'  ans <- paste(lines, collapse = "\n")
-#'  write(ans, f)
-#'
-#'  options("usr_con" = f)#'
-#'
-#'  # simulate household with children and assign them to elementary school
-#'  house_children <- subpop_children(elementary_df, n = 3)
-#'
-#'  # close the file
-#'  close(f)
-#'
-#'  # reset connection option
-#'  options("usr_con" = stdin())
-#'
-#'
-subpop_children <- function(df, n = 5){
+subpop_children <- function(df, n = 5,
+                            prop_parent_couple = NULL,
+                            prop_children_couple = NULL,
+                            prop_children_lone = NULL,
+                            prop_elem_age = NULL,
+                            parent_dist = stats::runif,
+                            child_dist = stats::runif,
+                            age_dist = stats::runif,
+                            ...) {
 
   if(n <= 1 ){
     stop("Please enter an integer greater than 1")
@@ -50,23 +72,35 @@ subpop_children <- function(df, n = 5){
 
 
   # n is multiplier for extra population
-  total <- sum(df$schoolPop)*n
+  total <- sum(df$schoolPop) * n
 
 
-  # random uniform distributions for parent types and children categories
-  unif_parent_type <- stats::runif(total)
-  unif_child_num <- stats::runif(total)
-  unif_childAge1 <- stats::runif(total)
-  unif_childAge2 <- stats::runif(total)
-  unif_childAge3 <- stats::runif(total)
+  # Collect all additional arguments
+  args <- list(...)
+
+  # Function to apply distribution with total as first argument
+  apply_dist <- function(dist_func, args) {
+    dist_args <- args[names(args) %in% names(formals(dist_func))]
+    do.call(dist_func, c(list(n = total), dist_args))
+  }
+
+
+  # use provided distributions for parent types and children categories
+  unif_parent_type <- apply_dist(parent_dist, args)
+  unif_child_num <- apply_dist(child_dist, args)
+  unif_childAge1 <- apply_dist(age_dist, args)
+  unif_childAge2 <- apply_dist(age_dist, args)
+  unif_childAge3 <- apply_dist(age_dist, args)
 
   # setting connection for standard input from users
   con <- getOption("usr_con", stdin())
 
 
   # user input for proportions
-  cat("Please enter proportion of parents as a couple: ")
-  prop_parent_couple <- scan(con, n = 1, what = double())
+  if (is.null(prop_parent_couple)) {
+    cat("Please enter proportion of parents as a couple: ")
+    prop_parent_couple <- scan(con, n = 1, what = double())
+  }
 
 
   # parent type: 2 = coupled parent, 1 = lone parent
@@ -74,13 +108,16 @@ subpop_children <- function(df, n = 5){
 
 
   # user input for proportions
-  cat("Enter proportion of coupled parents with 1, 2, 3+ children separated by space:")
+  if (is.null(prop_children_couple)) {
+    cat("Enter proportion of coupled parents with 1, 2, 3+ children separated by space:")
+    prop_children_couple <- scan(con, n = 3, what = double())
+  }
 
-  prop_children_couple <- scan(con, n = 3, what = double())
 
-  cat("Enter proportion of single parents with 1, 2, 3+ children separated by space:")
-
-  prop_children_lone <- scan(con, n = 3, what = double())
+  if (is.null(prop_children_lone)) {
+    cat("Enter proportion of single parents with 1, 2, 3+ children separated by space:")
+    prop_children_lone <- scan(con, n = 3, what = double())
+  }
 
 
   # simulating number of children based on parent type
@@ -97,8 +134,10 @@ subpop_children <- function(df, n = 5){
 
 
   # user input for proportions
-  cat("Please enter proportion of children that are of elementary school age:")
-  prop_elem_age <- scan(con, n = 1, what = double())
+  if (is.null(prop_elem_age)) {
+    cat("Please enter proportion of children that are of elementary school age:")
+    prop_elem_age <- scan(con, n = 1, what = double())
+  }
 
 
   # Simulating whether child is of elementary school age

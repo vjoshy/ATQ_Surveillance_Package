@@ -1,25 +1,43 @@
 #' Create Elementary Schools population size
 #'
-#' Function to simulate elementary school size and assigns it to catchments
+#' Function to simulate elementary school size and assigns it to catchments.
+#' The school population is simulated using a specified distribution function,
+#' with gamma distribution as the default.
 #'
 #' @param df output data frame from catchment_sim function
-#' @param alpha shape parameter of gamma distribution to simulate
-#' school population
-#' @param beta rate parameter of gamma distribution to simulate
-#' school population
+#' @param dist_func distribution function to simulate school population, default is stats::rgamma
+#' @param ... additional arguments passed to the distribution function
 #'
-#' @return a data frame of simulated elementary school population
+#' @return A data frame with the following columns:
+#'   \item{catchID}{Identifier for the catchment area}
+#'   \item{schoolID}{Unique identifier for each school}
+#'   \item{schoolPop}{Simulated population of the school}
+#'   \item{xStart}{Starting x-coordinate of the catchment area}
+#'   \item{xEnd}{Ending x-coordinate of the catchment area}
+#'   \item{yStart}{Starting y-coordinate of the catchment area}
+#'   \item{yEnd}{Ending y-coordinate of the catchment area}
+#'
 #' @export
 #'
-#' @examples catch_df <- catchment_sim(16, 3.5, 2.8, 20)
-#' elementary_df <- elementary_pop(catch_df, 5.1, 0.015)
+#' @examples
+#' # Simulate catchment areas
+#' catch_df <- catchment_sim(16, 20, shape = 3.5, rate = 2.8)
 #'
+#' # Simulate elementary schools using default gamma distribution
+#' elementary_df1 <- elementary_pop(catch_df, shape = 5.1, rate = 0.015)
 #'
-elementary_pop <- function(df, alpha, beta){
+#' # Simulate elementary schools using normal distribution
+#' elementary_df2 <- elementary_pop(catch_df, dist_func = stats::rnorm,
+#'                                  mean = 300, sd = 50)
+#'
+#' # Simulate elementary schools using Poisson distribution
+#' elementary_df3 <- elementary_pop(catch_df, dist_func = stats::rpois,
+#'                                  lambda = 250)
+elementary_pop <- function(df, dist_func = stats::rgamma, ...){
 
 
   # gamma distribution of number of students in elementary schools
-  school_pop <- round(stats::rgamma(sum(df$num.schools), alpha, beta))
+  school_pop <- round(dist_func(sum(df$num.schools), ...))
   school_id <- seq.int(length(school_pop))
 
 

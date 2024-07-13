@@ -1,27 +1,38 @@
-
 #' Simulating catchment areas
 #'
 #' Function to simulate specified catchments of square area (a x a).
-#' Catchment areas are simulated via gamma distribution.
+#' The number of schools in each catchment area is simulated via a specified distribution function,
+#' with gamma distribution as the default.
 #'
 #' @param n number of catchments to be simulated
-#' @param alpha shape parameter of gamma distribution for number of schools to
-#' be simulated
-#' @param beta rate parameter of gamma distribution for number of schools to be
-#' simulated
 #' @param area square dimension for catchment (if area = 20, then each catchment
 #' dimensions will be 20 x 20)
+#' @param dist_func distribution function to simulate number of schools, default is stats::rgamma
+#' @param ... additional arguments passed to the distribution function
 #'
-#' @return data frame of n observations
+#' @return A data frame with n rows and the following columns:
+#'   \item{catchID}{Unique identifier for each catchment area}
+#'   \item{num.schools}{Number of schools in the catchment area}
+#'   \item{xStart}{Starting x-coordinate of the catchment area}
+#'   \item{xEnd}{Ending x-coordinate of the catchment area}
+#'   \item{yStart}{Starting y-coordinate of the catchment area}
+#'   \item{yEnd}{Ending y-coordinate of the catchment area}
+#'
 #' @export
 #'
-#' @examples catch_df <- catchment_sim(16, 4.1, 2.7, 20)
+#' @examples
+#' # Using default gamma distribution
+#' catch_df1 <- catchment_sim(16, 20, shape = 4.1, rate = 2.7)
 #'
+#' # Using normal distribution
+#' catch_df2 <- catchment_sim(16, 20, dist_func = stats::rnorm, mean = 5, sd = 1)
 #'
-catchment_sim <- function(n, alpha, beta, area){
+#' # Using Poisson distribution
+#' catch_df3 <- catchment_sim(16, 20, dist_func = stats::rpois, lambda = 3)
+catchment_sim <- function(n, area, dist_func = stats::rgamma, ...){
 
-  #gamma distribution of catchment area
-  size <- round(stats::rgamma(n, alpha, beta)) |>
+  # Generate catchment area sizes using the provided distribution function
+  size <- round(dist_func(n, ...)) |>
     (\(x) replace(x, x == 0, 1))()
 
 

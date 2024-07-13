@@ -14,6 +14,20 @@ knitr::opts_chunk$set(
 )
 ```
 
+# ATQ: Assesing Evaluation Metrics for Timely Epidemic Detection Models
+
+## Background
+
+Ward et al. published [methods](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-019-7521-7) for detecting seasonal influenza epidemics using school absenteeism data. This was based on a school absenteeism surveillance system established in Wellington-Dufferin-Guelph Public Health Unit, Canada which uses a threshold-based (10% of students absent) approach to raise alarms for school illness outbreaks to implement mitigating measures. Two metrics (FAR and ADD) proposed were found to be more accurate than the 10% threshold system.
+
+Vanderkruk et al. wrote a [paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z) on improved metrics, namely ATQ (alert time quality), that are more accurate and timely than the FAR-selected models. This package is based off Kayla's work that can be found [here](https://github.com/vanderkk/School_Abstenteeism_Based_Influenza_Surveillance_Simulation_Study). ATQ study assessed alarms on a gradient, where alarms raised incrementally before or after an optimal date were penalized for lack of timeliness. 
+
+This ATQ package will allow users to perform simulation studies and evaluate ATQ & FAR based metrics from them. The simulation study will require information from census data for a region such as distribution of number of household members, households with and without children, and age category, etc. 
+
+
+This package is still a work in progress and future considerations include streamlining simulation study workflow and generalizing evaluation of metrics to include real data sets. 
+
+
 ```{r setup}
 library(ATQ)
 ```
