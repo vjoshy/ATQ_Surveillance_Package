@@ -1,0 +1,19 @@
+---
+title: "ATQ_Guide"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ATQ_Guide}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ATQ)
+```
