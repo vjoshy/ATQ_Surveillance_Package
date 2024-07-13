@@ -11,6 +11,7 @@
 #' @param maxlag The maximum number of lags to consider (default: 15).
 #' @param yr.weights Weights for calculating WFATQ and WAATQ metrics (default: (1:9)/sum(1:9)).
 #' @param thres A vector of threshold values to evaluate (default: seq(0.1, 0.6, by = 0.05)).
+#' @param topt Optimal alarm day (default = 14).
 #'
 #' @return A list containing three elements:
 #'   \item{metrics}{An object of class "alarm_metrics" with the following components:
@@ -77,9 +78,12 @@
 #' @seealso \code{\link{ssir}}, \code{\link{compile_epi}}
 #'
 #'
-eval_metrics <- function(data, ScYr = c(2:10), maxlag = 15,
-                               yr.weights = c(1:9)/sum(c(1:9)), thres = seq(0.1,0.6,by = 0.05)){
-
+eval_metrics <- function(data,
+                         ScYr = c(2:10),
+                         maxlag = 15,
+                         yr.weights = c(1:9)/sum(c(1:9)),
+                         thres = seq(0.1,0.6,by = 0.05),
+                         topt = 14) {
 
   # Input validation
   if (!is.data.frame(data)) {
@@ -109,7 +113,7 @@ eval_metrics <- function(data, ScYr = c(2:10), maxlag = 15,
   }
 
 
-  mod_resp <- (log_reg(data, 15, area = "region"))$resp
+  mod_resp <- (log_reg(data, maxlag, area = "region"))$resp
 
   lags <- seq.int(1,maxlag)
 
@@ -151,7 +155,7 @@ eval_metrics <- function(data, ScYr = c(2:10), maxlag = 15,
 
       # calculate metrics
       performance.metric <- calc.metric.region(lagdata[[t]],
-                                               ScYr, yr.weights)
+                                               ScYr, yr.weights, topt)
 
       #update lag and threshold metric matrices
       FAR.mat[i,t] <- performance.metric$FAR
@@ -222,7 +226,7 @@ eval_metrics <- function(data, ScYr = c(2:10), maxlag = 15,
 
 
 #### Region-Wide Alarm - metric calculation ####
-calc.metric.region <- function(lagdata, ScYr, yr.weights) {
+calc.metric.region <- function(lagdata, ScYr, yr.weights, topt) {
 
   # evaluation metric vectors, each entry represents a year
   FAR <- ADD <- AATQ <- FATQ <- c()
@@ -245,9 +249,9 @@ calc.metric.region <- function(lagdata, ScYr, yr.weights) {
 
     #calculate evaluation metrics
     FAR[y] <- calc.FAR(ScYr.data)
-    ADD[y] <- calc.ADD(ScYr.data)
+    ADD[y] <- calc.ADD(ScYr.data, topt)
 
-    ScYr.data$ATQ <- calc.ATQ(ScYr.data)
+    ScYr.data$ATQ <- calc.ATQ(ScYr.data, topt)
     AATQ[y] <- calc.AATQ(ScYr.data)
     FATQ[y] <- calc.FATQ(ScYr.data)
 
@@ -285,10 +289,8 @@ calc.FAR <- function(data){
   return(FAR)
 }
 
-#### Added Days Delayed (ADD) ####
-calc.ADD <- function(data){
-
-  topt <- 14 # Optimal alarm day
+#### Accumulated Days Delayed (ADD) ####
+calc.ADD <- function(data, topt){
 
   refdate <- suppressWarnings(min(data[data$ref_date == 1,"Date"]))
 
@@ -304,15 +306,14 @@ calc.ADD <- function(data){
   advnot <- ifelse(advnot == "-Inf", NA ,advnot)
   tmax <- as.numeric(refdate - 1)
   ADD <- ifelse(is.na(advnot), tmax, topt - advnot)
+
   return(ADD)
 }
 
 #### Alarm Time Quality (ATQ) ####
-calc.ATQ <- function(data){
+calc.ATQ <- function(data, topt){
 
-  #ATQ metric powers, denominator, and optimal day
-  topt <- 14 # Optimal alarm day
-
+  #ATQ metric powers and denominator
   # "True Alarm" power - power for alarms raised before optimal alarm day
   ta.pow <- 4
 

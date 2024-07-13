@@ -66,22 +66,26 @@ The total number of simulations (n * sum of school populations) is automatically
 }
 \examples{
 # Simulate catchment area
-catch_df <- catchment_sim(4, 4.30, 3.6, 5)
+catch_df <- catchment_sim(16, 5, shape = 3.5, rate = 2.8)
 
-# Simulate elementary schools for each area
-elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
+# Simulate elementary schools using default gamma distribution
+elementary_df <- elementary_pop(catch_df, shape = 5.1, rate = 0.015)
 
-# Using default uniform distributions with pre-specified proportions
-house_children1 <- subpop_children(elementary_df, n = 3,
-                                   prop_parent_couple = 0.7,
-                                   prop_children_couple = c(0.3, 0.5, 0.2),
-                                   prop_children_lone = c(0.4, 0.4, 0.2),
-                                   prop_elem_age = 0.6)
+# Simulate households with children
+house_children <- subpop_children(elementary_df, n = 2,
+                                  prop_parent_couple = 0.7,
+                                  prop_children_couple = c(0.3, 0.5, 0.2),
+                                  prop_children_lone = c(0.4, 0.4, 0.2),
+                                  prop_elem_age = 0.6)
 
 # Using custom distributions
 house_children2 <- subpop_children(elementary_df, n = 3,
-                                   parent_dist = stats::rnorm, mean = 0.5, sd = 0.1,
-                                   child_dist = stats::rbeta, shape1 = 2, shape2 = 2,
-                                   age_dist = stats::runif)
+                                  prop_parent_couple = 0.7,
+                                  prop_children_couple = c(0.3, 0.5, 0.2),
+                                  prop_children_lone = c(0.4, 0.4, 0.2),
+                                  prop_elem_age = 0.6,
+                                  parent_dist = stats::rnorm, mean = 0.5, sd = 0.1,
+                                  child_dist = stats::rbeta, shape1 = 2, shape2 = 2,
+                                  age_dist = stats::runif)
 
 }

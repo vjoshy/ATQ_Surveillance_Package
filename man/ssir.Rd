@@ -8,6 +8,8 @@ ssir(
   N,
   T = 300,
   alpha,
+  avg_start = 45,
+  min_start = 20,
   inf_period = 4,
   inf_init = 32,
   report = 0.02,
@@ -21,6 +23,10 @@ ssir(
 \item{T}{Numeric. The duration of the simulation in time steps. Default is 300.}
 
 \item{alpha}{Numeric. The transmission rate. Must be a number between 0 and 1.}
+
+\item{avg_start}{Numeric. The average start day of the epidemic. Default is 45.}
+
+\item{min_start}{Numeric. The minimum start day of the epidemic. Default is 20.}
 
 \item{inf_period}{Numeric. The duration of the infectious period in time steps. Default is 4.}
 
@@ -41,6 +47,7 @@ If rep is NULL or 1, returns an object of class "ssir_epidemic" containing:
 \item{I}{Vector of infectious individuals at each time step}
 \item{R}{Vector of removed individuals at each time step}
 \item{parameters}{List of input parameters}
+
 If rep > 1, returns an object of class "ssir_epidemic_multi" containing
 multiple simulation results.
 }

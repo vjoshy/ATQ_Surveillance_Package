@@ -26,11 +26,11 @@
 #' @export
 #'
 #' @examples
-#' # Simulate catchment area
-#' catch_df <- catchment_sim(8, 4.30, 3.6, 5)
+#' # Simulate catchment areas
+#' catch_df <- catchment_sim(16, 5, shape = 3.5, rate = 2.8)
 #'
-#' # Simulate elementary schools for each area
-#' elementary_df <- elementary_pop(catch_df, 5.7, 0.014)
+#' # Simulate elementary schools using default gamma distribution
+#' elementary_df <- elementary_pop(catch_df, shape = 5.1, rate = 0.015)
 #'
 #' # Simulate households with children
 #' house_children <- subpop_children(elementary_df, n = 3,

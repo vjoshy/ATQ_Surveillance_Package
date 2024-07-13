@@ -4,11 +4,13 @@
 #' and school absenteeism information using epidemic and individual data.
 #'
 #' @param epidemic A list of simulated epidemic data
-#'   (output from simepi() or similar function)
+#'   (output from simepi() or similar function).
 #' @param individual_data A data frame of simulated individuals data
-#'   (output from simulate_households() or similar function)
+#'   (output from simulate_households() or similar function).
 #' @param lags Maximum number of lags for absenteeism, default = 16
-#'   (note that lag of zero is included)
+#'   (note that lag of zero is included).
+#' @param inf_period Infection period of epidemic, default = 4.
+#' @param T Time period, default = 300 days.
 #'
 #' @importFrom stats aggregate
 #' @importFrom zoo rollapply
@@ -39,7 +41,7 @@
 #'                               schoolID = sample(1:10, 1000, replace = TRUE))
 #'
 #' compiled_data <- compile_epi(epidemic, individual_data)
-compile_epi <- function(epidemic, individual_data, lags = 16){
+compile_epi <- function(epidemic, individual_data, lags = 16, inf_period = 4, T = 300){
 
   # Input validation
   if (!is.list(epidemic)) {
@@ -61,11 +63,11 @@ compile_epi <- function(epidemic, individual_data, lags = 16){
 
   labconf_region <- data.frame(time = c(), reported_cases = c(), ScYr = c(), new_inf = c())
 
-  for(i in 1:(length(epidemic) - 1)){
+  for(i in 1:(length(epidemic))){
 
     tryCatch({
       cases_df <- create_ssir_df(epidemic[[i]], i)
-      absent <- sim_absent_ssir(epidemic[[i]], individual_data, i)
+      absent <- sim_absent_ssir(epidemic[[i]], individual_data, i, inf_period, T)
 
       absent_region <- rbind(absent_region, absent)
       labconf_region <- rbind(labconf_region, cases_df)
@@ -183,7 +185,7 @@ create_ssir_df <- function(ssir_data, school_year) {
   return(ssir_df)
 }
 
-sim_absent_ssir <- function(ssir_data, individual_data, school_year) {
+sim_absent_ssir <- function(ssir_data, individual_data, school_year, inf_period, T = 300) {
 
   # Input validation
   if (!is.list(ssir_data) || !all(c("new_inf", "reported_cases") %in% names(ssir_data))) {
@@ -217,17 +219,17 @@ sim_absent_ssir <- function(ssir_data, individual_data, school_year) {
                                    absent = integer(), absent_sick = integer())
 
   # Simulate absenteeism for each day
-  for (i in 1:300) {
+  for (i in 1:T) {
     # Calculate proportion of infected individuals
-    prop_infected <- sum(new_inf[max(1, i-4):i]) / num_schoolkids
+    prop_infected <- sum(new_inf[max(1, i - inf_period):i]) / num_schoolkids
 
     # Simulate absenteeism
     a <- runif(num_schoolkids)
     absent <- ifelse(a < prop_infected,
-                     ifelse(runif(num_schoolkids) < 0.95, 1, 0),  # 95% of infected stay home
+                     ifelse(a < 0.95, 1, 0),  # 95% of infected stay home
                      ifelse(a < 0.95, 0, 1))  # 5% of healthy are absent
 
-    absent_sick <- ifelse(a < prop_infected & runif(num_schoolkids) < 0.95, 1, 0)
+    absent_sick <- ifelse(a < prop_infected & a < 0.95, 1, 0)
 
     # Aggregate by school
     school_absent <- aggregate(cbind(absent, absent_sick) ~ schoolID,

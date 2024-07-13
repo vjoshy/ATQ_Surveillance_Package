@@ -5,9 +5,10 @@
 #'
 #' @param N Numeric. The total population size.
 #' @param T Numeric. The duration of the simulation in time steps. Default is 300.
+#' @param avg_start Numeric. The average start day of the epidemic. Default is 45.
+#' @param min_start Numeric. The minimum start day of the epidemic. Default is 20.
 #' @param alpha Numeric. The transmission rate. Must be a number between 0 and 1.
 #' @param inf_period Numeric. The duration of the infectious period in time steps. Default is 4.
-#'
 #' @param inf_init Numeric. The initial number of infected individuals. Default is 32.
 #' @param report Numeric. The proportion of cases that are reported. Default is 0.02.
 #' @param lag Numeric. The average delay in reporting cases. Default is 7.
@@ -21,6 +22,7 @@
 #'   \item{I}{Vector of infectious individuals at each time step}
 #'   \item{R}{Vector of removed individuals at each time step}
 #'   \item{parameters}{List of input parameters}
+#'
 #'   If rep > 1, returns an object of class "ssir_epidemic_multi" containing
 #'   multiple simulation results.
 #'
@@ -38,8 +40,16 @@
 #' multi_result <- ssir(N = 10000, T = 300, alpha = 0.3, inf_period = 4, inf_init = 32,
 #' report = 0.02, lag = 7, rep = 100)
 #'
-ssir <- function(N, T = 300, alpha, inf_period = 4, inf_init = 32, report = 0.02,
-                 lag = 7, rep = NULL) {
+ssir <- function(N,
+                 T = 300,
+                 alpha,
+                 avg_start = 45,
+                 min_start = 20,
+                 inf_period = 4,
+                 inf_init = 32,
+                 report = 0.02,
+                 lag = 7,
+                 rep = NULL) {
   # Parameter validation
   if (!is.numeric(N) || N <= 0 || N %% 1 != 0) {
     stop("N ")
@@ -71,7 +81,9 @@ ssir <- function(N, T = 300, alpha, inf_period = 4, inf_init = 32, report = 0.02
       epidemic <- list()
 
       # Random start date
-      start <- max(round(stats::rnorm(1, mean = 45, sd = 15)), 20) + floor(stats::runif(1, 0, 15))
+      start <- max(round(stats::rnorm(1, mean = avg_start, sd = 15)),
+                   min_start) +
+              floor(stats::runif(1, 0, 15))
 
       # Initialize vectors
       dS <- dI <- dR <- new_inf <- S <- I <- R <- vector(length = T)

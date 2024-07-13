@@ -4,17 +4,21 @@
 \alias{compile_epi}
 \title{Compile Epidemic Data}
 \usage{
-compile_epi(epidemic, individual_data, lags = 16)
+compile_epi(epidemic, individual_data, lags = 16, inf_period = 4, T = 300)
 }
 \arguments{
 \item{epidemic}{A list of simulated epidemic data
-(output from simepi() or similar function)}
+(output from simepi() or similar function).}
 
 \item{individual_data}{A data frame of simulated individuals data
-(output from simulate_households() or similar function)}
+(output from simulate_households() or similar function).}
 
 \item{lags}{Maximum number of lags for absenteeism, default = 16
-(note that lag of zero is included)}
+(note that lag of zero is included).}
+
+\item{inf_period}{Infection period of epidemic, default = 4.}
+
+\item{T}{Time period, default = 300 days.}
 }
 \value{
 A data frame containing compiled epidemic data, including:

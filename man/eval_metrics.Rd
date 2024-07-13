@@ -9,7 +9,8 @@ eval_metrics(
   ScYr = c(2:10),
   maxlag = 15,
   yr.weights = c(1:9)/sum(c(1:9)),
-  thres = seq(0.1, 0.6, by = 0.05)
+  thres = seq(0.1, 0.6, by = 0.05),
+  topt = 14
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ typically output from the compile_epi function.}
 \item{yr.weights}{Weights for calculating WFATQ and WAATQ metrics (default: (1:9)/sum(1:9)).}
 
 \item{thres}{A vector of threshold values to evaluate (default: seq(0.1, 0.6, by = 0.05)).}
+
+\item{topt}{Optimal alarm day (default = 14).}
 }
 \value{
 A list containing three elements:
