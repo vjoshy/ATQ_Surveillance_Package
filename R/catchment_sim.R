@@ -31,9 +31,20 @@
 #' catch_df3 <- catchment_sim(16, 20, dist_func = stats::rpois, lambda = 3)
 catchment_sim <- function(n, area, dist_func = stats::rgamma, ...){
 
+  if (n <= 0 || !is.numeric(n) || n %% 1 != 0) {
+    stop("n must be a positive integer")
+  }
+  if (area <= 0 || !is.numeric(area)) {
+    stop("area must be a positive number")
+  }
+
+
   # Generate catchment area sizes using the provided distribution function
-  size <- round(dist_func(n, ...)) |>
-    (\(x) replace(x, x == 0, 1))()
+  size <- tryCatch({
+    round(dist_func(n, ...)) |> (\(x) replace(x, x == 0, 1))()
+  }, error = function(e) {
+    stop(paste("Error in distribution function:", e$message))
+  })
 
 
   # creating empty vectors to hold number catchment areas of size n

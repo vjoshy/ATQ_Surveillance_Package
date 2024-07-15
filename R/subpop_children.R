@@ -196,7 +196,7 @@ subpop_children <- function(df, n = 5,
 
 
   # update school populations to include the possible extra 1-2 children
-  # in case there aren't any students assigned to a school
+  # in case there aren't any students assigned to a schoolwwwwwww
   school_pops <- stats::aggregate(house_children$num_elem_child ~ house_children$schoolID, FUN="sum")
   df$schoolPop <- ifelse(df$schoolID %in% school_pops[,1],
                          school_pops[match(df$schoolID, school_pops[,1]), 2],

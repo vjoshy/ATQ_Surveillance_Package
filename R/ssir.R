@@ -52,28 +52,37 @@ ssir <- function(N,
                  rep = NULL) {
   # Parameter validation
   if (!is.numeric(N) || N <= 0 || N %% 1 != 0) {
-    stop("N ")
+    stop("Population size (N) must be a positve integer.")
   }
   if (!is.numeric(T) || T <= 0 || T %% 1 != 0) {
-    stop("T ")
+    stop("Simulation duration (T) must be a positive integer.")
   }
   if (!is.numeric(alpha) || alpha <= 0 || alpha > 1) {
-    stop("alpha must be a number between 0 and 1.")
+    stop("Transmission rate (alpha) must be a number between 0 and 1.")
   }
   if (!is.numeric(inf_period) || inf_period <= 0 || inf_period %% 1 != 0) {
-    stop("inf_period ")
+    stop("Infection period (inf_period) nust be a positive integer.")
   }
   if (!is.numeric(inf_init) || inf_init <= 0 || inf_init %% 1 != 0) {
-    stop("inf_init ")
+    stop("Initial number of infected (inf_init) must be a positive integer.")
   }
   if (!is.numeric(report) || report < 0 || report > 1) {
-    stop("report must be a number between 0 and 1.")
+    stop("Reporting percentage must be a number between 0 and 1.")
   }
   if (!is.numeric(lag) || lag < 0 || lag %% 1 != 0) {
-    stop("lag must be a non-negative integer.")
+    stop("The average delay of reporting cases must be a non-negative integer.")
   }
   if (!is.null(rep) && (!is.numeric(rep) || rep <= 0 || rep %% 1 != 0)) {
-    stop("rep must be NULL or a positive integer.")
+    stop("Simulation replications must be NULL or a positive integer.")
+  }
+
+  if (alpha * inf_init / N > 1) {
+    warning("The initial force of infection (alpha * inf_init / N) is greater than 1.
+            This may lead to instability.")
+  }
+
+  if (avg_start && min_start > T)  {
+    stop("Start dates cannot be greater than total period of epidemic")
   }
 
   run_simulation <- function() {
@@ -82,8 +91,7 @@ ssir <- function(N,
 
       # Random start date
       start <- max(round(stats::rnorm(1, mean = avg_start, sd = 15)),
-                   min_start) +
-              floor(stats::runif(1, 0, 15))
+                    + floor(stats::runif(1, 0, 15)), min_start)
 
       # Initialize vectors
       dS <- dI <- dR <- new_inf <- S <- I <- R <- vector(length = T)
@@ -103,21 +111,39 @@ ssir <- function(N,
       # To hold delayed cases
       reporting_queue <- vector("list", length = T + lag)
 
-      for (t in (start+1):T) {
-        new_inf[t] <- rbinom(1, S[t-1], 1 - exp(-alpha * I[t-1] / N))
+      for (t in (start + 1):T) {
+        # Calculate probability of infection, ensuring it's between 0 and 1
+        p_inf <- pmin(1, pmax(0, 1 - exp(-alpha * I[t-1] / N)))
+
+        print(p_inf)
+        new_inf[t] <- rbinom(1, S[t-1], p_inf)
 
         # Simulate reported cases
-        cases_to_report <- rbinom(1, new_inf[t], report)
+        # Ensure we're not trying to report more cases than new infections
+        cases_to_report <- min(new_inf[t], rbinom(1, new_inf[t], report))
+
 
         if (cases_to_report > 0) {
-          delays <- round(rexp(cases_to_report, rate = 1/lag))
+          if (lag > 0) {
+            delays <- round(rexp(cases_to_report, rate = 1/lag))
+          } else {
+            # If lag is 0, all cases are reported immediately
+            delays <- rep(0, cases_to_report)
+          }
           for (delay in delays) {
             report_day <- t + delay
             if (report_day <= length(reported_cases)) {
               reporting_queue[[report_day]] <- c(reporting_queue[[report_day]], 1)
             }
           }
+
         }
+
+        # Sanity checks
+        if (any(is.na(c(S[t], I[t], R[t])))) {
+          stop(paste("NA values encountered at time step", t))
+        }
+
 
         if (!is.null(reporting_queue[[t]])) {
           reported_cases[t] <- sum(reporting_queue[[t]])

@@ -1,45 +1,47 @@
-test_that("Simulation of households and individuals", {
+# tests/testthat/test-simulate_households.R
+
+# Helper function to create sample data
+create_sample_data <- function() {
+  catch_df <- catchment_sim(4, 5, shape = 3.5, rate = 2.8)
+  elementary_df <- elementary_pop(catch_df, shape = 5.1, rate = 0.015)
+  house_children <- subpop_children(elementary_df, n = 2,
+                                    prop_parent_couple = 0.7,
+                                    prop_children_couple = c(0.3, 0.5, 0.2),
+                                    prop_children_lone = c(0.4, 0.4, 0.2),
+                                    prop_elem_age = 0.2)
+  house_nochildren <- subpop_noChildren(house_children, elementary_df,
+                                        prop_house_size = c(0.2, 0.3, 0.25, 0.15, 0.1),
+                                        prop_house_Children = 0.3)
+  list(children_df = house_children, noChildren_df = house_nochildren)
+}
+
+test_that("simulate_households generates correct output structure", {
+  set.seed(123)
+  sample_data <- create_sample_data()
+  result <- simulate_households(sample_data$children_df, sample_data$noChildren_df)
+
+  expect_type(result, "list")
+  expect_named(result, c("household_sim", "individual_sim"))
 
 
-  # set up interactive answers
-  f <- file()
-  lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832,
-             0.3071523, 0.1070645,0.4976825)
-  ans <- paste(lines, collapse = "\n")
-  write(ans, f)
+  expect_true(all(c("houseID", "catchID", "schoolID", "num_people",
+                    "num_elem_child","xStart", "xEnd", "yStart",
+                    "yEnd", "loc.x", "loc.y") %in% names(result$household_sim)))
 
-  options("usr_con" = f) # set connection option
+  expect_true(all(c("houseID", "catchID", "schoolID", "num_people", "num_elem_child",
+                    "xStart", "xEnd", "yStart", "yEnd", "loc.x", "loc.y",
+                    "individualID", "elem_child_ind") %in% names(result$individual_sim)))
+})
 
-  catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
+test_that("simulate_households correctly assigns individuals to households", {
+  set.seed(123)
+  sample_data <- create_sample_data()
+  result <- simulate_households(sample_data$children_df, sample_data$noChildren_df)
 
-  #simulate elementary schools for each area
-  elementary_df <- elementary_pop(catch_df, 5.27426341, 0.01427793)
+  expect_equal(sum(result$household_sim$num_people), nrow(result$individual_sim))
+  expect_equal(sum(result$household_sim$num_elem_child), sum(result$individual_sim$elem_child_ind))
 
-  # simulate household with children and assign them to elementary school
-  output <- capture_output_lines({
-    house_children <- subpop_children(elementary_df)
-  })
-
-
-  lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239,
-             0.09953358, 0.4277052)
-  ans <- paste(lines, collapse = "\n")
-  write(ans, f)
-
-  output <- capture_output_lines({
-    house_nochildren <- subpop_noChildren(house_children, elementary_df)
-  })
-
-  close(f) # close the file
-
-  options("usr_con" = stdin()) # reset connection option
-
-  simulation <- simulate_households(house_children, house_nochildren)
-
-  sum1 <- sum(simulation$individuals$elem_child_ind)
-
-  sum2 <- sum(simulation$households$num_elem_child)
-
-  # tests
-  expect_equal(sum1, sum2)
+  # Check if each household has the correct number of individuals
+  household_counts <- table(result$individual_sim$houseID)
+  expect_equal(sum(as.vector(household_counts)), sum(result$household_sim$num_people))
 })

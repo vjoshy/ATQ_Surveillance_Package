@@ -37,7 +37,13 @@ elementary_pop <- function(df, dist_func = stats::rgamma, ...){
 
 
   # gamma distribution of number of students in elementary schools
-  school_pop <- round(dist_func(sum(df$num.schools), ...))
+  # Generate catchment area sizes using the provided distribution function
+  school_pop <- tryCatch({
+    round(dist_func(sum(df$num.schools), ...)) |> (\(x) replace(x, x == 0, 1))()
+  }, error = function(e) {
+    stop(paste("Error in distribution function:", e$message))
+  })
+
   school_id <- seq.int(length(school_pop))
 
 

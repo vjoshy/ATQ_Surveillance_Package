@@ -1,21 +1,25 @@
-
-#simulate catchment area
-catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
-
-#simulate elementary schools for each area
-elementary_df <- elementary_pop(catch_df, 5.27426341, 0.01427793)
-
-catch_id <- aggregate(elementary_df$schoolPop, FUN = "sum",
-                      by = list(elementary_df$catchID))[,1]
+# tests/testthat/test-catchment_sim.R
 
 
-test_that("catchment_sim creates a data frame of 16 rows", {
-  expect_equal(dim(catch_df), c(16,6))
+test_that("catchment_sim generates correct output structure", {
+  set.seed(123)
+  catch_df <- catchment_sim(16, 20, shape = 4.1, rate = 2.7)
+
+  expect_equal(nrow(catch_df), 16)
+  expect_equal(ncol(catch_df), 6)
+  expect_equal(names(catch_df), c("catchID", "num.schools", "xStart", "xEnd", "yStart", "yEnd"))
+  expect_true(all(catch_df$num.schools >= 1))
+  expect_true(all(catch_df$xEnd - catch_df$xStart == 20))
+  expect_true(all(catch_df$yEnd - catch_df$yStart == 20))
 })
 
-test_that("elementary schools are assigned to catchment areas", {
-  expect_equal(catch_df$catchID, catch_id)
+test_that("catchment_sim works with different distribution functions", {
+  set.seed(123)
+  catch_df_norm <- catchment_sim(16, 20, dist_func = stats::rnorm, mean = 5, sd = 1)
+  catch_df_pois <- catchment_sim(16, 20, dist_func = stats::rpois, lambda = 3)
+
+  expect_equal(nrow(catch_df_norm), 16)
+  expect_equal(nrow(catch_df_pois), 16)
+  expect_true(all(catch_df_norm$num.schools >= 1))
+  expect_true(all(catch_df_pois$num.schools >= 1))
 })
-
-
-

@@ -1,38 +1,45 @@
-
-test_that("Sub population of households with Children", {
-
-
-  # set up interactive answers
-  f <- file()
-  lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523,
-             0.1070645,0.4976825)
-  ans <- paste(lines, collapse = "\n")
-  write(ans, f)
-
-  options("usr_con" = f) # set connection option
-
-  catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
-
-  #simulate elementary schools for each area
-  elementary_df <- elementary_pop(catch_df, 5.27426341, 0.01427793)
-
-  # simulate household with children and assign them to elementary school
-
-  output <- capture_output_lines({
-    result <- subpop_children(elementary_df)
-  })
+# tests/testthat/test-subpop_children.R
 
 
-  mean_children1 <- round(mean(aggregate(result$num_elem_child ~
-                                           result$schoolID, FUN="sum")[,2]))
+# Helper function to create sample data
+create_sample_data <- function() {
+  catch_df <- catchment_sim(4, 5, shape = 3.5, rate = 2.8)
+  elementary_pop(catch_df, shape = 5.1, rate = 0.015)
+}
 
-  mean_children2 <- round(mean(elementary_df$schoolPop))
+test_that("subpop_children generates correct output structure", {
+  set.seed(123)
+  df <- create_sample_data()
+  result <- subpop_children(df, n = 2,
+                            prop_parent_couple = 0.7,
+                            prop_children_couple = c(0.3, 0.5, 0.2),
+                            prop_children_lone = c(0.4, 0.4, 0.2),
+                            prop_elem_age = 0.6)
+
+  expect_s3_class(result, "data.frame")
+  expect_true(all(c("houseID", "num_parent", "num_child", "num_elem_child", "schoolID",
+                    "catchID", "schoolPop", "xStart", "xEnd", "yStart", "yEnd", "num_people") %in% names(result)))
+  expect_true(all(result$num_parent %in% c(1, 2)))
+  expect_true(all(result$num_child >= 1))
+  expect_true(all(result$num_elem_child <= result$num_child))
+})
 
 
-  close(f) # close the file
 
-  options("usr_con" = stdin()) # reset connection option
+test_that("subpop_children handles custom distribution functions", {
+  set.seed(123)
+  df <- create_sample_data()
+  result <- subpop_children(df, n = 2,
+                            prop_parent_couple = 0.7,
+                            prop_children_couple = c(0.3, 0.5, 0.2),
+                            prop_children_lone = c(0.4, 0.4, 0.2),
+                            prop_elem_age = 0.6,
+                            parent_dist = stats::rnorm, mean = 0.5, sd = 0.1,
+                            child_dist = stats::rbeta, shape1 = 2, shape2 = 2,
+                            age_dist = stats::runif)
 
-  # tests
-  expect_equal(mean_children1, mean_children1)
+  expect_s3_class(result, "data.frame")
+  expect_true(all(result$num_parent %in% c(1, 2)))
+  expect_true(all(result$num_child >= 1))
+  expect_true(all(result$num_elem_child <= result$num_child))
 })

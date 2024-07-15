@@ -1,42 +1,29 @@
-test_that("Sub population of households with no Children", {
+# tests/testthat/test-subpop_noChildren.R
 
+# Helper function to create sample data
+create_sample_data <- function() {
+  catch_df <- catchment_sim(4, 5, shape = 3.5, rate = 2.8)
+  elementary_df <- elementary_pop(catch_df, shape = 5.1, rate = 0.015)
+  house_children <- subpop_children(elementary_df, n = 2,
+                                    prop_parent_couple = 0.7,
+                                    prop_children_couple = c(0.3, 0.5, 0.2),
+                                    prop_children_lone = c(0.4, 0.4, 0.2),
+                                    prop_elem_age = 0.6)
+  list(house_children = house_children, elementary_df = elementary_df)
+}
 
-  # set up interactive answers
-  f <- file()
-  lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523,
-             0.1070645,0.4976825)
-  ans <- paste(lines, collapse = "\n")
-  write(ans, f)
+test_that("subpop_noChildren generates correct output structure", {
+  set.seed(123)
+  sample_data <- create_sample_data()
+  result <- subpop_noChildren(sample_data$house_children, sample_data$elementary_df,
+                              prop_house_size = c(0.2, 0.3, 0.25, 0.15, 0.1),
+                              prop_house_Children = 0.3)
 
-  options("usr_con" = f) # set connection option
-
-  catch_df <- catchment_sim(16, 4.313320, 3.026894, 20)
-
-  #simulate elementary schools for each area
-  elementary_df <- elementary_pop(catch_df, 5.27426341, 0.01427793)
-
-  # simulate household with children and assign them to elementary school
-  output <- capture_output_lines({
-    house_children <- subpop_children(elementary_df)
-  })
-
-
-  lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239,
-             0.09953358, 0.4277052)
-  ans <- paste(lines, collapse = "\n")
-  write(ans, f)
-
-  output <- capture_output_lines({
-    result <- subpop_noChildren(house_children, elementary_df)
-  })
-
-  close(f) # close the file
-
-  options("usr_con" = stdin()) # reset connection option
-
-  catch1 <- length(table(house_children$catchID))
-  catch2 <- length(table(result$catchID))
-
-  # tests
-  expect_equal(catch1, catch2)
+  expect_s3_class(result, "data.frame")
+  expect_true(all(c("catchID", "houseID", "num_people", "schoolPop",
+                    "xStart", "xEnd", "yStart", "yEnd") %in% names(result)))
+  expect_true(all(result$num_people >= 1))
+  expect_true(all(result$houseID > max(sample_data$house_children$houseID)))
 })
+
+
