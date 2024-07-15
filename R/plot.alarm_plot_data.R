@@ -89,29 +89,38 @@ plot.alarm_plot_data <- function(x, ...) {
 
     p <- ggplot(year_data, aes(x = .data$Date)) +
       # Absenteeism percentage
-      geom_col(aes(y = .data$pct_absent * 100), fill = "grey70", alpha = 0.7) +
+      geom_col(aes(y = .data$pct_absent * 100, fill = "Absenteeism (%)"), alpha = 0.7) +
       # Lab confirmed cases
-      geom_col(aes(y = .data$lab_conf), fill = "black", alpha = 0.7) +
+      geom_col(aes(y = .data$lab_conf, fill = "Lab Confirmed Cases"), alpha = 0.7) +
       # Reference date
       geom_vline(data = dplyr::filter(year_data, .data$ref_date == 1),
-                 aes(xintercept = .data$Date),
-                 linetype = "dashed", color = "orange") +
+                 aes(xintercept = .data$Date, color = "Reference Date"),
+                 linetype = "dashed") +
       # Alert points (stacked)
       geom_point(data = dplyr::filter(year_data, !is.na(.data$Model)),
                  aes(y = .data$y_position, color = .data$Model), shape = 15,
                  size = 3) +
-      scale_color_brewer(palette = "Set1") +
+      scale_fill_manual(values = c("Absenteeism (%)" = "grey70",
+                                   "Lab Confirmed Cases" = "black")) +
+
+      scale_color_manual(values = c("Reference Date" = "orange",
+                                    setNames(scales::hue_pal()(length(unique_models)), unique_models)))
       scale_y_continuous(
         name = "Average Absenteeism Percentage",
         sec.axis = sec_axis(~., name = "Confirmed Influenza Cases"),
-        limits = c(y_min, y_max * 1.1)  # Extend y-axis below 0 for stacked points
-      ) +
-      labs(title = paste("Epidemic Data with Alerts - Year", year),
-           x = "Time") +
-      theme_bw() +
-      theme(legend.position = "bottom",
-            axis.title.y.right = element_text(color = "black"),
-            axis.title.y.left = element_text(color = "grey50"))
+        limits = c(y_min, y_max * 1.1)) + # Extend y-axis below 0 for stacked points
+
+        labs(title = paste("Epidemic Data with Alerts - Year", year),
+             x = "Time",
+             fill = "Data Type",
+             color = "Alerts and Reference") +
+
+        theme_bw() +
+        theme(legend.position = "bottom",
+              axis.title.y.right = element_text(color = "black"),
+              axis.title.y.left = element_text(color = "grey50")) +
+        guides(fill = guide_legend(order = 1),
+               color = guide_legend(order = 2))
 
     return(p)
   })

@@ -104,8 +104,8 @@ eval_metrics <- function(data,
     stop("maxlag must be a positive integer")
   }
 
-  if (!is.numeric(yr.weights) || any(yr.weights < 0) || length(yr.weights) != length(ScYr)) {
-    stop("yr.weights must be a numeric vector of non-negative values with the same length as ScYr")
+  if (!is.numeric(yr.weights) || any(yr.weights < 0) ) {
+    stop("yr.weights must be a numeric vector of non-negative values")
   }
 
   if (!is.numeric(thres) || any(thres < 0) || any(thres > 1)) {

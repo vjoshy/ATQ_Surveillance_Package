@@ -63,7 +63,7 @@ compile_epi <- function(epidemic, individual_data, lags = 16, inf_period = 4, T 
 
   labconf_region <- data.frame(time = c(), reported_cases = c(), ScYr = c(), new_inf = c())
 
-  for(i in 1:(length(epidemic))){
+  for(i in 1:(length(epidemic) - 1)){
 
     tryCatch({
       cases_df <- create_ssir_df(epidemic[[i]], i)
