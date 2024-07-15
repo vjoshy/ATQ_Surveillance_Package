@@ -52,7 +52,7 @@ ssir <- function(N,
                  rep = NULL) {
   # Parameter validation
   if (!is.numeric(N) || N <= 0 || N %% 1 != 0) {
-    stop("Population size (N) must be a positve integer.")
+    stop("Population size (N) must be a positive integer.")
   }
   if (!is.numeric(T) || T <= 0 || T %% 1 != 0) {
     stop("Simulation duration (T) must be a positive integer.")
@@ -115,7 +115,6 @@ ssir <- function(N,
         # Calculate probability of infection, ensuring it's between 0 and 1
         p_inf <- pmin(1, pmax(0, 1 - exp(-alpha * I[t-1] / N)))
 
-        print(p_inf)
         new_inf[t] <- rbinom(1, S[t-1], p_inf)
 
         # Simulate reported cases

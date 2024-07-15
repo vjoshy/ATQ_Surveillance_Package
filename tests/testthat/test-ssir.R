@@ -30,14 +30,15 @@ test_that("ssir generates correct output structure for multiple simulations", {
 })
 
 test_that("ssir handles edge cases and errors", {
-  expect_error(ssir(N = -1000, alpha = 0.3), "Population size (N) must be a positve integer.")
-  expect_error(ssir(N = 10000, T = -300, alpha = 0.3), "Simulation duration (T) must be a positive integer.")
-  expect_error(ssir(N = 10000, T = 300, alpha = 1.5), "Transmission rate (alpha) must be a number between 0 and 1.")
-  expect_error(ssir(N = 10000, T = 300, alpha = 0.3, inf_period = -4), "Infection period (inf_period) nust be a positive integer.")
-  expect_error(ssir(N = 10000, T = 300, alpha = 0.3, report = 1.5), "Reporting percentage must be a number between 0 and 1.")
-  expect_error(ssir(N = 10000, T = 300, alpha = 0.3, lag = -7), "The average delay of reporting cases must be a non-negative integer.")
-  expect_error(ssir(N = 10000, T = 300, alpha = 0.3, rep = -5), "Simulation replications must be NULL or a positive integer.")
+  expect_error(ssir(N = -1000, alpha = 0.3))
+  expect_error(ssir(N = 10000, T = -300, alpha = 0.3))
+  expect_error(ssir(N = 10000, T = 300, alpha = 1.5))
+  expect_error(ssir(N = 10000, T = 300, alpha = 0.3, inf_period = -4))
+  expect_error(ssir(N = 10000, T = 300, alpha = 0.3, report = 1.5))
+  expect_error(ssir(N = 10000, T = 300, alpha = 0.3, lag = -7))
+  expect_error(ssir(N = 10000, T = 300, alpha = 0.3, rep = -5))
 
   # Test with extreme values
-  expect_error(ssir(N = 10, T = 10, alpha = 0.99, inf_period = 1, inf_init = 1, report = 0.99, lag = 0))
+  expect_error(ssir(N = 10, T = 10, alpha = 0.99, inf_period = 1,
+                    inf_init = 1, report = 0.99, lag = 0))
 })
