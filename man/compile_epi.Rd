@@ -41,8 +41,7 @@ and school absenteeism information using epidemic and individual data.
 }
 \examples{
 # Assuming you have previously simulated epidemic and individual data:
-epidemic <- list(year1 = list(new_inf = rnorm(300), reported_cases = rnorm(300)),
-                 year2 = list(new_inf = rnorm(300), reported_cases = rnorm(300)))
+epidemic <- ssir(1000, alpha = 0.4)
 individual_data <- data.frame(elem_child_ind = sample(0:1, 1000, replace = TRUE),
                               schoolID = sample(1:10, 1000, replace = TRUE))
 

@@ -35,8 +35,7 @@
 #'
 #' @examples
 #' # Assuming you have previously simulated epidemic and individual data:
-#' epidemic <- list(year1 = list(new_inf = rnorm(300), reported_cases = rnorm(300)),
-#'                  year2 = list(new_inf = rnorm(300), reported_cases = rnorm(300)))
+#' epidemic <- ssir(1000, alpha = 0.4)
 #' individual_data <- data.frame(elem_child_ind = sample(0:1, 1000, replace = TRUE),
 #'                               schoolID = sample(1:10, 1000, replace = TRUE))
 #'
@@ -44,8 +43,8 @@
 compile_epi <- function(epidemic, individual_data, lags = 16, inf_period = 4, T = 300){
 
   # Input validation
-  if (!is.list(epidemic)) {
-    stop("epidemic must be a list")
+  if (!inherits(epidemic, c("ssir_epidemic", "ssir_epidemic_multi"))) {
+    stop("epidemic must be of ssir_epidemic or ssir_epidemic_multi class, please use ssir() function to simulate epidemic.")
   }
   if (!is.data.frame(individual_data)) {
     stop("individual_data must be a dataframe")
@@ -53,6 +52,14 @@ compile_epi <- function(epidemic, individual_data, lags = 16, inf_period = 4, T 
   if (!is.numeric(lags) || length(lags) != 1 || lags < 1) {
     stop("lags must be a single positive numeric value")
   }
+
+  if(inherits(epidemic, "ssir_epidemic")){
+    years <- 1
+  } else {
+    years <- length(epidemic) - 1
+  }
+
+
 
   #Region-wide datasets
   actual_cases_region <- data.frame(time=c(), new_inf = c(),
@@ -63,11 +70,17 @@ compile_epi <- function(epidemic, individual_data, lags = 16, inf_period = 4, T 
 
   labconf_region <- data.frame(time = c(), reported_cases = c(), ScYr = c(), new_inf = c())
 
-  for(i in 1:(length(epidemic) - 1)){
+  for(i in 1:years){
+
+    if(years == 1){
+      ssir_data <- epidemic
+    } else {
+      ssir_data <- epidemic[[i]]
+    }
 
     tryCatch({
-      cases_df <- create_ssir_df(epidemic[[i]], i)
-      absent <- sim_absent_ssir(epidemic[[i]], individual_data, i, inf_period, T)
+      cases_df <- create_ssir_df(ssir_data, i)
+      absent <- sim_absent_ssir(ssir_data, individual_data, i, inf_period, T)
 
       absent_region <- rbind(absent_region, absent)
       labconf_region <- rbind(labconf_region, cases_df)

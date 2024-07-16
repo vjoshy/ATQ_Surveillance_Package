@@ -90,7 +90,8 @@ eval_metrics <- function(data,
     stop("data must be a data frame")
   }
 
-  required_cols <- c("ScYr", "Date", "Case", "window", "ref_date")
+  required_cols <- c("Date","ScYr","pct_absent","absent","absent_sick","new_inf","lab_conf",
+                     "Case","sinterm","costerm","window","ref_date")
   missing_cols <- setdiff(required_cols, names(data))
   if (length(missing_cols) > 0) {
     stop(paste("data is missing required columns:", paste(missing_cols, collapse = ", ")))
@@ -104,8 +105,8 @@ eval_metrics <- function(data,
     stop("maxlag must be a positive integer")
   }
 
-  if (!is.numeric(yr.weights) || any(yr.weights < 0) ) {
-    stop("yr.weights must be a numeric vector of non-negative values")
+  if (!is.numeric(yr.weights) || any(yr.weights < 0) || length(yr.weights) != length(ScYr) ) {
+    stop("yr.weights must be a numeric vector of non-negative values with the same length as ScYr")
   }
 
   if (!is.numeric(thres) || any(thres < 0) || any(thres > 1)) {

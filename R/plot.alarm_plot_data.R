@@ -16,6 +16,7 @@
 #' @importFrom dplyr left_join  distinct mutate group_by group_map
 #' @importFrom stats setNames
 #' @importFrom rlang .data
+#' @importFrom scales hue_pal
 #'
 #' @examples
 #' # Generate sample data
@@ -104,7 +105,8 @@ plot.alarm_plot_data <- function(x, ...) {
                                    "Lab Confirmed Cases" = "black")) +
 
       scale_color_manual(values = c("Reference Date" = "orange",
-                                    setNames(scales::hue_pal()(length(unique_models)), unique_models)))
+                                    setNames(scales::hue_pal()(length(unique_models)),
+                                             unique_models))) +
       scale_y_continuous(
         name = "Average Absenteeism Percentage",
         sec.axis = sec_axis(~., name = "Confirmed Influenza Cases"),
