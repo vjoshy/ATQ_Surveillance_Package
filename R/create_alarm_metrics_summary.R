@@ -69,9 +69,7 @@
 #' print(summary)
 #'
 create_alarm_metrics_summary <- function(metrics, best_models, epidemic_data) {
-  # Function body remains the same
-}
-create_alarm_metrics_summary <- function(metrics, best_models, epidemic_data) {
+
   # Extract metric matrices
   metric_names <- c("FAR", "ADD", "AATQ", "FATQ", "WAATQ", "WFATQ")
   metric_matrices <- metrics[metric_names]

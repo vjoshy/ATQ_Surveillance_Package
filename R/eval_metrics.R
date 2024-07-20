@@ -201,7 +201,9 @@ eval_metrics <- function(data,
     "best.FAR" = best_model(best.FAR),
     "best.ADD" = best_model(best.ADD),
     "best.WFATQ" = best_model(best.WFATQ),
-    "best.WAATQ" = best_model(best.WAATQ)
+    "best.WAATQ" = best_model(best.WAATQ),
+    lags = 1:maxlag,
+    thresholds = thres
   )
 
   metrics <- alarm_metrics(result)
@@ -221,7 +223,7 @@ eval_metrics <- function(data,
 
   summary <- create_alarm_metrics_summary(metrics, result, data)
 
-  list(metrics = metrics, plot_data = plot_data, summary = summary)
+  list(metrics = metrics, plot_data = plot_data, result = summary)
 }
 
 

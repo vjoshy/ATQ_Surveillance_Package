@@ -44,10 +44,10 @@
 #' plot(alarm_metrics_obj, metric = "FATQ", col = heat.colors(12))
 #'
 plot.alarm_metrics <- function(x, metric = "AATQ", ...) {
+
   # Create a heatmap of the chosen metric
-  image(x[[metric]], main = paste(metric, "by lag and threshold"), ...)
-}
-plot.alarm_metrics <- function(x, metric = "AATQ", ...) {
-  # Create a heatmap of the chosen metric
-  image(x[[metric]], main = paste(metric, "by lag and threshold"))
+  image(z = x[[metric]], x = x$lags, y = x$thresholds,
+        main = paste(metric, "by lag and threshold"),
+        xlab = 'Lags', ylab = 'Thresholds',
+        col = heat.colors(15), ...)
 }
