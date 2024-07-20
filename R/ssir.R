@@ -2,6 +2,7 @@
 #'
 #' This function runs a stochastic Susceptible-Infectious-Removed (SIR) epidemic simulation.
 #' It can run a single simulation or multiple replications.
+#' Also simulates laboratory confirmed cases
 #'
 #' @param N Numeric. The total population size.
 #' @param T Numeric. The duration of the simulation in time steps. Default is 300.

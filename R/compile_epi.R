@@ -1,7 +1,7 @@
 #' Compile Epidemic Data
 #'
-#' Compiles and processes epidemic data, simulating laboratory confirmed cases
-#' and school absenteeism information using epidemic and individual data.
+#' Compiles and processes epidemic data, simulating  school absenteeism
+#' using epidemic and individual data.
 #'
 #' @param epidemic A list of simulated epidemic data
 #'   (output from simepi() or similar function).

@@ -54,6 +54,7 @@ multiple simulation results.
 \description{
 This function runs a stochastic Susceptible-Infectious-Removed (SIR) epidemic simulation.
 It can run a single simulation or multiple replications.
+Also simulates laboratory confirmed cases
 }
 \examples{
 # Run a single simulation

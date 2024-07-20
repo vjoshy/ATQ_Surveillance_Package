@@ -36,8 +36,8 @@ A data frame containing compiled epidemic data, including:
 \item{lag0, lag1, ..., lag15}{Lagged absenteeism values}
 }
 \description{
-Compiles and processes epidemic data, simulating laboratory confirmed cases
-and school absenteeism information using epidemic and individual data.
+Compiles and processes epidemic data, simulating  school absenteeism
+using epidemic and individual data.
 }
 \examples{
 # Assuming you have previously simulated epidemic and individual data:
