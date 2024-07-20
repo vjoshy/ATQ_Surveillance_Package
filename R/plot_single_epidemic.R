@@ -49,7 +49,8 @@ plot_single_epidemic <- function(epidemic, epidemic_num) {
     labs(title = paste("Epidemic", epidemic_num, "- New Infections (Start: Day", start_date, ")"),
          x = "Time",
          y = "Number of New Infections") +
-    theme_bw()
+    theme_bw() + theme(axis.title = element_text(size = 10),
+                       plot.title = element_text(size = 10))
 
   # Plot for reported cases
   p2 <- ggplot(df_reported, aes(x = .data$time, y = .data$value)) +
@@ -57,8 +58,8 @@ plot_single_epidemic <- function(epidemic, epidemic_num) {
     labs(title = paste("Epidemic", epidemic_num, "- Reported Cases (Start: Day", start_date, ")"),
          x = "Time",
          y = "Number of Reported Cases") +
-    theme_bw()
-
+    theme_bw() + theme(axis.title = element_text(size = 10),
+                      plot.title = element_text(size = 10))
   # Arrange plots for a single epidemic
   gridExtra::grid.arrange(p1, p2, ncol = 1)
 }

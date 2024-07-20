@@ -90,9 +90,11 @@ plot.alarm_plot_data <- function(x, ...) {
 
     p <- ggplot(year_data, aes(x = .data$Date)) +
       # Absenteeism percentage
-      geom_col(aes(y = .data$pct_absent * 100, fill = "Absenteeism (%)"), alpha = 0.7) +
+      geom_col(aes(y = .data$pct_absent * 100, fill = "Absenteeism (%)"), alpha = 0.7,
+               show.legend = FALSE) +
       # Lab confirmed cases
-      geom_col(aes(y = .data$lab_conf, fill = "Lab Confirmed Cases"), alpha = 0.7) +
+      geom_col(aes(y = .data$lab_conf, fill = "Lab Confirmed Cases"), alpha = 0.7,
+               show.legend = FALSE) +
       # Reference date
       geom_vline(data = dplyr::filter(year_data, .data$ref_date == 1),
                  aes(xintercept = .data$Date, color = "Reference Date"),
@@ -120,9 +122,11 @@ plot.alarm_plot_data <- function(x, ...) {
         theme_bw() +
         theme(legend.position = "bottom",
               axis.title.y.right = element_text(color = "black"),
-              axis.title.y.left = element_text(color = "grey50")) +
-        guides(fill = guide_legend(order = 1),
-               color = guide_legend(order = 2))
+              axis.title.y.left = element_text(color = "grey50"),
+              legend.box.background = element_rect(),
+              axis.title = element_text(size = 10),
+              plot.title = element_text(size = 10))
+
 
     return(p)
   })
