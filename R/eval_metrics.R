@@ -223,7 +223,7 @@ eval_metrics <- function(data,
 
   summary <- create_alarm_metrics_summary(metrics, result, data)
 
-  list(metrics = metrics, plot_data = plot_data, result = summary)
+  list(metrics = metrics, plot_data = plot_data, results = summary)
 }
 
 

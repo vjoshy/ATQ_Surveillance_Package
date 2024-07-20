@@ -126,7 +126,7 @@ plot(alarm_metrics$metrics, "ADD")   # Accumulated Delay Days
 
 
 # Summarize alarm metrics
-summary(alarm_metrics$summary)
+summary(alarm_metrics$results)
 
 # Generate and display plots for alarm metrics across epidemic years
 alarm_plots <- plot(alarm_metrics$plot_data)
