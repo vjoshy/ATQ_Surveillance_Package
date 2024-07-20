@@ -121,13 +121,13 @@ summary(epidemic)
 #> SSIR Epidemic Summary (Multiple Simulations):
 #> Number of simulations: 10 
 #> 
-#> Average total infected: 60047.7 
-#> Average total reported cases: 1190.7 
-#> Average peak infected: 4325.2 
+#> Average total infected: 53980.5 
+#> Average total reported cases: 1067.4 
+#> Average peak infected: 4007.8 
 #> 
 #> Model parameters:
 #> $N
-#> [1] 197227
+#> [1] 175730
 #> 
 #> $T
 #> [1] 300
@@ -165,8 +165,8 @@ dplyr::glimpse(absent_data)
 #> Columns: 28
 #> $ Date        <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,…
 #> $ ScYr        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-#> $ pct_absent  <dbl> 0.04925325, 0.04640617, 0.04858373, 0.04855402, 0.04963313…
-#> $ absent      <dbl> 792, 744, 786, 776, 794, 769, 785, 783, 758, 793, 771, 829…
+#> $ pct_absent  <dbl> 0.05009972, 0.05229680, 0.05238570, 0.04842380, 0.04934321…
+#> $ absent      <dbl> 800, 839, 816, 770, 767, 838, 811, 811, 765, 789, 792, 802…
 #> $ absent_sick <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ new_inf     <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ lab_conf    <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
@@ -175,20 +175,20 @@ dplyr::glimpse(absent_data)
 #> $ costerm     <dbl> 0.9998520, 0.9994082, 0.9986686, 0.9976335, 0.9963032, 0.9…
 #> $ window      <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ ref_date    <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
-#> $ lag0        <dbl> 0.04925325, 0.04640617, 0.04858373, 0.04855402, 0.04963313…
-#> $ lag1        <dbl> NA, 0.04925325, 0.04640617, 0.04858373, 0.04855402, 0.0496…
-#> $ lag2        <dbl> NA, NA, 0.04925325, 0.04640617, 0.04858373, 0.04855402, 0.…
-#> $ lag3        <dbl> NA, NA, NA, 0.04925325, 0.04640617, 0.04858373, 0.04855402…
-#> $ lag4        <dbl> NA, NA, NA, NA, 0.04925325, 0.04640617, 0.04858373, 0.0485…
-#> $ lag5        <dbl> NA, NA, NA, NA, NA, 0.04925325, 0.04640617, 0.04858373, 0.…
-#> $ lag6        <dbl> NA, NA, NA, NA, NA, NA, 0.04925325, 0.04640617, 0.04858373…
-#> $ lag7        <dbl> NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.04640617, 0.0485…
-#> $ lag8        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.04640617, 0.…
-#> $ lag9        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.04640617…
-#> $ lag10       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.0464…
-#> $ lag11       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.…
-#> $ lag12       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325…
-#> $ lag13       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.0492…
+#> $ lag0        <dbl> 0.05009972, 0.05229680, 0.05238570, 0.04842380, 0.04934321…
+#> $ lag1        <dbl> NA, 0.05009972, 0.05229680, 0.05238570, 0.04842380, 0.0493…
+#> $ lag2        <dbl> NA, NA, 0.05009972, 0.05229680, 0.05238570, 0.04842380, 0.…
+#> $ lag3        <dbl> NA, NA, NA, 0.05009972, 0.05229680, 0.05238570, 0.04842380…
+#> $ lag4        <dbl> NA, NA, NA, NA, 0.05009972, 0.05229680, 0.05238570, 0.0484…
+#> $ lag5        <dbl> NA, NA, NA, NA, NA, 0.05009972, 0.05229680, 0.05238570, 0.…
+#> $ lag6        <dbl> NA, NA, NA, NA, NA, NA, 0.05009972, 0.05229680, 0.05238570…
+#> $ lag7        <dbl> NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.05229680, 0.0523…
+#> $ lag8        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.05229680, 0.…
+#> $ lag9        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.05229680…
+#> $ lag10       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.0522…
+#> $ lag11       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.…
+#> $ lag12       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972…
+#> $ lag13       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.0500…
 #> $ lag14       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.…
 #> $ lag15       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
 
@@ -236,83 +236,83 @@ plot(alarm_metrics$metrics, "ADD")   # Accumulated Delay Days
 
 
 # Summarize alarm metrics
-summary(alarm_metrics$summary)
+summary(alarm_metrics$results)
 #> Alarm Metrics Summary
 #> =====================
 #> 
 #> FAR :
-#>   Mean: 0.8241 
-#>   Variance: 0.0135 
-#>   Best lag: 10 
-#>   Best threshold: 0.15 
-#>   Best value: 0.5278 
+#>   Mean: 0.7644 
+#>   Variance: 0.0056 
+#>   Best lag: 1 
+#>   Best threshold: 0.2 
+#>   Best value: 0.5429 
 #> 
 #> ADD :
-#>   Mean: 32.2061 
-#>   Variance: 32.0479 
+#>   Mean: 13.6054 
+#>   Variance: 8.2501 
 #>   Best lag: 1 
 #>   Best threshold: 0.1 
-#>   Best value: 19.2222 
+#>   Best value: 3.5556 
 #> 
 #> AATQ :
-#>   Mean: 0.7761 
-#>   Variance: 0.0149 
-#>   Best lag: 12 
-#>   Best threshold: 0.1 
-#>   Best value: 0.4856 
+#>   Mean: 0.5082 
+#>   Variance: 0.004 
+#>   Best lag: 1 
+#>   Best threshold: 0.2 
+#>   Best value: 0.2871 
 #> 
 #> FATQ :
-#>   Mean: 0.7984 
-#>   Variance: 0.0134 
-#>   Best lag: 10 
-#>   Best threshold: 0.15 
-#>   Best value: 0.5082 
+#>   Mean: 0.7039 
+#>   Variance: 0.0055 
+#>   Best lag: 1 
+#>   Best threshold: 0.2 
+#>   Best value: 0.5468 
 #> 
 #> WAATQ :
-#>   Mean: 0.8538 
-#>   Variance: 0.0178 
+#>   Mean: 0.5184 
+#>   Variance: 0.0068 
 #>   Best lag: 1 
-#>   Best threshold: 0.1 
-#>   Best value: 0.5087 
+#>   Best threshold: 0.2 
+#>   Best value: 0.2177 
 #> 
 #> WFATQ :
-#>   Mean: 0.8614 
-#>   Variance: 0.0175 
+#>   Mean: 0.7298 
+#>   Variance: 0.0112 
 #>   Best lag: 1 
-#>   Best threshold: 0.1 
-#>   Best value: 0.5213 
+#>   Best threshold: 0.2 
+#>   Best value: 0.5214 
 #> 
 #> Reference Dates:
 #>    epidemic_years ref_dates
-#> 1               1        49
-#> 2               2        43
-#> 3               3        68
-#> 4               4        65
-#> 5               5        40
-#> 6               6        48
-#> 7               7        42
-#> 8               8        43
-#> 9               9        52
-#> 10             10        22
+#> 1               1        41
+#> 2               2        27
+#> 3               3        39
+#> 4               4        72
+#> 5               5        33
+#> 6               6        39
+#> 7               7        20
+#> 8               8        74
+#> 9               9        88
+#> 10             10        30
 #> 
 #> Best Prediction Dates:
 #> FAR :
-#>  [1] NA 38 42 56 NA NA NA 43 45 NA
+#>  [1] NA NA 33 30 13  6  6 10 34 18
 #> 
 #> ADD :
-#>  [1] NA NA 36 45 NA 48 NA 41 42 NA
+#>  [1] NA NA 27 30  1  6  6  7 21  1
 #> 
 #> AATQ :
-#>  [1] NA 39 39 56 NA NA NA 26 45 NA
+#>  [1] NA NA 33 30 13  6  6 10 34 18
 #> 
 #> FATQ :
-#>  [1] NA 38 42 56 NA NA NA 43 45 NA
+#>  [1] NA NA 33 30 13  6  6 10 34 18
 #> 
 #> WAATQ :
-#>  [1] NA NA 36 45 NA 48 NA 41 42 NA
+#>  [1] NA NA 33 30 13  6  6 10 34 18
 #> 
 #> WFATQ :
-#>  [1] NA NA 36 45 NA 48 NA 41 42 NA
+#>  [1] NA NA 33 30 13  6  6 10 34 18
 
 # Generate and display plots for alarm metrics across epidemic years
 alarm_plots <- plot(alarm_metrics$plot_data)
@@ -321,24 +321,29 @@ for(i in seq_along(alarm_plots)) {
 }
 ```
 
-<img src="man/figures/README-example-17.png" width="100%" />
+<img src="man/figures/README-example-17.png" width="100%" /><img src="man/figures/README-example-18.png" width="100%" />
 
-    #> Warning: Removed 19 rows containing missing values or values outside the scale range
+    #> Warning: Removed 35 rows containing missing values or values outside the scale range
     #> (`geom_col()`).
 
-<img src="man/figures/README-example-18.png" width="100%" />
+<img src="man/figures/README-example-19.png" width="100%" />
 
-    #> Warning: Removed 37 rows containing missing values or values outside the scale range
+    #> Warning: Removed 18 rows containing missing values or values outside the scale range
     #> (`geom_col()`).
 
-<img src="man/figures/README-example-19.png" width="100%" /><img src="man/figures/README-example-20.png" width="100%" /><img src="man/figures/README-example-21.png" width="100%" /><img src="man/figures/README-example-22.png" width="100%" />
+<img src="man/figures/README-example-20.png" width="100%" /><img src="man/figures/README-example-21.png" width="100%" />
 
     #> Warning: Removed 5 rows containing missing values or values outside the scale range
     #> (`geom_col()`).
 
+<img src="man/figures/README-example-22.png" width="100%" />
+
+    #> Warning: Removed 105 rows containing missing values or values outside the scale range
+    #> (`geom_col()`).
+
 <img src="man/figures/README-example-23.png" width="100%" />
 
-    #> Warning: Removed 4 rows containing missing values or values outside the scale range
+    #> Warning: Removed 164 rows containing missing values or values outside the scale range
     #> (`geom_col()`).
 
 <img src="man/figures/README-example-24.png" width="100%" /><img src="man/figures/README-example-25.png" width="100%" />
