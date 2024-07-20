@@ -76,32 +76,22 @@ Please see example below:
 library(ATQ)
 
 #Simulate number of elementary schools in each catchment
-catch_df <- catchment_sim(16, 4.68, 3.01, 5)
+catch_df <- catchment_sim(16, 5, shape = 4.68, rate = 3.01)
 
 # Simulate elementary school populations for each catchment area
-elementary_df <- elementary_pop(catch_df, 5.86, 0.01)
-
-# Set up file connection to simulate user input for subpop_children() function
-f <- file()
-lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
-ans <- paste(lines, collapse = "\n")
-write(ans, f)
-options("usr_con" = f) # Set connection option to use file instead of stdin
+elementary_df <- elementary_pop(catch_df, shape = 5.86, rate = 0.01)
 
 # Simulate households with children
-house_children <- subpop_children(elementary_df, n = 2)
-
-# Prepare input for subpop_noChildren() function
-lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
-ans <- paste(lines, collapse = "\n")
-write(ans, f)
+house_children <- subpop_children(elementary_df, n = 2,
+                                  prop_parent_couple = 0.7,
+                                  prop_children_couple = c(0.3, 0.5, 0.2),
+                                  prop_children_lone = c(0.4, 0.4, 0.2),
+                                  prop_elem_age = 0.6)
 
 # Simulate households without children
-house_nochildren <- subpop_noChildren(house_children, elementary_df)
-
-# Clean up file connection
-close(f)
-options("usr_con" = stdin()) # Reset connection option to standard input
+house_nochildren <-  subpop_noChildren(house_children, elementary_df,
+                                   prop_house_size = c(0.2, 0.3, 0.25, 0.15, 0.1),
+                                   prop_house_Children = 0.3)
 
 # Combine household simulations and generate individual-level data
 simulation <- simulate_households(house_children, house_nochildren)

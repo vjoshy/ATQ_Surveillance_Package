@@ -90,34 +90,22 @@ Please see example below:
 library(ATQ)
 
 #Simulate number of elementary schools in each catchment
-catch_df <- catchment_sim(16, 4.68, 3.01, 5)
+catch_df <- catchment_sim(16, 5, shape = 4.68, rate = 3.01)
 
 # Simulate elementary school populations for each catchment area
-elementary_df <- elementary_pop(catch_df, 5.86, 0.01)
-
-# Set up file connection to simulate user input for subpop_children() function
-f <- file()
-lines <- c(0.7668901,0.3634045, 0.4329440, 0.2036515,0.5857832, 0.3071523, 0.1070645,0.4976825)
-ans <- paste(lines, collapse = "\n")
-write(ans, f)
-options("usr_con" = f) # Set connection option to use file instead of stdin
+elementary_df <- elementary_pop(catch_df, shape = 5.86, rate = 0.01)
 
 # Simulate households with children
-house_children <- subpop_children(elementary_df, n = 2)
-#> Please enter proportion of parents as a couple: Enter proportion of coupled parents with 1, 2, 3+ children separated by space:Enter proportion of single parents with 1, 2, 3+ children separated by space:Please enter proportion of children that are of elementary school age:
-
-# Prepare input for subpop_noChildren() function
-lines <- c(0.23246269, 0.34281716, 0.16091418, 0.16427239, 0.09953358, 0.4277052)
-ans <- paste(lines, collapse = "\n")
-write(ans, f)
+house_children <- subpop_children(elementary_df, n = 2,
+                                  prop_parent_couple = 0.7,
+                                  prop_children_couple = c(0.3, 0.5, 0.2),
+                                  prop_children_lone = c(0.4, 0.4, 0.2),
+                                  prop_elem_age = 0.6)
 
 # Simulate households without children
-house_nochildren <- subpop_noChildren(house_children, elementary_df)
-#> Please enter proportion of households with 1, 2, 3, 4, 5+ members separted by space: Please enter proportion of households with children:
-
-# Clean up file connection
-close(f)
-options("usr_con" = stdin()) # Reset connection option to standard input
+house_nochildren <-  subpop_noChildren(house_children, elementary_df,
+                                   prop_house_size = c(0.2, 0.3, 0.25, 0.15, 0.1),
+                                   prop_house_Children = 0.3)
 
 # Combine household simulations and generate individual-level data
 simulation <- simulate_households(house_children, house_nochildren)
@@ -133,13 +121,13 @@ summary(epidemic)
 #> SSIR Epidemic Summary (Multiple Simulations):
 #> Number of simulations: 10 
 #> 
-#> Average total infected: 47897.2 
-#> Average total reported cases: 961.3 
-#> Average peak infected: 3537.6 
+#> Average total infected: 60047.7 
+#> Average total reported cases: 1190.7 
+#> Average peak infected: 4325.2 
 #> 
 #> Model parameters:
 #> $N
-#> [1] 157544
+#> [1] 197227
 #> 
 #> $T
 #> [1] 300
@@ -177,8 +165,8 @@ dplyr::glimpse(absent_data)
 #> Columns: 28
 #> $ Date        <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,…
 #> $ ScYr        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-#> $ pct_absent  <dbl> 0.05083952, 0.04989393, 0.04901167, 0.04987701, 0.04879853…
-#> $ absent      <dbl> 858, 850, 842, 853, 830, 865, 903, 891, 820, 879, 896, 912…
+#> $ pct_absent  <dbl> 0.04925325, 0.04640617, 0.04858373, 0.04855402, 0.04963313…
+#> $ absent      <dbl> 792, 744, 786, 776, 794, 769, 785, 783, 758, 793, 771, 829…
 #> $ absent_sick <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ new_inf     <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ lab_conf    <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
@@ -187,20 +175,20 @@ dplyr::glimpse(absent_data)
 #> $ costerm     <dbl> 0.9998520, 0.9994082, 0.9986686, 0.9976335, 0.9963032, 0.9…
 #> $ window      <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ ref_date    <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
-#> $ lag0        <dbl> 0.05083952, 0.04989393, 0.04901167, 0.04987701, 0.04879853…
-#> $ lag1        <dbl> NA, 0.05083952, 0.04989393, 0.04901167, 0.04987701, 0.0487…
-#> $ lag2        <dbl> NA, NA, 0.05083952, 0.04989393, 0.04901167, 0.04987701, 0.…
-#> $ lag3        <dbl> NA, NA, NA, 0.05083952, 0.04989393, 0.04901167, 0.04987701…
-#> $ lag4        <dbl> NA, NA, NA, NA, 0.05083952, 0.04989393, 0.04901167, 0.0498…
-#> $ lag5        <dbl> NA, NA, NA, NA, NA, 0.05083952, 0.04989393, 0.04901167, 0.…
-#> $ lag6        <dbl> NA, NA, NA, NA, NA, NA, 0.05083952, 0.04989393, 0.04901167…
-#> $ lag7        <dbl> NA, NA, NA, NA, NA, NA, NA, 0.05083952, 0.04989393, 0.0490…
-#> $ lag8        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, 0.05083952, 0.04989393, 0.…
-#> $ lag9        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05083952, 0.04989393…
-#> $ lag10       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05083952, 0.0498…
-#> $ lag11       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05083952, 0.…
-#> $ lag12       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05083952…
-#> $ lag13       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.0508…
+#> $ lag0        <dbl> 0.04925325, 0.04640617, 0.04858373, 0.04855402, 0.04963313…
+#> $ lag1        <dbl> NA, 0.04925325, 0.04640617, 0.04858373, 0.04855402, 0.0496…
+#> $ lag2        <dbl> NA, NA, 0.04925325, 0.04640617, 0.04858373, 0.04855402, 0.…
+#> $ lag3        <dbl> NA, NA, NA, 0.04925325, 0.04640617, 0.04858373, 0.04855402…
+#> $ lag4        <dbl> NA, NA, NA, NA, 0.04925325, 0.04640617, 0.04858373, 0.0485…
+#> $ lag5        <dbl> NA, NA, NA, NA, NA, 0.04925325, 0.04640617, 0.04858373, 0.…
+#> $ lag6        <dbl> NA, NA, NA, NA, NA, NA, 0.04925325, 0.04640617, 0.04858373…
+#> $ lag7        <dbl> NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.04640617, 0.0485…
+#> $ lag8        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.04640617, 0.…
+#> $ lag9        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.04640617…
+#> $ lag10       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.0464…
+#> $ lag11       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325, 0.…
+#> $ lag12       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.04925325…
+#> $ lag13       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.0492…
 #> $ lag14       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.…
 #> $ lag15       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
 
@@ -253,78 +241,78 @@ summary(alarm_metrics$summary)
 #> =====================
 #> 
 #> FAR :
-#>   Mean: 0.5538 
-#>   Variance: 0.0044 
-#>   Best lag: 14 
-#>   Best threshold: 0.25 
-#>   Best value: 0.4121 
+#>   Mean: 0.8241 
+#>   Variance: 0.0135 
+#>   Best lag: 10 
+#>   Best threshold: 0.15 
+#>   Best value: 0.5278 
 #> 
 #> ADD :
-#>   Mean: 20.2613 
-#>   Variance: 28.3687 
+#>   Mean: 32.2061 
+#>   Variance: 32.0479 
 #>   Best lag: 1 
 #>   Best threshold: 0.1 
-#>   Best value: 9.6667 
+#>   Best value: 19.2222 
 #> 
 #> AATQ :
-#>   Mean: 0.4169 
-#>   Variance: 0.0076 
-#>   Best lag: 1 
+#>   Mean: 0.7761 
+#>   Variance: 0.0149 
+#>   Best lag: 12 
 #>   Best threshold: 0.1 
-#>   Best value: 0.2361 
+#>   Best value: 0.4856 
 #> 
 #> FATQ :
-#>   Mean: 0.4454 
-#>   Variance: 0.0043 
-#>   Best lag: 14 
+#>   Mean: 0.7984 
+#>   Variance: 0.0134 
+#>   Best lag: 10 
 #>   Best threshold: 0.15 
-#>   Best value: 0.3159 
+#>   Best value: 0.5082 
 #> 
 #> WAATQ :
-#>   Mean: 0.393 
-#>   Variance: 0.0104 
+#>   Mean: 0.8538 
+#>   Variance: 0.0178 
 #>   Best lag: 1 
 #>   Best threshold: 0.1 
-#>   Best value: 0.1799 
+#>   Best value: 0.5087 
 #> 
 #> WFATQ :
-#>   Mean: 0.4426 
-#>   Variance: 0.0065 
-#>   Best lag: 14 
-#>   Best threshold: 0.25 
-#>   Best value: 0.3022 
+#>   Mean: 0.8614 
+#>   Variance: 0.0175 
+#>   Best lag: 1 
+#>   Best threshold: 0.1 
+#>   Best value: 0.5213 
 #> 
 #> Reference Dates:
 #>    epidemic_years ref_dates
-#> 1               1        60
-#> 2               2        55
-#> 3               3        40
-#> 4               4        46
-#> 5               5        47
-#> 6               6        67
-#> 7               7        83
-#> 8               8        47
-#> 9               9        63
-#> 10             10        81
+#> 1               1        49
+#> 2               2        43
+#> 3               3        68
+#> 4               4        65
+#> 5               5        40
+#> 6               6        48
+#> 7               7        42
+#> 8               8        43
+#> 9               9        52
+#> 10             10        22
 #> 
 #> Best Prediction Dates:
 #> FAR :
-#>  [1] NA 50 NA 46 44 54 55 NA 58 61
+#>  [1] NA 38 42 56 NA NA NA 43 45 NA
 #> 
 #> ADD :
-#>  [1] NA 52 NA 45 42 42 36 47 45 46
+#>  [1] NA NA 36 45 NA 48 NA 41 42 NA
 #> 
 #> AATQ :
-#>  [1] NA 52 NA 45 42 42 36 47 45 46
+#>  [1] NA 39 39 56 NA NA NA 26 45 NA
 #> 
 #> FATQ :
-#>  [1] NA 50 NA 41 44 49 54 NA 47 59
+#>  [1] NA 38 42 56 NA NA NA 43 45 NA
 #> 
 #> WAATQ :
-#>  [1] NA 52 NA 45 42 42 36 47 45 46
+#>  [1] NA NA 36 45 NA 48 NA 41 42 NA
 #> 
 #> WFATQ :
-#>  [1] NA 50 NA 46 44 54 55 NA 58 61
+#>  [1] NA NA 36 45 NA 48 NA 41 42 NA
 
 # Generate and display plots for alarm metrics across epidemic years
 alarm_plots <- plot(alarm_metrics$plot_data)
@@ -333,31 +321,27 @@ for(i in seq_along(alarm_plots)) {
 }
 ```
 
-<img src="man/figures/README-example-17.png" width="100%" /><img src="man/figures/README-example-18.png" width="100%" />
+<img src="man/figures/README-example-17.png" width="100%" />
 
-    #> Warning: Removed 7 rows containing missing values (`geom_col()`).
+    #> Warning: Removed 19 rows containing missing values or values outside the scale range
+    #> (`geom_col()`).
 
-<img src="man/figures/README-example-19.png" width="100%" />
+<img src="man/figures/README-example-18.png" width="100%" />
 
-    #> Warning: Removed 12 rows containing missing values (`geom_col()`).
+    #> Warning: Removed 37 rows containing missing values or values outside the scale range
+    #> (`geom_col()`).
 
-<img src="man/figures/README-example-20.png" width="100%" />
+<img src="man/figures/README-example-19.png" width="100%" /><img src="man/figures/README-example-20.png" width="100%" /><img src="man/figures/README-example-21.png" width="100%" /><img src="man/figures/README-example-22.png" width="100%" />
 
-    #> Warning: Removed 52 rows containing missing values (`geom_col()`).
+    #> Warning: Removed 5 rows containing missing values or values outside the scale range
+    #> (`geom_col()`).
 
-<img src="man/figures/README-example-21.png" width="100%" />
+<img src="man/figures/README-example-23.png" width="100%" />
 
-    #> Warning: Removed 88 rows containing missing values (`geom_col()`).
+    #> Warning: Removed 4 rows containing missing values or values outside the scale range
+    #> (`geom_col()`).
 
-<img src="man/figures/README-example-22.png" width="100%" /><img src="man/figures/README-example-23.png" width="100%" />
-
-    #> Warning: Removed 27 rows containing missing values (`geom_col()`).
-
-<img src="man/figures/README-example-24.png" width="100%" />
-
-    #> Warning: Removed 117 rows containing missing values (`geom_col()`).
-
-<img src="man/figures/README-example-25.png" width="100%" />
+<img src="man/figures/README-example-24.png" width="100%" /><img src="man/figures/README-example-25.png" width="100%" />
 
 The final output ‘region_metric’ will be a list of 6 matrices and 6 data
 frames. The matrices describe the values of metrics for respective lag
@@ -366,31 +350,5 @@ and thresholds.
 An optimal lag and threshold value that minimizes each metric is
 selected and these optimal parameters are used to generate the 6 data
 frames associated with the metrics. Simulated information like number of
-lab confirmed cases, number of students absent, etc, are included in the
-output.
-
-These data frames contain 19 variables and are as follows:
-
-- lag, Best selected lagged absenteeism value.
-- thres, Best selected threshold value.
-- Data, Day (1-300).
-- ScYr, School year.
-- Actual.case, Total number of true cases (unconfirmed).
-- case.elem, Number of true cases that are elementary school children.
-- Case.No, Number of lab confirmed cases.
-- Case, Binary variable to indicate whether there has been a lab
-  confirmed case for the day.
-- pct.absent, Percent of students absent in total school population.
-- absent, Total number of students absent.
-- absent.sick, Total number of students absent due to illness.
-- window, 14 day true alarm window for ADD and FAR calculations (binary
-  variable).
-- ref.date, Reference date (first day where there are two lab confirmed
-  cases in a 7 day period).
-- Alarm, Binary variable indicating whether alarm was raised (1 -
-  raised, 0 - not raised).
-- ATQ, Alert time quality (metric).
-- FAR, False alarm rate (metric).
-- ADD, Accumulated days delayed (metric).
-- AATQ, Average alarm time quality (metric).
-- FATQ, First alarm time quality (metric).
+lab confirmed cases, number of students absent, etc, are also included
+in the output.
