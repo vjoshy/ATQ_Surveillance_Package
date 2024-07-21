@@ -17,6 +17,11 @@ RoxygenNote: 7.2.3
 Suggests: 
     knitr,
     rmarkdown,
+    cli,
+    fansi,
+    farver,
+    utf8,
+    devtools,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 Imports: 
@@ -31,3 +36,4 @@ Depends:
     R (>= 2.10)
 LazyData: true
 VignetteBuilder: knitr
+BugReports: https://github.com/vjoshy/ATQ_Surveillance_Package/issues

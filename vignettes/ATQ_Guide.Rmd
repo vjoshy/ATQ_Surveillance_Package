@@ -26,8 +26,8 @@ This vignette demonstrates the package's use through a simulation study based on
 
 To use the package, install and load it with:
 ```{r setup}
-#install.packages("devtools")
-devtools::install_github("vjoshy/ATQ_Surveillance_Package")
+library(devtools)
+install_github("vjoshy/ATQ_Surveillance_Package")
 
 library(ATQ)
 ```

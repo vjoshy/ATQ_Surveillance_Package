@@ -4,13 +4,15 @@
 \alias{plot.alarm_metrics}
 \title{Plot Heatmap of Alarm Metrics}
 \usage{
-\method{plot}{alarm_metrics}(x, metric = "AATQ", ...)
+\method{plot}{alarm_metrics}(x, metric = "AATQ", col = heat.colors(12), ...)
 }
 \arguments{
 \item{x}{An object of class "alarm_metrics" containing matrices of metric values.}
 
 \item{metric}{A character string specifying which metric to plot.
 Default is "AATQ". Options include "FAR", "ADD", "AATQ", "FATQ", "WAATQ", "WFATQ".}
+
+\item{col}{Set heat map color profile, default is heat.colors(15)}
 
 \item{...}{Additional arguments passed to the image function.}
 }
@@ -36,7 +38,9 @@ sample_metrics <- list(
   AATQ = generate_metric_matrix(),
   FATQ = generate_metric_matrix(),
   WAATQ = generate_metric_matrix(),
-  WFATQ = generate_metric_matrix()
+  WFATQ = generate_metric_matrix(),
+ lags = 1:15,
+ thresholds = seq(0.1, 0.6, by = 0.05)
 )
 
 # Create an alarm_metrics object
