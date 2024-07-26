@@ -90,10 +90,10 @@ plot.alarm_plot_data <- function(x, ...) {
 
     p <- ggplot(year_data, aes(x = .data$Date)) +
       # Absenteeism percentage
-      geom_col(aes(y = .data$pct_absent * 100, fill = "Absenteeism (%)"), alpha = 0.7,
+      geom_area(aes(y = .data$pct_absent * 100, fill = "Absenteeism (%)"), alpha = 0.7,
                show.legend = FALSE) +
       # Lab confirmed cases
-      geom_col(aes(y = .data$lab_conf, fill = "Lab Confirmed Cases"), alpha = 0.7,
+      geom_area(aes(y = .data$lab_conf, fill = "Lab Confirmed Cases"), alpha = 0.7,
                show.legend = FALSE) +
       # Reference date
       geom_vline(data = dplyr::filter(year_data, .data$ref_date == 1),

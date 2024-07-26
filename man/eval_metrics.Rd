@@ -4,24 +4,13 @@
 \alias{eval_metrics}
 \title{Evaluate Alarm Metrics for Epidemic Models}
 \usage{
-eval_metrics(
-  data,
-  ScYr = c(2:10),
-  maxlag = 15,
-  yr.weights = c(1:9)/sum(c(1:9)),
-  thres = seq(0.1, 0.6, by = 0.05),
-  topt = 14
-)
+eval_metrics(data, maxlag = 15, thres = seq(0.1, 0.6, by = 0.05), topt = 14)
 }
 \arguments{
 \item{data}{A data frame containing the epidemic data with lagged variables,
 typically output from the compile_epi function.}
 
-\item{ScYr}{A vector of school years to be used for model evaluation (default: 2:10).}
-
 \item{maxlag}{The maximum number of lags to consider (default: 15).}
-
-\item{yr.weights}{Weights for calculating WFATQ and WAATQ metrics (default: (1:9)/sum(1:9)).}
 
 \item{thres}{A vector of threshold values to evaluate (default: seq(0.1, 0.6, by = 0.05)).}
 

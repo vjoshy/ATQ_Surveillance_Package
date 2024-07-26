@@ -7,9 +7,7 @@
 #'
 #' @param data A data frame containing the epidemic data with lagged variables,
 #'             typically output from the compile_epi function.
-#' @param ScYr A vector of school years to be used for model evaluation (default: 2:10).
 #' @param maxlag The maximum number of lags to consider (default: 15).
-#' @param yr.weights Weights for calculating WFATQ and WAATQ metrics (default: (1:9)/sum(1:9)).
 #' @param thres A vector of threshold values to evaluate (default: seq(0.1, 0.6, by = 0.05)).
 #' @param topt Optimal alarm day (default = 14).
 #'
@@ -79,9 +77,7 @@
 #'
 #'
 eval_metrics <- function(data,
-                         ScYr = c(2:10),
                          maxlag = 15,
-                         yr.weights = c(1:9)/sum(c(1:9)),
                          thres = seq(0.1,0.6,by = 0.05),
                          topt = 14) {
 
@@ -97,21 +93,17 @@ eval_metrics <- function(data,
     stop(paste("data is missing required columns:", paste(missing_cols, collapse = ", ")))
   }
 
-  if (!is.numeric(ScYr) || any(ScYr %% 1 != 0) || any(ScYr < 1)) {
-    stop("ScYr must be a vector of positive integers")
-  }
-
   if (!is.numeric(maxlag) || maxlag < 1) {
     stop("maxlag must be a positive integer")
-  }
-
-  if (!is.numeric(yr.weights) || any(yr.weights < 0) || length(yr.weights) != length(ScYr) ) {
-    stop("yr.weights must be a numeric vector of non-negative values with the same length as ScYr")
   }
 
   if (!is.numeric(thres) || any(thres < 0) || any(thres > 1)) {
     stop("thres must be a numeric vector with values between 0 and 1")
   }
+
+  ScYr <- unique(data$ScYr)[-1]
+
+  yr.weights = 1:length(ScYr)/sum(1:length(ScYr))
 
 
   mod_resp <- (log_reg(data, maxlag, area = "region"))$resp

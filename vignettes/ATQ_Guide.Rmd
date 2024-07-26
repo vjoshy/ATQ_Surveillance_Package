@@ -4,8 +4,11 @@ output: rmarkdown::html_vignette
 author: Vinay Joshy
 vignette: >
   %\VignetteIndexEntry{ATQ_Guide}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  markdown: 
+    wrap: 90
 ---
 
 ```{r, include = FALSE}
@@ -19,12 +22,20 @@ knitr::opts_chunk$set(
 
 ## Introduction
 
-The `ATQ` package provides tools for public health institutions to detect epidemics using school absenteeism data. It offers functions to simulate regional populations of households, elementary schools, and epidemics, and to calculate alarm metrics from these simulations.
+The `ATQ` package provides tools for public health institutions to detect epidemics using
+school absenteeism data. It offers functions to simulate regional populations of
+households, elementary schools, and epidemics, and to calculate alarm metrics from these
+simulations.
 
-This package builds on the work of Ward et al. and Vanderkruk et al. It introduces the Alert Time Quality (ATQ) metrics such as the Average ATQ (AATQ) and First ATQ (FATQ), to evaluate the timeliness and accuracy of epidemic alerts.
-This vignette demonstrates the package's use through a simulation study based on Vanderkruk et al., modeling yearly influenza epidemics and their alarm metrics in the Wellington-Dufferin-Guelph public health unit, Canada.
+This package builds on the work of Ward et al. and Vanderkruk et al. It introduces the
+Alert Time Quality (ATQ) metrics such as the Average ATQ (AATQ) and First ATQ (FATQ), to
+evaluate the timeliness and accuracy of epidemic alerts. This vignette demonstrates the
+package's use through a simulation study based on Vanderkruk et al., modeling yearly
+influenza epidemics and their alarm metrics in the Wellington-Dufferin-Guelph public
+health unit, Canada.
 
 To use the package, install and load it with:
+
 ```{r setup}
 library(devtools)
 install_github("vjoshy/ATQ_Surveillance_Package")
@@ -32,24 +43,40 @@ install_github("vjoshy/ATQ_Surveillance_Package")
 library(ATQ)
 ```
 
-The following sections will guide you through population simulation, epidemic modeling, and alarm metric calculation using the `ATQ` package.
+The following sections will guide you through population simulation, epidemic modeling,
+and alarm metric calculation using the `ATQ` package.
 
 ## Methods
 
-`ATQ` provides a simulation model that consists of three sequential parts: 1) a population of individuals, 2) annual influenza epidemics, 3) school absenteeism and laboratory confirmed influenza case data. The final part of this section will include alarm metrics evaluation.
+`ATQ` provides a simulation model that consists of three sequential parts: 1) a population
+of individuals, 2) annual influenza epidemics, 3) school absenteeism and laboratory
+confirmed influenza case data. The final part of this section will include alarm metrics
+evaluation.
 
 ### Population simulation
 
-To simulate the population of the Wellington-Dufferin-Guelph (WDG) region in Ontario, Canada, the package offers the following functions:
+To simulate the population of the Wellington-Dufferin-Guelph (WDG) region in Ontario,
+Canada, the package offers the following functions:
 
-  * `catchment_sim`: Simulates catchment areas using a default gamma distribution for the number of schools in each area. The `dist_func` argument allows for specifying other distributions.
-  * `elementary_pop`: Simulates elementary school enrollment and assigns students to catchments using a default gamma distribution. This function requires the output of `catchment_sim.` The `dist_func` argument can be modified for other distributions.
-  * `subpop_children`: Simulates households with children using the output of `elementary_pop.` It requires specifying population proportions such as coupled parents, number of children per household type, and proportion of elementary school-age children. Distributions for parent, child, and age simulations can be specified.
-  * `subpop_noChildren`: Simulates households without children using the outputs of `subpop_children` and `elementary_pop.` It requires specifying proportions of household sizes and the overall proportion of households with children.
-  * `simulate_households`: Creates a list containing two simulated populations: households and individuals.
+-   `catchment_sim`: Simulates catchment areas using a default gamma distribution for the
+    number of schools in each area. The `dist_func` argument allows for specifying other
+    distributions.
+-   `elementary_pop`: Simulates elementary school enrollment and assigns students to
+    catchments using a default gamma distribution. This function requires the output of
+    `catchment_sim.` The `dist_func` argument can be modified for other distributions.
+-   `subpop_children`: Simulates households with children using the output of
+    `elementary_pop.` It requires specifying population proportions such as coupled
+    parents, number of children per household type, and proportion of elementary
+    school-age children. Distributions for parent, child, and age simulations can be
+    specified.
+-   `subpop_noChildren`: Simulates households without children using the outputs of
+    `subpop_children` and `elementary_pop.` It requires specifying proportions of
+    household sizes and the overall proportion of households with children.
+-   `simulate_households`: Creates a list containing two simulated populations: households
+    and individuals.
 
-If population proportions are not provided to `subpop_children` and `subpop_noChildren`, the functions will prompt the user for input.
-
+If population proportions are not provided to `subpop_children` and `subpop_noChildren`,
+the functions will prompt the user for input.
 
 ```{r populationSimulation}
 
@@ -78,26 +105,40 @@ households <- simulate_households(house_children, house_noChild)
 
 ### Epidemic and Laboratory Confirmed Cases simulation
 
-The package simulates epidemics using a stochastic Susceptible-Infected-Removed (SIR) framework. This approach differs from Vanderkruk et al., who used a spatial and network-based individual-level model.
+The package simulates epidemics using a stochastic Susceptible-Infected-Removed (SIR)
+framework. This approach differs from Vanderkruk et al., who used a spatial and
+network-based individual-level model.
 
 #### Simulation Process
 
-* Initialization: The population is divided into S (Susceptible), I (Infectious), and R (Removed) compartments. Initially, most individuals are susceptible, a few are infectious, and none are removed.
-* Start Date: A random start date for the epidemic is chosen based on specified average and minimum start dates.
-Time Steps: The simulation proceeds in discrete time steps. For each step:
-    a. Transmission Probability (p_inf): Calculated as $1 - e^{-\alpha {\frac{I[t-1]}{N}}}$, where $\alpha$ is the transmission rate, $I[t-1]$ is the number of infectious individuals at the previous time step, and $N$ is the total population.
-    b. New Infections (new_inf): Determined by drawing from a binomial distribution with parameters n (number of susceptible individuals) and p (transmission probability).
-    c. Compartment Updates:
+-   Initialization: The population is divided into S (Susceptible), I (Infectious), and R
+    (Removed) compartments. Initially, most individuals are susceptible, a few are
+    infectious, and none are removed.
+-   Start Date: A random start date for the epidemic is chosen based on specified average
+    and minimum start dates. Time Steps: The simulation proceeds in discrete time steps.
+    For each step:
+    a.  Transmission Probability (p_inf): Calculated as
+        $1 - e^{-\alpha {\frac{I[t-1]}{N}}}$, where $\alpha$ is the transmission rate,
+        $I[t-1]$ is the number of infectious individuals at the previous time step, and
+        $N$ is the total population.
 
-        * Susceptible (S): Decreases by new infections.
-        * Infectious (I): Increases by new infections, decreases by recoveries/deaths.
-        * Removed (R): Increases by recoveries/deaths.
+    b.  New Infections (new_inf): Determined by drawing from a binomial distribution with
+        parameters n (number of susceptible individuals) and p (transmission probability).
 
-    d. Reported Cases: A subset of new infections is reported based on the reporting rate, with delays added using an exponential distribution to reflect reporting lag.
+    c.  Compartment Updates:
 
-The summary and plot methods can be used to visualize and summarize the simulated epidemics:
+        -   Susceptible (S): Decreases by new infections.
+        -   Infectious (I): Increases by new infections, decreases by recoveries/deaths.
+        -   Removed (R): Increases by recoveries/deaths.
 
-``` {r epidemicSimulation}
+    d.  Reported Cases: A subset of new infections is reported based on the reporting
+        rate, with delays added using an exponential distribution to reflect reporting
+        lag.
+
+The summary and plot methods can be used to visualize and summarize the simulated
+epidemics:
+
+```{r epidemicSimulation}
 
 # isolate individuals data
 individuals <- households$individual_sim
@@ -116,17 +157,25 @@ plot(epidemic)
 
 ### Absenteeism simulation
 
-The `compile_epi` function in this code compiles and processes epidemic data, simulating school absenteeism using epidemic and individual data. It creates a data set for actual cases, absenteeism and laboratory confirmed cases, this data set will also include a "True Alarm Window", reference dates for each epidemic year and seasonal lag values.
+The `compile_epi` function in this code compiles and processes epidemic data, simulating
+school absenteeism using epidemic and individual data. It creates a data set for actual
+cases, absenteeism and laboratory confirmed cases, this data set will also include a "True
+Alarm Window", reference dates for each epidemic year and seasonal lag values.
 
 Absenteeism data is simulated as follows:
-    * For each day, the proportion of infected individuals based on new infection over the past few days
-    * Whether each child is absent or not is determined using the logic:
-        * 95% of infected children stay home
-        * 5% of healthy children are absent for reasons other than sickness
-        
-The  data is aggregated across all schools.
 
-``` {r absenteeism}
+-   For each day, the proportion of infected individuals based on new infection over the
+    past few days
+
+-   Whether each child is absent or not is determined using the logic:
+
+    -   95% of infected children stay home
+
+    -   5% of healthy children are absent for reasons other than sickness
+
+The data is aggregated across all schools.
+
+```{r absenteeism}
 
 absent_data <- compile_epi(epidemic, individuals)
 
@@ -134,29 +183,49 @@ dplyr::glimpse(absent_data)
 
 ```
 
-
 ### Alarm Metrics Evaluation
 
-The `eval_metrics` function assesses the performance of epidemic alarm systems across various lags and thresholds using school absenteeism data. It evaluates the following key metrics:
-    * False Alarm Rate (FAR): Proportion of alarms raised outside the true alarm window.
-    * Added Days Delayed (ADD): Measures how many days after the optimal alarm day the first true alarm was raised.
-    * Average Alarm Time Quality (AATQ):  Mean quality of all alarms raised, considering their timing relative to the optimal alarm day.
-    * First Alarm Time Quality (FATQ): Quality of the first alarm raised, based on its timing.
-    * Weighted versions (WAATQ, WFATQ):  Apply year-specific weights to AATQ and FATQ.
+The `eval_metrics` function assesses the performance of epidemic alarm systems across
+various lags and thresholds using school absenteeism data. It evaluates the following key
+metrics:
+
+-   False Alarm Rate (FAR): Proportion of alarms raised outside the true alarm window.
+
+-   Added Days Delayed (ADD): Measures how many days after the optimal alarm day the first
+    true alarm was raised.
+
+-   Average Alarm Time Quality (AATQ): Mean quality of all alarms raised, considering
+    their timing relative to the optimal alarm day.
+
+-   First Alarm Time Quality (FATQ): Quality of the first alarm raised, based on its
+    timing.
+
+-   Weighted versions (WAATQ, WFATQ): Apply year-specific weights to AATQ and FATQ.
 
 A logistic regression model with lagged absenteeism and fixed seasonal terms given by:
-$ \text{logit}(\theta_{tj} = \beta_0 + \beta_1x_{tj} + \beta_2x_{(t-1)j} + ... + \beta_{l+1}x_{t-l}j +  + \beta_{l+3}cos_j(\frac{2\pi t^*}{T}))$
 
-where $t$ is time, $j$ is the school year, $l$ is the lag, and $T^*$ is the period for seasonal terms.
+$\text{logit}\theta_{tj} = \beta_0 + \beta_1x_{tj} + \beta_2x_{(t-1)j} + ... + \beta_{l+1}x_{(t-l)j} + + \beta_{l+3} cos_j(\frac{2\pi t^*}{T}))$
 
-`eval_metrics` also identifies the best model parameters (lag & threshold) for each metric. The output is a list with three main components:
-    * `metrics`: An object containing:
-        * matrices of each metric (FAR, ADD, AATQ, FATQ, WAATQ, WFATQ) for all lag and threshold combinations.
-        * Best models according to each metric, including lag and threshold values.
-    * `plot_data`: plot object to visualize epidemic data and the best model for each metric
-    * `results``: provides summary statistics
+where $t$ is time, $j$ is the school year, $l$ is the lag, and $T^*$ is the period for
+seasonal terms.
 
-In the example provided, alarms are calculated for school years 2 to 10, considering lags up to 15 days and threshold values ranging from 0.1 to 0.6 in 0.05 increments. Year weights are assigned proportionally to the school year number.
+`eval_metrics` also identifies the best model parameters (lag & threshold) for each
+metric. The output is a list with three main components:
+
+-   `metrics`: An object containing:
+
+    -   matrices of each metric (FAR, ADD, AATQ, FATQ, WAATQ, WFATQ) for all lag and
+        threshold combinations.
+
+    -   best models according to each metric, including lag and threshold values.
+
+-   `plot_data`: plot object to visualize epidemic data and the best model for each metric
+
+-   `results`: provides summary statistics
+
+In the example provided, alarms are calculated for school years 2 to 10, considering lags
+up to 15 days and threshold values ranging from 0.1 to 0.6 in 0.05 increments. Year
+weights are assigned proportionally to the school year number.
 
 ```{r metrics, fig.height = 4, fig.width = 7}
 # Evaluate alarm metrics for epidemic detection
@@ -182,7 +251,9 @@ for(i in seq_along(alarm_plots)) {
 
 ```
 
-
 ## References
 
-Vanderkruk, K.R., Deeth, L.E., Feng, Z. et al. ATQ: alert time quality, an evaluation metric for assessing timely epidemic detection models within a school absenteeism-based surveillance system. BMC Public Health 23, 850 (2023). https://doi.org/10.1186/s12889-023-15747-z
+Vanderkruk, K.R., Deeth, L.E., Feng, Z. et al. ATQ: alert time quality, an evaluation
+metric for assessing timely epidemic detection models within a school absenteeism-based
+surveillance system. BMC Public Health 23, 850 (2023).
+<https://doi.org/10.1186/s12889-023-15747-z>
