@@ -230,8 +230,7 @@ weights are assigned proportionally to the school year number.
 ```{r metrics, fig.height = 4, fig.width = 7}
 # Evaluate alarm metrics for epidemic detection
 # lag of 15
-alarms <- eval_metrics(absent_data, ScYr = 2:10, maxlag = 15, thres = seq(0.1,0.6,by = 0.05), 
-                      yr.weights = c(2:10)/sum(c(2:10)))
+alarms <- eval_metrics(absent_data, maxlag = 15, thres = seq(0.1,0.6,by = 0.05))
 
 summary(alarms$results)
 
