@@ -45,8 +45,7 @@
 #' compiled_data <- compile_epi(epidemic_new, individual_data)
 #'
 #' # Evaluate alarm metrics
-#' results <- eval_metrics(compiled_data, thres = seq(0.1,0.6,by = 0.05),
-#'                   ScYr = c(2:3), yr.weights = c(1:2)/sum(c(1:2)))
+#' results <- eval_metrics(compiled_data, thres = seq(0.1,0.6,by = 0.05))
 #'
 #' # Generate plots
 #' plots <- plot(results$plot_data)
