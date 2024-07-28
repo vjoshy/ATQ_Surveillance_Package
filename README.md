@@ -121,13 +121,13 @@ summary(epidemic)
 #> SSIR Epidemic Summary (Multiple Simulations):
 #> Number of simulations: 10 
 #> 
-#> Average total infected: 53980.5 
-#> Average total reported cases: 1067.4 
-#> Average peak infected: 4007.8 
+#> Average total infected: 50746.2 
+#> Average total reported cases: 1013.7 
+#> Average peak infected: 3816.5 
 #> 
 #> Model parameters:
 #> $N
-#> [1] 175730
+#> [1] 165811
 #> 
 #> $T
 #> [1] 300
@@ -152,7 +152,7 @@ summary(epidemic)
 plot(epidemic)
 ```
 
-<img src="man/figures/README-example-1.png" width="100%" /><img src="man/figures/README-example-2.png" width="100%" /><img src="man/figures/README-example-3.png" width="100%" /><img src="man/figures/README-example-4.png" width="100%" /><img src="man/figures/README-example-5.png" width="100%" /><img src="man/figures/README-example-6.png" width="100%" /><img src="man/figures/README-example-7.png" width="100%" /><img src="man/figures/README-example-8.png" width="100%" /><img src="man/figures/README-example-9.png" width="100%" /><img src="man/figures/README-example-10.png" width="100%" />
+<img src="man/figures/README-example-1.png" width="75%" /><img src="man/figures/README-example-2.png" width="75%" /><img src="man/figures/README-example-3.png" width="75%" /><img src="man/figures/README-example-4.png" width="75%" /><img src="man/figures/README-example-5.png" width="75%" /><img src="man/figures/README-example-6.png" width="75%" /><img src="man/figures/README-example-7.png" width="75%" /><img src="man/figures/README-example-8.png" width="75%" /><img src="man/figures/README-example-9.png" width="75%" /><img src="man/figures/README-example-10.png" width="75%" />
 
 ``` r
 
@@ -165,8 +165,8 @@ dplyr::glimpse(absent_data)
 #> Columns: 28
 #> $ Date        <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,…
 #> $ ScYr        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-#> $ pct_absent  <dbl> 0.05009972, 0.05229680, 0.05238570, 0.04842380, 0.04934321…
-#> $ absent      <dbl> 800, 839, 816, 770, 767, 838, 811, 811, 765, 789, 792, 802…
+#> $ pct_absent  <dbl> 0.05156766, 0.04988754, 0.04661123, 0.04987177, 0.04739303…
+#> $ absent      <dbl> 782, 773, 733, 766, 738, 810, 725, 781, 767, 738, 739, 723…
 #> $ absent_sick <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ new_inf     <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ lab_conf    <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
@@ -175,62 +175,61 @@ dplyr::glimpse(absent_data)
 #> $ costerm     <dbl> 0.9998520, 0.9994082, 0.9986686, 0.9976335, 0.9963032, 0.9…
 #> $ window      <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ ref_date    <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
-#> $ lag0        <dbl> 0.05009972, 0.05229680, 0.05238570, 0.04842380, 0.04934321…
-#> $ lag1        <dbl> NA, 0.05009972, 0.05229680, 0.05238570, 0.04842380, 0.0493…
-#> $ lag2        <dbl> NA, NA, 0.05009972, 0.05229680, 0.05238570, 0.04842380, 0.…
-#> $ lag3        <dbl> NA, NA, NA, 0.05009972, 0.05229680, 0.05238570, 0.04842380…
-#> $ lag4        <dbl> NA, NA, NA, NA, 0.05009972, 0.05229680, 0.05238570, 0.0484…
-#> $ lag5        <dbl> NA, NA, NA, NA, NA, 0.05009972, 0.05229680, 0.05238570, 0.…
-#> $ lag6        <dbl> NA, NA, NA, NA, NA, NA, 0.05009972, 0.05229680, 0.05238570…
-#> $ lag7        <dbl> NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.05229680, 0.0523…
-#> $ lag8        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.05229680, 0.…
-#> $ lag9        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.05229680…
-#> $ lag10       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.0522…
-#> $ lag11       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972, 0.…
-#> $ lag12       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05009972…
-#> $ lag13       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.0500…
+#> $ lag0        <dbl> 0.05156766, 0.04988754, 0.04661123, 0.04987177, 0.04739303…
+#> $ lag1        <dbl> NA, 0.05156766, 0.04988754, 0.04661123, 0.04987177, 0.0473…
+#> $ lag2        <dbl> NA, NA, 0.05156766, 0.04988754, 0.04661123, 0.04987177, 0.…
+#> $ lag3        <dbl> NA, NA, NA, 0.05156766, 0.04988754, 0.04661123, 0.04987177…
+#> $ lag4        <dbl> NA, NA, NA, NA, 0.05156766, 0.04988754, 0.04661123, 0.0498…
+#> $ lag5        <dbl> NA, NA, NA, NA, NA, 0.05156766, 0.04988754, 0.04661123, 0.…
+#> $ lag6        <dbl> NA, NA, NA, NA, NA, NA, 0.05156766, 0.04988754, 0.04661123…
+#> $ lag7        <dbl> NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.04988754, 0.0466…
+#> $ lag8        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.04988754, 0.…
+#> $ lag9        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.04988754…
+#> $ lag10       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.0498…
+#> $ lag11       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.…
+#> $ lag12       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766…
+#> $ lag13       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.0515…
 #> $ lag14       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.…
 #> $ lag15       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
 
 # Evaluate alarm metrics for epidemic detection
-alarm_metrics <- eval_metrics(absent_data, thres = seq(0.1,0.6,by = 0.05),
-                              ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
+alarm_metrics <- eval_metrics(absent_data, thres = seq(0.1,0.6,by = 0.05))
 
 # Plot various alarm metrics
 plot(alarm_metrics$metrics, "FAR")   # False Alert Rate
 ```
 
-<img src="man/figures/README-example-11.png" width="100%" />
+<img src="man/figures/README-example-11.png" width="75%" />
 
 ``` r
 plot(alarm_metrics$metrics, "FATQ")  # First Alert Time Quality
 ```
 
-<img src="man/figures/README-example-12.png" width="100%" />
+<img src="man/figures/README-example-12.png" width="75%" />
 
 ``` r
 plot(alarm_metrics$metrics, "AATQ")  # Average Alert Time Quality
 ```
 
-<img src="man/figures/README-example-13.png" width="100%" />
+<img src="man/figures/README-example-13.png" width="75%" />
 
 ``` r
 plot(alarm_metrics$metrics, "WAATQ") # Weighted Average Alert Time Quality
 ```
 
-<img src="man/figures/README-example-14.png" width="100%" />
+<img src="man/figures/README-example-14.png" width="75%" />
 
 ``` r
 plot(alarm_metrics$metrics, "WFATQ") # Weighted First Alert Time Quality
 ```
 
-<img src="man/figures/README-example-15.png" width="100%" />
+<img src="man/figures/README-example-15.png" width="75%" />
 
 ``` r
 plot(alarm_metrics$metrics, "ADD")   # Accumulated Delay Days
 ```
 
-<img src="man/figures/README-example-16.png" width="100%" />
+<img src="man/figures/README-example-16.png" width="75%" />
 
 ``` r
 
@@ -241,78 +240,78 @@ summary(alarm_metrics$results)
 #> =====================
 #> 
 #> FAR :
-#>   Mean: 0.7644 
-#>   Variance: 0.0056 
-#>   Best lag: 1 
-#>   Best threshold: 0.2 
-#>   Best value: 0.5429 
+#>   Mean: 0.7009 
+#>   Variance: 0.0042 
+#>   Best lag: 7 
+#>   Best threshold: 0.35 
+#>   Best value: 0.5556 
 #> 
 #> ADD :
-#>   Mean: 13.6054 
-#>   Variance: 8.2501 
+#>   Mean: 19.0862 
+#>   Variance: 32.6845 
 #>   Best lag: 1 
 #>   Best threshold: 0.1 
-#>   Best value: 3.5556 
+#>   Best value: 3.6667 
 #> 
 #> AATQ :
-#>   Mean: 0.5082 
-#>   Variance: 0.004 
+#>   Mean: 0.6084 
+#>   Variance: 0.0156 
 #>   Best lag: 1 
-#>   Best threshold: 0.2 
-#>   Best value: 0.2871 
+#>   Best threshold: 0.15 
+#>   Best value: 0.2772 
 #> 
 #> FATQ :
-#>   Mean: 0.7039 
-#>   Variance: 0.0055 
-#>   Best lag: 1 
-#>   Best threshold: 0.2 
-#>   Best value: 0.5468 
+#>   Mean: 0.6867 
+#>   Variance: 0.007 
+#>   Best lag: 12 
+#>   Best threshold: 0.15 
+#>   Best value: 0.4755 
 #> 
 #> WAATQ :
-#>   Mean: 0.5184 
-#>   Variance: 0.0068 
+#>   Mean: 0.5486 
+#>   Variance: 0.0128 
 #>   Best lag: 1 
-#>   Best threshold: 0.2 
-#>   Best value: 0.2177 
+#>   Best threshold: 0.15 
+#>   Best value: 0.2235 
 #> 
 #> WFATQ :
-#>   Mean: 0.7298 
-#>   Variance: 0.0112 
-#>   Best lag: 1 
-#>   Best threshold: 0.2 
-#>   Best value: 0.5214 
+#>   Mean: 0.6542 
+#>   Variance: 0.0124 
+#>   Best lag: 2 
+#>   Best threshold: 0.4 
+#>   Best value: 0.4684 
 #> 
 #> Reference Dates:
 #>    epidemic_years ref_dates
-#> 1               1        41
-#> 2               2        27
-#> 3               3        39
-#> 4               4        72
-#> 5               5        33
-#> 6               6        39
-#> 7               7        20
-#> 8               8        74
-#> 9               9        88
-#> 10             10        30
+#> 1               1        59
+#> 2               2        20
+#> 3               3        30
+#> 4               4        20
+#> 5               5        39
+#> 6               6        66
+#> 7               7        64
+#> 8               8        37
+#> 9               9        29
+#> 10             10        64
 #> 
 #> Best Prediction Dates:
 #> FAR :
-#>  [1] NA NA 33 30 13  6  6 10 34 18
+#>  [1] NA NA NA NA 29 53 56 NA NA 58
 #> 
 #> ADD :
-#>  [1] NA NA 27 30  1  6  6  7 21  1
+#>  [1] NA NA  3 10  7  2  4  2  7  3
 #> 
 #> AATQ :
-#>  [1] NA NA 33 30 13  6  6 10 34 18
+#>  [1] NA NA 15 17  8 29  5  2 10 17
 #> 
 #> FATQ :
-#>  [1] NA NA 33 30 13  6  6 10 34 18
+#>  [1] NA NA 11 20 28 58  5  3 NA 43
 #> 
 #> WAATQ :
-#>  [1] NA NA 33 30 13  6  6 10 34 18
+#>  [1] NA NA 15 17  8 29  5  2 10 17
 #> 
 #> WFATQ :
-#>  [1] NA NA 33 30 13  6  6 10 34 18
+#>  [1] NA NA NA NA 29 51 50 NA NA 56
 
 # Generate and display plots for alarm metrics across epidemic years
 alarm_plots <- plot(alarm_metrics$plot_data)
@@ -321,32 +320,7 @@ for(i in seq_along(alarm_plots)) {
 }
 ```
 
-<img src="man/figures/README-example-17.png" width="100%" /><img src="man/figures/README-example-18.png" width="100%" />
-
-    #> Warning: Removed 35 rows containing missing values or values outside the scale range
-    #> (`geom_col()`).
-
-<img src="man/figures/README-example-19.png" width="100%" />
-
-    #> Warning: Removed 18 rows containing missing values or values outside the scale range
-    #> (`geom_col()`).
-
-<img src="man/figures/README-example-20.png" width="100%" /><img src="man/figures/README-example-21.png" width="100%" />
-
-    #> Warning: Removed 5 rows containing missing values or values outside the scale range
-    #> (`geom_col()`).
-
-<img src="man/figures/README-example-22.png" width="100%" />
-
-    #> Warning: Removed 105 rows containing missing values or values outside the scale range
-    #> (`geom_col()`).
-
-<img src="man/figures/README-example-23.png" width="100%" />
-
-    #> Warning: Removed 164 rows containing missing values or values outside the scale range
-    #> (`geom_col()`).
-
-<img src="man/figures/README-example-24.png" width="100%" /><img src="man/figures/README-example-25.png" width="100%" />
+<img src="man/figures/README-example-17.png" width="75%" /><img src="man/figures/README-example-18.png" width="75%" /><img src="man/figures/README-example-19.png" width="75%" /><img src="man/figures/README-example-20.png" width="75%" /><img src="man/figures/README-example-21.png" width="75%" /><img src="man/figures/README-example-22.png" width="75%" /><img src="man/figures/README-example-23.png" width="75%" /><img src="man/figures/README-example-24.png" width="75%" /><img src="man/figures/README-example-25.png" width="75%" />
 
 The final output ‘region_metric’ will be a list of 6 matrices and 6 data
 frames. The matrices describe the values of metrics for respective lag

@@ -14,8 +14,10 @@ editor_options:
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  warning = FALSE, message = FALSE
 )
+
 ```
 
 # ATQ: Using Absenteeism Data to Detect Onset of Epidemics
@@ -37,6 +39,7 @@ health unit, Canada.
 To use the package, install and load it with:
 
 ```{r setup}
+
 library(devtools)
 install_github("vjoshy/ATQ_Surveillance_Package")
 

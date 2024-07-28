@@ -9,7 +9,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "75%",
+  warning = FALSE, message = FALSE
 )
 ```
 
@@ -113,8 +114,7 @@ absent_data <- compile_epi(epidemic, individuals)
 dplyr::glimpse(absent_data)
 
 # Evaluate alarm metrics for epidemic detection
-alarm_metrics <- eval_metrics(absent_data, thres = seq(0.1,0.6,by = 0.05),
-                              ScYr = c(2:10), yr.weights = c(1:9)/sum(c(1:9)))
+alarm_metrics <- eval_metrics(absent_data, thres = seq(0.1,0.6,by = 0.05))
 
 # Plot various alarm metrics
 plot(alarm_metrics$metrics, "FAR")   # False Alert Rate

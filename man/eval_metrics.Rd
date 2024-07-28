@@ -70,9 +70,7 @@ compiled_data <- compile_epi(epidemic_new, individual_data)
 
 # Evaluate alarm metrics
 alarm_metrics <- eval_metrics(compiled_data,
-                              thres = seq(0.1, 0.6, by = 0.05),
-                              ScYr = c(2:3),
-                              yr.weights = c(1:2)/sum(c(1:2)))
+                              thres = seq(0.1, 0.6, by = 0.05))
 
 # Access the results
 summary(alarm_metrics$summary)
