@@ -83,6 +83,8 @@ the functions will prompt the user for input.
 
 ```{r populationSimulation}
 
+set.seed(123)
+
 # Simulate 16 catchments of 80x80 squares and the number of schools they contain
 catchment <- catchment_sim(16, 80, dist_func = stats::rgamma, shape = 4.313, rate = 3.027)
 

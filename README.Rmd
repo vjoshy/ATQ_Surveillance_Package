@@ -76,6 +76,8 @@ Please see example below:
 # Load the ATQ package
 library(ATQ)
 
+set.seed(69420)
+
 #Simulate number of elementary schools in each catchment
 catch_df <- catchment_sim(16, 5, shape = 4.68, rate = 3.01)
 
@@ -135,6 +137,6 @@ for(i in seq_along(alarm_plots)) {
 }
 ```
 
-The final output 'region_metric' will be a list of 6 matrices and 6 data frames. The matrices describe the values of metrics for respective lag and thresholds. 
+The final output `region_metric` will be a list of 6 matrices and 6 data frames. The matrices describe the values of metrics for respective lag and thresholds. 
 
 An optimal lag and threshold value that minimizes each metric is selected and these optimal parameters are used to generate the 6 data frames associated with the metrics. Simulated information like number of lab confirmed cases, number of students absent, etc, are also included in the output.

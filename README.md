@@ -89,6 +89,8 @@ Please see example below:
 # Load the ATQ package
 library(ATQ)
 
+set.seed(69420)
+
 #Simulate number of elementary schools in each catchment
 catch_df <- catchment_sim(16, 5, shape = 4.68, rate = 3.01)
 
@@ -121,13 +123,13 @@ summary(epidemic)
 #> SSIR Epidemic Summary (Multiple Simulations):
 #> Number of simulations: 10 
 #> 
-#> Average total infected: 50746.2 
-#> Average total reported cases: 1013.7 
-#> Average peak infected: 3816.5 
+#> Average total infected: 41065.5 
+#> Average total reported cases: 826.9 
+#> Average peak infected: 3036.4 
 #> 
 #> Model parameters:
 #> $N
-#> [1] 165811
+#> [1] 136784
 #> 
 #> $T
 #> [1] 300
@@ -165,8 +167,8 @@ dplyr::glimpse(absent_data)
 #> Columns: 28
 #> $ Date        <int> 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,…
 #> $ ScYr        <int> 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1…
-#> $ pct_absent  <dbl> 0.05156766, 0.04988754, 0.04661123, 0.04987177, 0.04739303…
-#> $ absent      <dbl> 782, 773, 733, 766, 738, 810, 725, 781, 767, 738, 739, 723…
+#> $ pct_absent  <dbl> 0.05096603, 0.05190044, 0.05079590, 0.04899765, 0.05083607…
+#> $ absent      <dbl> 636, 661, 628, 627, 623, 624, 607, 603, 657, 673, 616, 667…
 #> $ absent_sick <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ new_inf     <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ lab_conf    <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
@@ -175,20 +177,20 @@ dplyr::glimpse(absent_data)
 #> $ costerm     <dbl> 0.9998520, 0.9994082, 0.9986686, 0.9976335, 0.9963032, 0.9…
 #> $ window      <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
 #> $ ref_date    <dbl> 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0…
-#> $ lag0        <dbl> 0.05156766, 0.04988754, 0.04661123, 0.04987177, 0.04739303…
-#> $ lag1        <dbl> NA, 0.05156766, 0.04988754, 0.04661123, 0.04987177, 0.0473…
-#> $ lag2        <dbl> NA, NA, 0.05156766, 0.04988754, 0.04661123, 0.04987177, 0.…
-#> $ lag3        <dbl> NA, NA, NA, 0.05156766, 0.04988754, 0.04661123, 0.04987177…
-#> $ lag4        <dbl> NA, NA, NA, NA, 0.05156766, 0.04988754, 0.04661123, 0.0498…
-#> $ lag5        <dbl> NA, NA, NA, NA, NA, 0.05156766, 0.04988754, 0.04661123, 0.…
-#> $ lag6        <dbl> NA, NA, NA, NA, NA, NA, 0.05156766, 0.04988754, 0.04661123…
-#> $ lag7        <dbl> NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.04988754, 0.0466…
-#> $ lag8        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.04988754, 0.…
-#> $ lag9        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.04988754…
-#> $ lag10       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.0498…
-#> $ lag11       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766, 0.…
-#> $ lag12       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05156766…
-#> $ lag13       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.0515…
+#> $ lag0        <dbl> 0.05096603, 0.05190044, 0.05079590, 0.04899765, 0.05083607…
+#> $ lag1        <dbl> NA, 0.05096603, 0.05190044, 0.05079590, 0.04899765, 0.0508…
+#> $ lag2        <dbl> NA, NA, 0.05096603, 0.05190044, 0.05079590, 0.04899765, 0.…
+#> $ lag3        <dbl> NA, NA, NA, 0.05096603, 0.05190044, 0.05079590, 0.04899765…
+#> $ lag4        <dbl> NA, NA, NA, NA, 0.05096603, 0.05190044, 0.05079590, 0.0489…
+#> $ lag5        <dbl> NA, NA, NA, NA, NA, 0.05096603, 0.05190044, 0.05079590, 0.…
+#> $ lag6        <dbl> NA, NA, NA, NA, NA, NA, 0.05096603, 0.05190044, 0.05079590…
+#> $ lag7        <dbl> NA, NA, NA, NA, NA, NA, NA, 0.05096603, 0.05190044, 0.0507…
+#> $ lag8        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, 0.05096603, 0.05190044, 0.…
+#> $ lag9        <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05096603, 0.05190044…
+#> $ lag10       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05096603, 0.0519…
+#> $ lag11       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05096603, 0.…
+#> $ lag12       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.05096603…
+#> $ lag13       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.0509…
 #> $ lag14       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, 0.…
 #> $ lag15       <dbl> NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA…
 
@@ -240,78 +242,78 @@ summary(alarm_metrics$results)
 #> =====================
 #> 
 #> FAR :
-#>   Mean: 0.7009 
-#>   Variance: 0.0042 
-#>   Best lag: 7 
-#>   Best threshold: 0.35 
-#>   Best value: 0.5556 
+#>   Mean: 0.5603 
+#>   Variance: 0.0191 
+#>   Best lag: 9 
+#>   Best threshold: 0.1 
+#>   Best value: 0.2111 
 #> 
 #> ADD :
-#>   Mean: 19.0862 
-#>   Variance: 32.6845 
+#>   Mean: 25.831 
+#>   Variance: 75.0129 
 #>   Best lag: 1 
 #>   Best threshold: 0.1 
-#>   Best value: 3.6667 
+#>   Best value: 6.1111 
 #> 
 #> AATQ :
-#>   Mean: 0.6084 
-#>   Variance: 0.0156 
-#>   Best lag: 1 
-#>   Best threshold: 0.15 
-#>   Best value: 0.2772 
+#>   Mean: 0.542 
+#>   Variance: 0.028 
+#>   Best lag: 2 
+#>   Best threshold: 0.1 
+#>   Best value: 0.1861 
 #> 
 #> FATQ :
-#>   Mean: 0.6867 
-#>   Variance: 0.007 
-#>   Best lag: 12 
-#>   Best threshold: 0.15 
-#>   Best value: 0.4755 
+#>   Mean: 0.5451 
+#>   Variance: 0.0228 
+#>   Best lag: 9 
+#>   Best threshold: 0.1 
+#>   Best value: 0.1964 
 #> 
 #> WAATQ :
-#>   Mean: 0.5486 
-#>   Variance: 0.0128 
+#>   Mean: 0.5288 
+#>   Variance: 0.0313 
 #>   Best lag: 1 
 #>   Best threshold: 0.15 
-#>   Best value: 0.2235 
+#>   Best value: 0.1373 
 #> 
 #> WFATQ :
-#>   Mean: 0.6542 
-#>   Variance: 0.0124 
-#>   Best lag: 2 
-#>   Best threshold: 0.4 
-#>   Best value: 0.4684 
+#>   Mean: 0.5474 
+#>   Variance: 0.0217 
+#>   Best lag: 4 
+#>   Best threshold: 0.1 
+#>   Best value: 0.2516 
 #> 
 #> Reference Dates:
 #>    epidemic_years ref_dates
-#> 1               1        59
-#> 2               2        20
-#> 3               3        30
-#> 4               4        20
-#> 5               5        39
-#> 6               6        66
-#> 7               7        64
-#> 8               8        37
-#> 9               9        29
-#> 10             10        64
+#> 1               1        53
+#> 2               2        64
+#> 3               3        43
+#> 4               4        61
+#> 5               5        45
+#> 6               6        49
+#> 7               7        40
+#> 8               8        48
+#> 9               9        61
+#> 10             10        79
 #> 
 #> Best Prediction Dates:
 #> FAR :
-#>  [1] NA NA NA NA 29 53 56 NA NA 58
+#>  [1] NA 50 42 54 45 40 31 NA 55 52
 #> 
 #> ADD :
-#>  [1] NA NA  3 10  7  2  4  2  7  3
+#>  [1] NA 47 NA 43 24 35 31 26 33  6
 #> 
 #> AATQ :
-#>  [1] NA NA 15 17  8 29  5  2 10 17
+#>  [1] NA 47 NA 46 30 36 30 32 37 31
 #> 
 #> FATQ :
-#>  [1] NA NA 11 20 28 58  5  3 NA 43
+#>  [1] NA 50 42 54 45 40 31 NA 55 52
 #> 
 #> WAATQ :
-#>  [1] NA NA 15 17  8 29  5  2 10 17
+#>  [1] NA 48 NA 43 24 35 37 26 37 31
 #> 
 #> WFATQ :
-#>  [1] NA NA NA NA 29 51 50 NA NA 56
+#>  [1] NA 46 NA 52 33 37 31 41 55 24
 
 # Generate and display plots for alarm metrics across epidemic years
 alarm_plots <- plot(alarm_metrics$plot_data)
@@ -322,7 +324,7 @@ for(i in seq_along(alarm_plots)) {
 
 <img src="man/figures/README-example-17.png" width="75%" /><img src="man/figures/README-example-18.png" width="75%" /><img src="man/figures/README-example-19.png" width="75%" /><img src="man/figures/README-example-20.png" width="75%" /><img src="man/figures/README-example-21.png" width="75%" /><img src="man/figures/README-example-22.png" width="75%" /><img src="man/figures/README-example-23.png" width="75%" /><img src="man/figures/README-example-24.png" width="75%" /><img src="man/figures/README-example-25.png" width="75%" />
 
-The final output ‘region_metric’ will be a list of 6 matrices and 6 data
+The final output `region_metric` will be a list of 6 matrices and 6 data
 frames. The matrices describe the values of metrics for respective lag
 and thresholds.
 
