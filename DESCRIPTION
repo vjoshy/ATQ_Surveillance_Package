@@ -1,6 +1,6 @@
 Package: ATQ
 Title: Alert Time Quality - Evaluating Timely Epidemic Metrics
-Version: 0.2.2
+Version: 0.2.3
 Date: 2024-07-28
 Authors@R: c(
     person("Vinay", "Joshy", email = "joshy@uoguelph.ca", role = c("aut", "cre", "cph")),
