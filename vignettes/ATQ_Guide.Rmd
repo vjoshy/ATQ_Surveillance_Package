@@ -38,10 +38,13 @@ health unit, Canada.
 
 To use the package, install and load it with:
 
-```{r setup}
+```{r setup, 	message = FALSE, warning = FALSE}
 
-library(devtools)
-install_github("vjoshy/ATQ_Surveillance_Package")
+tryCatch({
+  detools::install_github("vjoshy/ATQ_Surveillance_Package")
+}, error = function(e) {
+  message("Unable to install package from GitHub. Using local version if available.")
+})
 
 library(ATQ)
 ```
@@ -209,10 +212,11 @@ metrics:
 
 A logistic regression model with lagged absenteeism and fixed seasonal terms given by:
 
-$\text{logit}\theta_{tj} = \beta_0 + \beta_1x_{tj} + \beta_2x_{(t-1)j} + ... + \beta_{l+1}x_{(t-l)j} + + \beta_{l+3} cos_j(\frac{2\pi t^*}{T}))$
+\[
+\text{logit}(\theta_{tj}) = \beta_0 + \sum_{k=0}^l \beta_{k+1}x_{(t-k)j} + \beta_{l+2}\sin\Bigg(\frac{2\pi t^*}{T^*}\Bigg) + \beta_{l+3}\cos\Bigg(\frac{2\pi t^*}{T^*}\Bigg) + \gamma_j
+\]
 
-where $t$ is time, $j$ is the school year, $l$ is the lag, and $T^*$ is the period for
-seasonal terms.
+where \(\theta_{tj}\) represents the probability of having at least one reported case on day \( t \) for school year \( j \). The predictor variables \( x_{(t-k)j} \) are the mean daily absenteeism percentages with lag times ranging from 0 to \( l \). To account for seasonal variations in influenza, trigonometric functions with sine and cosine terms are included, where \( t^* \) denotes the calendar day of the year when \( x_{tj} \) is observed and \( T^* = 365.25 \) days represents the length of a year. Additionally, \(\gamma_j\) captures random effects specific to each school year \( j \).
 
 `eval_metrics` also identifies the best model parameters (lag & threshold) for each
 metric. The output is a list with three main components:
