@@ -41,7 +41,7 @@ To use the package, install and load it with:
 ```{r setup, 	message = FALSE, warning = FALSE}
 
 tryCatch({
-  detools::install_github("vjoshy/ATQ_Surveillance_Package")
+  devtools::install_github("vjoshy/ATQ_Surveillance_Package")
 }, error = function(e) {
   message("Unable to install package from GitHub. Using local version if available.")
 })
