@@ -66,10 +66,10 @@ The total number of simulations (n * sum of school populations) is automatically
 }
 \examples{
 # Simulate catchment area
-catch_df <- catchment_sim(16, 5, shape = 3.5, rate = 2.8)
+catch_df <- catchment_sim(4, 5, shape = 2.5, rate = 1.3)
 
 # Simulate elementary schools using default gamma distribution
-elementary_df <- elementary_pop(catch_df, shape = 5.1, rate = 0.015)
+elementary_df <- elementary_pop(catch_df, shape = 3.3, rate = 0.015)
 
 # Simulate households with children
 house_children <- subpop_children(elementary_df, n = 2,

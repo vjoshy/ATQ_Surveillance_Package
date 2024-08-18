@@ -70,15 +70,10 @@ compiled_data <- compile_epi(epidemic_new, individual_data)
 
 # Evaluate alarm metrics
 alarm_metrics <- eval_metrics(compiled_data,
-                              thres = seq(0.1, 0.6, by = 0.05))
+                              thres = seq(0.1, 0.3, by = 0.05))
 
 # Access the results
 summary(alarm_metrics$summary)
-alarm_plots <- plot(alarm_metrics$plot_data)
-
-for(i in seq_along(alarm_plots)) { print(alarm_plots[[i]]) }
-
-
 }
 \seealso{
 \code{\link{ssir}}, \code{\link{compile_epi}}
