@@ -69,23 +69,31 @@ summary.alarm_metrics_summary <- function(object, ...) {
   cat("Alarm Metrics Summary\n")
   cat("=====================\n\n")
 
+  # Display summary statistics for each metric
   for (metric in names(object$summary_stats)) {
     cat(metric, ":\n")
     cat("  Mean:", round(object$summary_stats[[metric]]$mean, 4), "\n")
     cat("  Variance:", round(object$summary_stats[[metric]]$variance, 4), "\n")
-    cat("  Best lag:", object$best_values[[metric]]$best_lag, "\n")
-    cat("  Best threshold:", round(object$best_values[[metric]]$best_threshold, 4), "\n")
-    cat("  Best value:", round(object$best_values[[metric]]$best_value, 4), "\n\n")
+    cat("  Optimal lag:", object$best_values[[metric]]$best_lag, "\n")
+    cat("  Optimal threshold:", round(object$best_values[[metric]]$best_threshold, 4), "\n")
+    cat("  Minimum value:", round(object$best_values[[metric]]$best_value, 4), "\n\n")
   }
 
-  cat("Reference Dates:\n")
-  print(object$ref_dates)
-  cat("\n")
+  ref_dates <- object$ref_dates
+  metrics <- names(object$best_prediction_dates)
 
-  cat("Best Prediction Dates:\n")
-  for (metric in names(object$best_prediction_dates)) {
-    cat(metric, ":\n")
-    print(object$best_prediction_dates[[metric]])
-    cat("\n")
+  combined_df <- data.frame(
+    year = ref_dates$epidemic_years,
+    ref_date = ref_dates$ref_dates
+  )
+
+  for(metric in metrics){
+    combined_df[[metric]] <- object$best_prediction_dates[[metric]]
   }
+
+  cat("Reference Dates and Model Selected Alert Dates:\n")
+  cat("=====================\n\n")
+  print(combined_df)
+
 }
+
