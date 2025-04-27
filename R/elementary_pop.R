@@ -36,7 +36,7 @@
 elementary_pop <- function(df, dist_func = stats::rgamma, ...){
 
   df$num.schools <- round(df$num.schools)
-  df$num.scools <- as.integer(pmax(df$num.schools, 0))
+  df$num.schools <- as.integer(pmax(df$num.schools, 0))
 
 
   # gamma distribution of number of students in elementary schools
