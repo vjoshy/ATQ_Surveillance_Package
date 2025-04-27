@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ATQ: Assesing Evaluation Metrics for Timely Epidemic Detection Models
+# DESA: Detecting epidemic using school absenteeism.
 
 ## Background
 
@@ -26,7 +26,7 @@ ATQ study assessed alarms on a gradient, where alarms raised
 incrementally before or after an optimal date were penalized for lack of
 timeliness.
 
-This ATQ package will allow users to perform simulation studies and
+This DESA package will allow users to perform simulation studies and
 evaluate ATQ & FAR based metrics from them. The simulation study will
 require information from census data for a region such as distribution
 of number of household members, households with and without children,
@@ -49,7 +49,7 @@ install_github("vjoshy/ATQ_Surveillance_Package")
 
 ## Key Functions
 
-The ATQ package includes the following main functions:
+The DESA package includes the following main functions:
 
 1.  `catchment_sim()`
     - Simulates catchment area data
@@ -86,8 +86,8 @@ epidemic simulation and evaluation of detection models
 Please see example below:
 
 ``` r
-# Load the ATQ package
-library(ATQ)
+# Load the DESA package
+library(DESA)
 
 set.seed(69420)
 
