@@ -46,7 +46,7 @@ tryCatch({
   message("Unable to install package from GitHub. Using local version if available.")
 })
 
-library(ATQ)
+library(DESA)
 ```
 
 The following sections will guide you through population simulation, epidemic modeling,
