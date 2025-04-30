@@ -1,44 +1,69 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# DESA: Detecting epidemic using school absenteeism.
+# DESA: Detecting Epidemics using School Absenteeism <badges go here>
+
+## Overview
+
+DESA provides a comprehensive framework for early epidemic detection
+through school absenteeism surveillance. The package enables:
+
+1.  **Simulation**: Generate realistic populations, epidemic spread
+    patterns, and resulting school absenteeism data
+2.  **Detection**: Implement surveillance models that raise timely
+    alerts for impending epidemics
+3.  **Evaluation**: Assess and optimize detection models using metrics
+    that balance timeliness and accuracy
+
+The methods implemented are based on research by [Vanderkruk et
+al. (2023)](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z)
+and [Ward et
+al. (2019)](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-019-7521-7).
+
+## Why School Absenteeism?
+
+Children typically have higher influenza infection rates than other age
+groups and are encouraged to stay home when ill.This makes school
+absenteeism data a valuable early indicator of community-wide epidemic
+arrival, potentially providing public health officials with crucial lead
+time to implement mitigation strategies.
 
 ## Background
 
-Madeline A. Ward published a
-[paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-019-7521-7)
-on methods for detecting seasonal influenza epidemics using school
-absenteeism data. The premise is that there is a school absenteeism
-surveillance system established in Wellington-Dufferin-Guelph which uses
-a threshold-based (10% of students absent) approach to raise alarms for
-school illness outbreaks to implement mitigating measures. Two metrics
-(FAR and ADD) are proposed in that study that were found to be more
-accurate.
+Traditional epidemic surveillance systems often rely on
+laboratory-confirmed cases, which can introduce significant delays in
+detection. To address this limitation, Ward et al. (2019) investigated
+the use of school absenteeism data for early epidemic detection in the
+Wellington-Dufferin-Guelph region of Ontario, Canada.
 
-Based on the work of Madeline, in 2021 Kayla Vanderkruk along with Drs.
-Deeth and Feng wrote a
-[paper](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z)
-on improved metrics, namely ATQ (alert time quality), that are more
-accurate and timely than the FAR-selected models. This package is based
-off Kayla’s work that can be found
-[here](https://github.com/vanderkk/School_Abstenteeism_Based_Influenza_Surveillance_Simulation_Study).
-ATQ study assessed alarms on a gradient, where alarms raised
-incrementally before or after an optimal date were penalized for lack of
-timeliness.
+The existing system in this region used a simple threshold-based
+approach (raising an alarm when 10% of students were absent) to identify
+potential outbreaks. Ward et al. developed detection models and
+introduced two evaluation metrics:
 
-This DESA package will allow users to perform simulation studies and
-evaluate ATQ & FAR based metrics from them. The simulation study will
-require information from census data for a region such as distribution
-of number of household members, households with and without children,
-and age category, etc.
+- **False Alert Rate (FAR)**: Measures the proportion of incorrectly
+  raised alarms
+- **Accumulated Days Delayed (ADD)**: Quantifies the timeliness of
+  correct alarms
 
-This package is still a work in progress and future considerations
-include streamlining simulation study workflow and generalizing
-evaluation of metrics to include real data sets.
+Building on this foundation, Vanderkruk et al. (2023) developed a more
+nuanced evaluation framework called **Alert Time Quality (ATQ)**. Unlike
+the binary classification of previous metrics, ATQ assesses alerts where
+ones that are raised at sub optimal times receive penalties proportional
+to their deviation from the ideal alert time. This approach balances
+both accuracy and timeliness in a single metric.
+
+The DESA package implements the methodologies from both papers, enabling
+users to:
+
+1.  Generate simulations of population structures based on regional
+    census data
+2.  Apply various detection models to simulated epidemics
+3.  Evaluate model performance using FAR, ADD, and ATQ-based metrics
 
 ## Installation:
 
-You can install the development version of ATQ from
+You can install the development version of DESA from
 [Github](https://github.com/vjoshy/ATQ_Surveillance_Package)
 
 ``` r
@@ -49,7 +74,7 @@ install_github("vjoshy/ATQ_Surveillance_Package")
 
 ## Key Functions
 
-The DESA package includes the following main functions:
+The ATQ package includes the following main functions:
 
 1.  `catchment_sim()`
     - Simulates catchment area data
@@ -244,76 +269,59 @@ summary(alarm_metrics$results)
 #> FAR :
 #>   Mean: 0.5603 
 #>   Variance: 0.0191 
-#>   Best lag: 9 
-#>   Best threshold: 0.1 
-#>   Best value: 0.2111 
+#>   Optimal lag: 9 
+#>   Optimal threshold: 0.1 
+#>   Minimum value: 0.2111 
 #> 
 #> ADD :
 #>   Mean: 25.831 
 #>   Variance: 75.0129 
-#>   Best lag: 1 
-#>   Best threshold: 0.1 
-#>   Best value: 6.1111 
+#>   Optimal lag: 1 
+#>   Optimal threshold: 0.1 
+#>   Minimum value: 6.1111 
 #> 
 #> AATQ :
 #>   Mean: 0.542 
 #>   Variance: 0.028 
-#>   Best lag: 2 
-#>   Best threshold: 0.1 
-#>   Best value: 0.1861 
+#>   Optimal lag: 2 
+#>   Optimal threshold: 0.1 
+#>   Minimum value: 0.1861 
 #> 
 #> FATQ :
 #>   Mean: 0.5451 
 #>   Variance: 0.0228 
-#>   Best lag: 9 
-#>   Best threshold: 0.1 
-#>   Best value: 0.1964 
+#>   Optimal lag: 9 
+#>   Optimal threshold: 0.1 
+#>   Minimum value: 0.1964 
 #> 
 #> WAATQ :
 #>   Mean: 0.5288 
 #>   Variance: 0.0313 
-#>   Best lag: 1 
-#>   Best threshold: 0.15 
-#>   Best value: 0.1373 
+#>   Optimal lag: 1 
+#>   Optimal threshold: 0.15 
+#>   Minimum value: 0.1373 
 #> 
 #> WFATQ :
 #>   Mean: 0.5474 
 #>   Variance: 0.0217 
-#>   Best lag: 4 
-#>   Best threshold: 0.1 
-#>   Best value: 0.2516 
+#>   Optimal lag: 4 
+#>   Optimal threshold: 0.1 
+#>   Minimum value: 0.2516 
 #> 
-#> Reference Dates:
-#>    epidemic_years ref_dates
-#> 1               1        53
-#> 2               2        64
-#> 3               3        43
-#> 4               4        61
-#> 5               5        45
-#> 6               6        49
-#> 7               7        40
-#> 8               8        48
-#> 9               9        61
-#> 10             10        79
+#> Reference Dates and Model Selected Alert Dates:
+#> =====================
 #> 
-#> Best Prediction Dates:
-#> FAR :
-#>  [1] NA 50 42 54 45 40 31 NA 55 52
-#> 
-#> ADD :
-#>  [1] NA 47 NA 43 24 35 31 26 33  6
-#> 
-#> AATQ :
-#>  [1] NA 47 NA 46 30 36 30 32 37 31
-#> 
-#> FATQ :
-#>  [1] NA 50 42 54 45 40 31 NA 55 52
-#> 
-#> WAATQ :
-#>  [1] NA 48 NA 43 24 35 37 26 37 31
-#> 
-#> WFATQ :
-#>  [1] NA 46 NA 52 33 37 31 41 55 24
+#>    year ref_date FAR ADD AATQ FATQ WAATQ WFATQ
+#> 1     1       53  NA  NA   NA   NA    NA    NA
+#> 2     2       64  50  51   51   50    51    53
+#> 3     3       43  42  NA   NA   42    NA    NA
+#> 4     4       61  54  51   51   54    51    52
+#> 5     5       45  45  33   34   45    33    33
+#> 6     6       49  40  35   36   40    35    37
+#> 7     7       40  31  31   30   31    37    31
+#> 8     8       48  NA  35   41   NA    35    41
+#> 9     9       61  55  47   50   55    50    55
+#> 10   10       79  72  65   65   72    65    67
 
 # Generate and display plots for alarm metrics across epidemic years
 alarm_plots <- plot(alarm_metrics$plot_data)

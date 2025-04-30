@@ -1,9 +1,9 @@
 ---
-title: "ATQ Guide"
+title: "DESA Guide"
 output: rmarkdown::html_vignette
 author: Vinay Joshy
 vignette: >
-  %\VignetteIndexEntry{ATQ_Guide}
+  %\VignetteIndexEntry{DESA_Guide}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -20,11 +20,11 @@ knitr::opts_chunk$set(
 
 ```
 
-# ATQ: Using Absenteeism Data to Detect Onset of Epidemics
+# DESA: Detecting Epidemics using School Absenteeism
 
 ## Introduction
 
-The `ATQ` package provides tools for public health institutions to detect epidemics using
+The `DESA` package provides tools for public health institutions to detect epidemics using
 school absenteeism data. It offers functions to simulate regional populations of
 households, elementary schools, and epidemics, and to calculate alarm metrics from these
 simulations.
@@ -50,11 +50,11 @@ library(ATQ)
 ```
 
 The following sections will guide you through population simulation, epidemic modeling,
-and alarm metric calculation using the `ATQ` package.
+and alarm metric calculation using the `DESA` package.
 
 ## Methods
 
-`ATQ` provides a simulation model that consists of three sequential parts: 1) a population
+`DESA` provides a simulation model that consists of three sequential parts: 1) a population
 of individuals, 2) annual influenza epidemics, 3) school absenteeism and laboratory
 confirmed influenza case data. The final part of this section will include alarm metrics
 evaluation.
@@ -265,3 +265,6 @@ Vanderkruk, K.R., Deeth, L.E., Feng, Z. et al. ATQ: alert time quality, an evalu
 metric for assessing timely epidemic detection models within a school absenteeism-based
 surveillance system. BMC Public Health 23, 850 (2023).
 <https://doi.org/10.1186/s12889-023-15747-z>
+
+Ward, M.A., Stanley, A., Deeth, L.E. et al. Methods for detecting seasonal influenza epidemics using a school absenteeism surveillance system. BMC Public Health 19, 1232 (2019).
+<https://doi.org/10.1186/s12889-019-7521-7>

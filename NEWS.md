@@ -1,4 +1,5 @@
 # DESA 1.0.0
+Name update to better represent purpose of pacakge
 
 # ATQ 0.2.4
 Minor bug fix in summary function

@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/reference/test_package.html#special-files
 
 library(testthat)
-library(ATQ)
+library(DESA)
 
-test_check("ATQ")
+test_check("DESA")
