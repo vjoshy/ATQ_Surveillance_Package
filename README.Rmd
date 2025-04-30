@@ -2,7 +2,6 @@
 output: github_document
 ---
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -55,7 +54,7 @@ You can install the development version of DESA from [Github](https://github.com
 ```r  
 #install.packages("devtools")
 library(devtools)
-install_github("vjoshy/ATQ_Surveillance_Package")
+install_github("vjoshy/DESA")
 ```
 
 ## Key Functions

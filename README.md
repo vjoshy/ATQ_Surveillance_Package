@@ -1,6 +1,4 @@
 
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-
 # DESA: Detecting Epidemics using School Absenteeism <badges go here>
 
 ## Overview
@@ -16,14 +14,14 @@ through school absenteeism surveillance. The package enables:
     that balance timeliness and accuracy
 
 The methods implemented are based on research by [Vanderkruk et
-al. (2023)](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z)
+al. (2023)](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-023-15747-z)
 and [Ward et
-al. (2019)](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-019-7521-7).
+al. (2019)](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-019-7521-7).
 
 ## Why School Absenteeism?
 
 Children typically have higher influenza infection rates than other age
-groups and are encouraged to stay home when ill.This makes school
+groups and are encouraged to stay home when ill. This makes school
 absenteeism data a valuable early indicator of community-wide epidemic
 arrival, potentially providing public health officials with crucial lead
 time to implement mitigation strategies.
@@ -32,13 +30,13 @@ time to implement mitigation strategies.
 
 Traditional epidemic surveillance systems often rely on
 laboratory-confirmed cases, which can introduce significant delays in
-detection. To address this limitation, Ward et al. (2019) investigated
+detection. To address this limitation, Ward et al. (2019) investigated
 the use of school absenteeism data for early epidemic detection in the
 Wellington-Dufferin-Guelph region of Ontario, Canada.
 
 The existing system in this region used a simple threshold-based
 approach (raising an alarm when 10% of students were absent) to identify
-potential outbreaks. Ward et al. developed detection models and
+potential outbreaks. Ward et al. developed detection models and
 introduced two evaluation metrics:
 
 - **False Alert Rate (FAR)**: Measures the proportion of incorrectly
@@ -46,7 +44,7 @@ introduced two evaluation metrics:
 - **Accumulated Days Delayed (ADD)**: Quantifies the timeliness of
   correct alarms
 
-Building on this foundation, Vanderkruk et al. (2023) developed a more
+Building on this foundation, Vanderkruk et al. (2023) developed a more
 nuanced evaluation framework called **Alert Time Quality (ATQ)**. Unlike
 the binary classification of previous metrics, ATQ assesses alerts where
 ones that are raised at sub optimal times receive penalties proportional
@@ -69,7 +67,7 @@ You can install the development version of DESA from
 ``` r
 #install.packages("devtools")
 library(devtools)
-install_github("vjoshy/ATQ_Surveillance_Package")
+install_github("vjoshy/DESA")
 ```
 
 ## Key Functions
