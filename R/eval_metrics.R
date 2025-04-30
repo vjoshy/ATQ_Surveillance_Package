@@ -293,7 +293,7 @@ calc.ADD <- function(data, topt){
   # NA for years with no true alarms
   advnot <- ifelse(advnot == "-Inf", NA ,advnot)
   tmax <- as.numeric(refdate - 1)
-  ADD <- ifelse(is.na(advnot), tmax, topt - advnot)
+  ADD <- ifelse(is.na(advnot), tmax, abs(topt - advnot))
 
   return(ADD)
 }

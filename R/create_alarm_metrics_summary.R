@@ -104,7 +104,7 @@ create_alarm_metrics_summary <- function(metrics, best_models, epidemic_data) {
   best_prediction_dates <- lapply(metric_names, function(metric) {
     sapply(epidemic_years, function(year) {
       best_model <- best_models[[paste0("best.", metric)]]
-      dates <- best_model$Date[best_model$ScYr == year & best_model$Alarm == 1]
+      dates <- best_model$Date[best_model$ScYr == year & best_model$Alarm == 1 & best_model$window == 1]
 
       if(length(dates) > 0) min(dates) else NA
     })
