@@ -49,7 +49,7 @@ The DESA package implements the methodologies from both papers, enabling users t
 
 ## Installation:
 
-You can install the development version of DESA from [Github](https://github.com/vjoshy/ATQ_Surveillance_Package)
+You can install the development version of DESA from [Github](https://github.com/vjoshy/DESA)
 
 ```r  
 #install.packages("devtools")

@@ -1,3 +1,6 @@
+## Resubmission - Major version update
+* Package name is update from ATQ -> DESA to better represent the functionality and purpose of the package.
+
 ## Resubmission - c
 
 * Minor fix addressing the note, 

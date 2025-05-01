@@ -1,5 +1,5 @@
 # DESA 1.0.0
-Name update to better represent purpose of pacakge
+Name update to better represent purpose of package
 
 # ATQ 0.2.4
 Minor bug fix in summary function

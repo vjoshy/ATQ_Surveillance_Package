@@ -62,7 +62,7 @@ users to:
 ## Installation:
 
 You can install the development version of DESA from
-[Github](https://github.com/vjoshy/ATQ_Surveillance_Package)
+[Github](https://github.com/vjoshy/DESA)
 
 ``` r
 #install.packages("devtools")
