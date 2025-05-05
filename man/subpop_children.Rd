@@ -14,6 +14,7 @@ subpop_children(
   parent_dist = stats::runif,
   child_dist = stats::runif,
   age_dist = stats::runif,
+  interactive = FALSE,
   ...
 )
 }
@@ -35,6 +36,8 @@ subpop_children(
 \item{child_dist}{distribution function for number of children, default is stats::runif}
 
 \item{age_dist}{distribution function for child age, default is stats::runif}
+
+\item{interactive}{logical if TRUE and parameters are NULL, prompt for input, default = FALSE}
 
 \item{...}{additional arguments passed to the distribution functions}
 }

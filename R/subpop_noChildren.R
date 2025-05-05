@@ -7,6 +7,7 @@
 #' @param prop_house_size vector of proportions for households with 1, 2, 3, 4, 5+ members (optional)
 #' @param prop_house_Children proportion of households with children (optional)
 #' @param house_size vector of random numbers for household size simulation (optional)
+#' @param interactive logical if TRUE and parameters are NULL, prompt for input, default = FALSE
 #'
 #' @details This function can be used interactively or with pre-specified parameters.
 #' If proportions are not provided, the user will be prompted to enter them.
@@ -48,21 +49,24 @@
 subpop_noChildren <- function(df, df2,
                               prop_house_size = NULL,
                               prop_house_Children = NULL,
-                              house_size = NULL){
+                              house_size = NULL,
+                              interactive = FALSE){
 
   # connection for standard input from users
   con <- getOption("usr_con", stdin())
 
 
-  # user input for proportion
-  if(is.null(prop_house_size)){
-    cat("Please enter proportion of households with 1, 2, 3, 4, 5+ members separted by space: ")
-    prop_house_size <- scan(con, n = 5, what = double())
-  }
+  if(interactive){
+    # user input for proportion
+    if(is.null(prop_house_size)){
+      cat("Please enter proportion of households with 1, 2, 3, 4, 5+ members separted by space: ")
+      prop_house_size <- scan(con, n = 5, what = double())
+    }
 
-  if(is.null(prop_house_Children)){
-    cat("Please enter proportion of households with children:  ")
-    prop_house_Children <- scan(con, n = 1, what = double())
+    if(is.null(prop_house_Children)){
+      cat("Please enter proportion of households with children:  ")
+      prop_house_Children <- scan(con, n = 1, what = double())
+    }
   }
 
   prop_house_size_nochildren <- c(prop_house_size[1]/(1-prop_house_Children))

@@ -12,6 +12,7 @@
 #' @param parent_dist distribution function for parent type, default is stats::runif
 #' @param child_dist distribution function for number of children, default is stats::runif
 #' @param age_dist distribution function for child age, default is stats::runif
+#' @param interactive logical if TRUE and parameters are NULL, prompt for input, default = FALSE
 #' @param ... additional arguments passed to the distribution functions
 #'
 #' @details This function can be used interactively or with pre-specified parameters.
@@ -68,6 +69,7 @@ subpop_children <- function(df, n = 5,
                             parent_dist = stats::runif,
                             child_dist = stats::runif,
                             age_dist = stats::runif,
+                            interactive = FALSE,
                             ...) {
 
   if(n <= 1 ){
@@ -100,28 +102,31 @@ subpop_children <- function(df, n = 5,
   con <- getOption("usr_con", stdin())
 
 
-  # user input for proportions
-  if (is.null(prop_parent_couple)) {
-    cat("Please enter proportion of parents as a couple: ")
-    prop_parent_couple <- scan(con, n = 1, what = double())
-  }
+  if(interactive){
 
+    # user input for proportions
+    if (is.null(prop_parent_couple)) {
+      cat("Please enter proportion of parents as a couple: ")
+      prop_parent_couple <- scan(con, n = 1, what = double())
+    }
+
+
+    # user input for proportions
+    if (is.null(prop_children_couple)) {
+      cat("Enter proportion of coupled parents with 1, 2, 3+ children separated by space:")
+      prop_children_couple <- scan(con, n = 3, what = double())
+    }
+
+
+    if (is.null(prop_children_lone)) {
+      cat("Enter proportion of single parents with 1, 2, 3+ children separated by space:")
+      prop_children_lone <- scan(con, n = 3, what = double())
+    }
+
+  }
 
   # parent type: 2 = coupled parent, 1 = lone parent
   parent_type <- ifelse(unif_parent_type <= prop_parent_couple, 2, 1)
-
-
-  # user input for proportions
-  if (is.null(prop_children_couple)) {
-    cat("Enter proportion of coupled parents with 1, 2, 3+ children separated by space:")
-    prop_children_couple <- scan(con, n = 3, what = double())
-  }
-
-
-  if (is.null(prop_children_lone)) {
-    cat("Enter proportion of single parents with 1, 2, 3+ children separated by space:")
-    prop_children_lone <- scan(con, n = 3, what = double())
-  }
 
 
   # simulating number of children based on parent type
@@ -136,13 +141,14 @@ subpop_children <- function(df, n = 5,
                           ifelse(unif_child_num <= sum(prop_children_lone[1:2]),
                                  2, 3)))
 
+  if(interactive){
 
-  # user input for proportions
-  if (is.null(prop_elem_age)) {
-    cat("Please enter proportion of children that are of elementary school age:")
-    prop_elem_age <- scan(con, n = 1, what = double())
+    # user input for proportions
+    if (is.null(prop_elem_age)) {
+      cat("Please enter proportion of children that are of elementary school age:")
+      prop_elem_age <- scan(con, n = 1, what = double())
+    }
   }
-
 
   # Simulating whether child is of elementary school age
   child1_elemAge <- ifelse(unif_childAge1 <= prop_elem_age,1,0)
@@ -196,7 +202,7 @@ subpop_children <- function(df, n = 5,
 
 
   # update school populations to include the possible extra 1-2 children
-  # in case there aren't any students assigned to a schoolwwwwwww
+  # in case there aren't any students assigned to a school
   school_pops <- stats::aggregate(house_children$num_elem_child ~ house_children$schoolID, FUN="sum")
   df$schoolPop <- ifelse(df$schoolID %in% school_pops[,1],
                          school_pops[match(df$schoolID, school_pops[,1]), 2],

@@ -9,7 +9,8 @@ subpop_noChildren(
   df2,
   prop_house_size = NULL,
   prop_house_Children = NULL,
-  house_size = NULL
+  house_size = NULL,
+  interactive = FALSE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ subpop_noChildren(
 \item{prop_house_Children}{proportion of households with children (optional)}
 
 \item{house_size}{vector of random numbers for household size simulation (optional)}
+
+\item{interactive}{logical if TRUE and parameters are NULL, prompt for input, default = FALSE}
 }
 \value{
 A data frame representing the simulated population of households without children, including:

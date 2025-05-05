@@ -1,5 +1,5 @@
 Package: DESA
-Title: DESA - Detecting Epidemic using School Absenteeism
+Title: Detecting Epidemics using School Absenteeism
 Version: 1.0.0
 Date: 2025-05-01
 Authors@R: c(
