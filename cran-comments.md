@@ -3,7 +3,7 @@ The following modifications proposed by Konstanze Lauseker have been implemented
   * "It is more R like to generate objects that can be used to extract the information a user is interested in, and then print() that object.Instead of cat() rather use message()/warning() or if(verbose)cat(..) (or maybe stop()) if you really have to write text to the console. (except for print, summary, interactive functions) -> R/subpop_children.R, R/subpop_noChildren.R"
     * FIXED: included "interactive" parameter in R/subpop_children.R, R/subpop_noChildren.R functions
   
-  * Please do not install packages in your functions, examples or vignette. This can make the functions,examples and cran-check very slow. -> inst/doc/DESA_Guide.R
+  * "Please do not install packages in your functions, examples or vignette. This can make the functions,examples and cran-check very slow. -> inst/doc/DESA_Guide.R"
     * FIXED: Removed vignette from this submission, will resubmit with a more complete vignette at a later time.
 
 ## Resubmission - 1.0.0
