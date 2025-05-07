@@ -62,7 +62,7 @@ plot.alarm_plot_data <- function(x, ...) {
   # Prepare alert data
   alert_data <- do.call(rbind, lapply(names(best_models), function(model_name) {
     model_data <- best_models[[model_name]]
-    subset(model_data, model_data$Alarm == 1, select = c("Date", "ScYr"))
+    subset(model_data, model_data$Alarm == 1, select = c("time", "ScYr"))
   }))
   alert_data$Model <- rep(names(best_models), sapply(best_models, function(x) sum(x$Alarm == 1)))
 
@@ -75,7 +75,7 @@ plot.alarm_plot_data <- function(x, ...) {
   alert_data$y_position <- model_positions[alert_data$Model]
 
   # Combine epidemic data with alert data
-  plot_data <- merge(data, alert_data, by = c("Date", "ScYr"), all.x = TRUE)
+  plot_data <- merge(data, alert_data, by = c("time", "ScYr"), all.x = TRUE)
   plot_data <- unique(plot_data)
 
   # Create a plot for each year
@@ -84,19 +84,19 @@ plot.alarm_plot_data <- function(x, ...) {
     year <- unique(year_data$ScYr)
 
     # Calculate y-axis limits
-    y_max <- max(c(year_data$lab_conf, year_data$pct_absent * 100), na.rm = TRUE)
+    y_max <- max(c(year_data$reported_cases, year_data$pct_absent * 100), na.rm = TRUE)
     y_min <- min(model_positions) - 1
 
-    p <- ggplot(year_data, aes(x = .data$Date)) +
+    p <- ggplot(year_data, aes(x = .data$time)) +
       # Absenteeism percentage
       geom_area(aes(y = .data$pct_absent * 100, fill = "Absenteeism (%)"), alpha = 0.7,
                show.legend = FALSE) +
       # Lab confirmed cases
-      geom_area(aes(y = .data$lab_conf, fill = "Lab Confirmed Cases"), alpha = 0.7,
+      geom_area(aes(y = .data$reported_cases, fill = "Lab Confirmed Cases"), alpha = 0.7,
                show.legend = FALSE) +
       # Reference date
       geom_vline(data = dplyr::filter(year_data, .data$ref_date == 1),
-                 aes(xintercept = .data$Date, color = "Reference Date"),
+                 aes(xintercept = .data$time, color = "Reference Date"),
                  linetype = "dashed") +
       # Alert points (stacked)
       geom_point(data = dplyr::filter(year_data, !is.na(.data$Model)),

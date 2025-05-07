@@ -43,7 +43,7 @@ metrics <- structure(sample_metrics, class = c("alarm_metrics", "list"))
 generate_best_model <- function() {
   data.frame(
     ScYr = rep(1:3, each = 100),
-    Date = rep(1:100, 3),
+    time = rep(1:100, 3),
     Alarm = sample(c(0, 1), 300, replace = TRUE, prob = c(0.9, 0.1)),
     lag = sample(1:15, 300, replace = TRUE),
     thres = runif(300, 0.1, 0.6)

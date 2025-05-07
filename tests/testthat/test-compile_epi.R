@@ -19,8 +19,8 @@ test_that("compile_epi handles input validation", {
   expect_s3_class(result, "data.frame")
   expect_equal(nrow(result), 600)  # 300 days * 2 years
 
-  expected_columns <- c("Date", "ScYr", "pct_absent", "absent", "absent_sick",
-                        "new_inf", "lab_conf", "Case", "sinterm", "costerm",
+  expected_columns <- c("time", "ScYr", "pct_absent", "absent", "absent_sick",
+                        "new_inf", "reported_cases", "Case", "sinterm", "costerm",
                         "window", "ref_date")
   expect_true(all(expected_columns %in% names(result)))
 
@@ -43,8 +43,8 @@ test_that("compile_epi produces correct output structure", {
   expect_s3_class(result, "data.frame")
   expect_equal(nrow(result), 600)  # 300 days * 2 years
 
-  expected_columns <- c("Date", "ScYr", "pct_absent", "absent", "absent_sick",
-                        "new_inf", "lab_conf", "Case", "sinterm", "costerm",
+  expected_columns <- c("time", "ScYr", "pct_absent", "absent", "absent_sick",
+                        "new_inf", "reported_cases", "Case", "sinterm", "costerm",
                         "window", "ref_date")
   expect_true(all(expected_columns %in% names(result)))
 

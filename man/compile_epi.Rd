@@ -22,17 +22,17 @@ compile_epi(epidemic, individual_data, lags = 16, inf_period = 4, T = 300)
 }
 \value{
 A data frame containing compiled epidemic data, including:
-\item{Date}{Day of the epidemic}
+\item{time}{Day of the epidemic}
 \item{ScYr}{School year}
 \item{pct_absent}{Percentage of students absent}
 \item{absent}{Number of students absent}
 \item{absent_sick}{Number of students absent due to illness}
 \item{new_inf}{Number of new infections}
 \item{reported_cases}{Number of reported cases}
-\item{Case}{Indicator for lab confirmed flu case that day}
+\item{Case}{Binary indicator for at least one new infection or not}
 \item{sinterm, costerm}{Seasonal terms}
-\item{window}{Indicator for "True Alarm" window}
-\item{ref_date}{Indicator for reference date}
+\item{window}{Binary indicator for "True Alarm" window}
+\item{ref_date}{Binary indicator for reference time}
 \item{lag0, lag1, ..., lag15}{Lagged absenteeism values}
 }
 \description{

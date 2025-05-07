@@ -79,7 +79,7 @@ eval_metrics <- function(data,
     stop("data must be a data frame")
   }
 
-  required_cols <- c("Date","ScYr","pct_absent","absent","absent_sick","new_inf","lab_conf",
+  required_cols <- c("time","ScYr","pct_absent","absent","absent_sick","new_inf","reported_cases",
                      "Case","sinterm","costerm","window","ref_date")
   missing_cols <- setdiff(required_cols, names(data))
   if (length(missing_cols) > 0) {
@@ -225,15 +225,15 @@ calc.metric.region <- function(lagdata, ScYr, yr.weights, topt) {
 
     #subset data
     ScYr.data <- lagdata[lagdata$ScYr == ScYr[y],
-                         c("Date", "ScYr", "new_inf",
-                           "lab_conf", "Case", "pct_absent", "absent",
+                         c("time", "ScYr", "new_inf",
+                           "reported_cases", "Case", "pct_absent", "absent",
                            "absent_sick",  "window", "ref_date", "Alarm")]
 
     # Reference date
-    refdate <- suppressWarnings(min(ScYr.data[ScYr.data$ref_date == 1,"Date"]))
+    refdate <- suppressWarnings(min(ScYr.data[ScYr.data$ref_date == 1,"time"]))
 
     # only consider alarms prior to the reference date
-    ScYr.data <- ScYr.data[ScYr.data$Date <= refdate,]
+    ScYr.data <- ScYr.data[ScYr.data$time <= refdate,]
 
     #calculate evaluation metrics
     FAR[y] <- calc.FAR(ScYr.data)
@@ -280,12 +280,12 @@ calc.FAR <- function(data){
 #### Accumulated Days Delayed (ADD) ####
 calc.ADD <- function(data, topt){
 
-  refdate <- suppressWarnings(min(data[data$ref_date == 1,"Date"]))
+  refdate <- suppressWarnings(min(data[data$ref_date == 1,"time"]))
 
   TrueAlarm <- ifelse(data$window == 1 & data$Alarm == 1, 1, 0)
 
   first.true.alarm.date <- suppressWarnings(min(data[which(TrueAlarm == 1),
-                                                     "Date"]))
+                                                     "time"]))
 
   # number of days advance notice
   advnot <- as.numeric(refdate - first.true.alarm.date)
@@ -309,8 +309,8 @@ calc.ATQ <- function(data, topt){
   fa.pow <- 2
   denom <- 21
 
-  refdate <- suppressWarnings(min(data[data$ref_date == 1,"Date"]))
-  RefDateDiff <- as.numeric(refdate - data$Date)
+  refdate <- suppressWarnings(min(data[data$ref_date == 1,"time"]))
+  RefDateDiff <- as.numeric(refdate - data$time)
   OptDateDiff <- topt - RefDateDiff
 
   #calculate ATQ values for every day
@@ -337,9 +337,9 @@ calc.AATQ <- function(data){
 calc.FATQ <- function(data){
   num.alarms <- sum(data$Alarm)
   first.alarm.date <- suppressWarnings(min(data[which(data$Alarm == 1),
-                                                "Date"]))
+                                                "time"]))
   #find index of first alarm
-  first.alarm.index <- which(data$Date == first.alarm.date)
+  first.alarm.index <- which(data$time == first.alarm.date)
 
   # If no alarms, then FATQ = 1 for that year
   FATQ <- ifelse(num.alarms == 0, 1, data$ATQ[first.alarm.index])

@@ -35,7 +35,7 @@
 #' generate_best_model <- function() {
 #'   data.frame(
 #'     ScYr = rep(1:3, each = 100),
-#'     Date = rep(1:100, 3),
+#'     time = rep(1:100, 3),
 #'     Alarm = sample(c(0, 1), 300, replace = TRUE, prob = c(0.9, 0.1)),
 #'     lag = sample(1:15, 300, replace = TRUE),
 #'     thres = runif(300, 0.1, 0.6)
@@ -66,14 +66,14 @@
 #'
 summary.alarm_metrics_summary <- function(object, ...) {
 
-  cat("Alarm Metrics Summary\n")
+  cat("Alert Metrics Summary\n")
   cat("=====================\n\n")
 
   # Display summary statistics for each metric
   for (metric in names(object$summary_stats)) {
     cat(metric, ":\n")
-    cat("  Mean:", round(object$summary_stats[[metric]]$mean, 4), "\n")
-    cat("  Variance:", round(object$summary_stats[[metric]]$variance, 4), "\n")
+    # cat("  Mean:", round(object$summary_stats[[metric]]$mean, 4), "\n")
+    # cat("  Variance:", round(object$summary_stats[[metric]]$variance, 4), "\n")
     cat("  Optimal lag:", object$best_values[[metric]]$best_lag, "\n")
     cat("  Optimal threshold:", round(object$best_values[[metric]]$best_threshold, 4), "\n")
     cat("  Minimum value:", round(object$best_values[[metric]]$best_value, 4), "\n\n")

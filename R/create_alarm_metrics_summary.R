@@ -39,7 +39,7 @@
 #' generate_best_model <- function() {
 #'   data.frame(
 #'     ScYr = rep(1:3, each = 100),
-#'     Date = rep(1:100, 3),
+#'     time = rep(1:100, 3),
 #'     Alarm = sample(c(0, 1), 300, replace = TRUE, prob = c(0.9, 0.1)),
 #'     lag = sample(1:15, 300, replace = TRUE),
 #'     thres = runif(300, 0.1, 0.6)
@@ -58,7 +58,7 @@
 #' # Generate sample epidemic data
 #' epidemic_data <- data.frame(
 #'   ScYr = rep(1:3, each = 365),
-#'   Date = rep(1:365, 3),
+#'   time = rep(1:365, 3),
 #'   ref_date = c(rep(0, 364), 1)
 #' )
 #'
@@ -96,7 +96,7 @@ create_alarm_metrics_summary <- function(metrics, best_models, epidemic_data) {
 
   # Extract reference dates and best prediction dates
   ref_dates <- sapply(epidemic_years, function(year) {
-    dates <- epidemic_data$Date[epidemic_data$ScYr == year & epidemic_data$ref_date == 1]
+    dates <- epidemic_data$time[epidemic_data$ScYr == year & epidemic_data$ref_date == 1]
 
     if(length(dates) > 0) min(dates) else NA
   })
@@ -104,7 +104,7 @@ create_alarm_metrics_summary <- function(metrics, best_models, epidemic_data) {
   best_prediction_dates <- lapply(metric_names, function(metric) {
     sapply(epidemic_years, function(year) {
       best_model <- best_models[[paste0("best.", metric)]]
-      dates <- best_model$Date[best_model$ScYr == year & best_model$Alarm == 1 & best_model$window == 1]
+      dates <- best_model$time[best_model$ScYr == year & best_model$Alarm == 1 & best_model$window == 1]
 
       if(length(dates) > 0) min(dates) else NA
     })

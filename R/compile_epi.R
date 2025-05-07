@@ -18,17 +18,17 @@
 #'
 #'
 #' @return A data frame containing compiled epidemic data, including:
-#'   \item{Date}{Day of the epidemic}
+#'   \item{time}{Day of the epidemic}
 #'   \item{ScYr}{School year}
 #'   \item{pct_absent}{Percentage of students absent}
 #'   \item{absent}{Number of students absent}
 #'   \item{absent_sick}{Number of students absent due to illness}
 #'   \item{new_inf}{Number of new infections}
 #'   \item{reported_cases}{Number of reported cases}
-#'   \item{Case}{Indicator for lab confirmed flu case that day}
+#'   \item{Case}{Binary indicator for at least one new infection or not}
 #'   \item{sinterm, costerm}{Seasonal terms}
-#'   \item{window}{Indicator for "True Alarm" window}
-#'   \item{ref_date}{Indicator for reference date}
+#'   \item{window}{Binary indicator for "True Alarm" window}
+#'   \item{ref_date}{Binary indicator for reference time}
 #'   \item{lag0, lag1, ..., lag15}{Lagged absenteeism values}
 #'
 #' @export
@@ -95,23 +95,25 @@ compile_epi <- function(epidemic, individual_data, lags = 16, inf_period = 4, T 
 
   master_region <- merge(absent_region, labconf_region, by=c("time", "ScYr"), all=TRUE)
 
-  master_region <- rename(master_region, c("lab_conf" = "reported_cases", "Date" = "time"))
+  #print(names(master_region))
+
+  #master_region <- rename(master_region, c("reported_cases" = "lab_conf", "time" = "Date"))
 
   # indicator for lab confirmed flu case that day
   master_region$Case <- 1*(master_region$new_inf > 0)
 
   # seasonal terms
-  master_region$sinterm <- sin((2*pi*master_region$Date)/365.25)
-  master_region$costerm <- cos((2*pi*master_region$Date)/365.25)
+  master_region$sinterm <- sin((2*pi*master_region$time)/365.25)
+  master_region$costerm <- cos((2*pi*master_region$time)/365.25)
 
   # "True Alarm" window (to be calculated)
   master_region$window <- 0
 
-  # reference date indicator (to be calculated)
+  # reference time indicator (to be calculated)
   master_region$ref_date <- 0
 
   master_region <- master_region[order(master_region$ScYr,
-                                       master_region$Date),]
+                                       master_region$time),]
 
   region_eval <- data.frame()
 
@@ -119,7 +121,7 @@ compile_epi <- function(epidemic, individual_data, lags = 16, inf_period = 4, T 
 
     tmp_data <- master_region[master_region$ScYr == k,]
 
-    # Calculate region wide reference date
+    # Calculate region wide reference time
     # # number of cases within a rolling window of 7 days
     weekly_cases <- rollapply(tmp_data$new_inf, width = 7,
                               sum, partial = TRUE, align = "right")
@@ -127,18 +129,18 @@ compile_epi <- function(epidemic, individual_data, lags = 16, inf_period = 4, T 
     # first day in the year where 2 confirmed influenza cases within 7 days
     region_ref <- suppressWarnings(min(which(weekly_cases > 1)))
 
-    # If a reference date is defined for the region,
-    #   create an indicator to specify that day as the reference date,
+    # If a reference time is defined for the region,
+    #   create an indicator to specify that day as the reference time,
     #   and indicators for every day that is in the "True Alarm" window,
-    #   that is the 14 days prior to the reference date
+    #   that is the 14 days prior to the reference time
     #   (The "True Alarm" window is used for FAR and ADD calculations)
     if(region_ref != Inf){
       ref_row_start <- max(0, (region_ref-14))
 
       # 14 day window for ADD calculations
-      tmp_data[tmp_data$Date >= ref_row_start & tmp_data$Date <= region_ref,
+      tmp_data[tmp_data$time >= ref_row_start & tmp_data$time <= region_ref,
                "window"] <- 1
-      tmp_data[tmp_data$Date == region_ref, "ref_date"] <- 1
+      tmp_data[tmp_data$time == region_ref, "ref_date"] <- 1
     }
 
     region_eval <- rbind(region_eval, tmp_data)
@@ -151,7 +153,7 @@ compile_epi <- function(epidemic, individual_data, lags = 16, inf_period = 4, T 
   region_lag <- data.frame()
 
   # lagged absenteeism values for the entire region
-  x_t <- master_region[order(master_region$ScYr, master_region$Date),
+  x_t <- master_region[order(master_region$ScYr, master_region$time),
                        "pct_absent"]
 
   n <- length(x_t)
