@@ -12,20 +12,25 @@ typically output from the compile_epi function.}
 
 \item{maxlag}{The maximum number of lags to consider (default: 15).}
 
-\item{thres}{A vector of threshold values to evaluate (default: seq(0.1, 0.6, by = 0.05)).}
+\item{thres}{A vector of threshold values to evaluate
+(default: seq(0.1, 0.6, by = 0.05)).}
 
 \item{topt}{Optimal alarm day (default = 14).}
 }
 \value{
 A list containing three elements:
-\item{metrics}{An object of class "alarm_metrics" with the following components:
+\item{metrics}{class "alarm_metrics" with the following components:
 \itemize{
 \item FAR: Matrix of False Alarm Rates for each lag and threshold
 \item ADD: Matrix of Added Days Delayed for each lag and threshold
-\item AATQ: Matrix of Average Alarm Time Quality for each lag and threshold
-\item FATQ: Matrix of First Alarm Time Quality for each lag and threshold
-\item WAATQ: Matrix of Weighted Average Alarm Time Quality for each lag and threshold
-\item WFATQ: Matrix of Weighted First Alarm Time Quality for each lag and threshold
+\item AATQ: Matrix of Average Alarm Time Quality for each lag and
+threshold
+\item FATQ: Matrix of First Alarm Time Quality for each lag and
+threshold
+\item WAATQ: Matrix of Weighted Average Alarm Time Quality for
+each lag and threshold
+\item WFATQ: Matrix of Weighted First Alarm Time Quality for each
+lag and threshold
 \item best.AATQ: Best model according to AATQ
 \item best.FATQ: Best model according to FATQ
 \item best.FAR: Best model according to FAR
@@ -34,14 +39,15 @@ A list containing three elements:
 \item best.WAATQ: Best model according to WAATQ
 }
 }
-\item{plot_data}{An object of class "alarm_plot_data" for generating plots}
-\item{summary}{An object of class "alarm_metrics_summary" containing summary statistics}
+\item{plot_data}{class "alarm_plot_data" for generating plots}
+\item{summary}{class "alarm_metrics_summary" containing summary statistics}
 }
 \description{
-This function calculates various performance metrics for epidemic alarm systems
-across different lags and thresholds. It evaluates False Alarm Rate (FAR),
-Added Days Delayed (ADD), Average Alarm Time Quality (AATQ), First Alarm Time
-Quality (FATQ), and their weighted versions (WAATQ, WFATQ).
+This function calculates various performance metrics for epidemic alarm
+systems across different lags and thresholds. It evaluates
+False Alarm Rate (FAR),Added Days Delayed (ADD), Average Alarm Time
+Quality (AATQ), First Alarm Time Quality (FATQ), and their weighted
+versions (WAATQ, WFATQ).
 }
 \examples{
 # Generate simulated epidemic data

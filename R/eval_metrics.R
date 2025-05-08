@@ -1,25 +1,31 @@
 #' Evaluate Alarm Metrics for Epidemic Models
 #'
-#' This function calculates various performance metrics for epidemic alarm systems
-#' across different lags and thresholds. It evaluates False Alarm Rate (FAR),
-#' Added Days Delayed (ADD), Average Alarm Time Quality (AATQ), First Alarm Time
-#' Quality (FATQ), and their weighted versions (WAATQ, WFATQ).
+#' This function calculates various performance metrics for epidemic alarm
+#' systems across different lags and thresholds. It evaluates
+#' False Alarm Rate (FAR),Added Days Delayed (ADD), Average Alarm Time
+#' Quality (AATQ), First Alarm Time Quality (FATQ), and their weighted
+#' versions (WAATQ, WFATQ).
 #'
 #' @param data A data frame containing the epidemic data with lagged variables,
 #'             typically output from the compile_epi function.
 #' @param maxlag The maximum number of lags to consider (default: 15).
-#' @param thres A vector of threshold values to evaluate (default: seq(0.1, 0.6, by = 0.05)).
+#' @param thres A vector of threshold values to evaluate
+#' (default: seq(0.1, 0.6, by = 0.05)).
 #' @param topt Optimal alarm day (default = 14).
 #'
 #' @return A list containing three elements:
-#'   \item{metrics}{An object of class "alarm_metrics" with the following components:
+#'   \item{metrics}{class "alarm_metrics" with the following components:
 #'     \itemize{
 #'       \item FAR: Matrix of False Alarm Rates for each lag and threshold
 #'       \item ADD: Matrix of Added Days Delayed for each lag and threshold
-#'       \item AATQ: Matrix of Average Alarm Time Quality for each lag and threshold
-#'       \item FATQ: Matrix of First Alarm Time Quality for each lag and threshold
-#'       \item WAATQ: Matrix of Weighted Average Alarm Time Quality for each lag and threshold
-#'       \item WFATQ: Matrix of Weighted First Alarm Time Quality for each lag and threshold
+#'       \item AATQ: Matrix of Average Alarm Time Quality for each lag and
+#'       threshold
+#'       \item FATQ: Matrix of First Alarm Time Quality for each lag and
+#'       threshold
+#'       \item WAATQ: Matrix of Weighted Average Alarm Time Quality for
+#'        each lag and threshold
+#'       \item WFATQ: Matrix of Weighted First Alarm Time Quality for each
+#'       lag and threshold
 #'       \item best.AATQ: Best model according to AATQ
 #'       \item best.FATQ: Best model according to FATQ
 #'       \item best.FAR: Best model according to FAR
@@ -28,8 +34,8 @@
 #'       \item best.WAATQ: Best model according to WAATQ
 #'     }
 #'   }
-#'   \item{plot_data}{An object of class "alarm_plot_data" for generating plots}
-#'   \item{summary}{An object of class "alarm_metrics_summary" containing summary statistics}
+#'   \item{plot_data}{class "alarm_plot_data" for generating plots}
+#'   \item{summary}{class "alarm_metrics_summary" containing summary statistics}
 #'
 #' @importFrom stats as.formula glm predict
 #'
@@ -79,11 +85,13 @@ eval_metrics <- function(data,
     stop("data must be a data frame")
   }
 
-  required_cols <- c("time","ScYr","pct_absent","absent","absent_sick","new_inf","reported_cases",
+  required_cols <- c("time","ScYr","pct_absent","absent","absent_sick",
+                     "new_inf","reported_cases",
                      "Case","sinterm","costerm","window","ref_date")
   missing_cols <- setdiff(required_cols, names(data))
   if (length(missing_cols) > 0) {
-    stop(paste("data is missing required columns:", paste(missing_cols, collapse = ", ")))
+    stop(paste("data is missing required columns:",
+               paste(missing_cols, collapse = ", ")))
   }
 
   if (!is.numeric(maxlag) || maxlag < 1) {
@@ -96,7 +104,7 @@ eval_metrics <- function(data,
 
   ScYr <- unique(data$ScYr)[-1]
 
-  yr.weights = 1:length(ScYr)/sum(1:length(ScYr))
+  yr.weights <- 1:length(ScYr)/sum(1:length(ScYr))
 
 
   mod_resp <- (log_reg(data, maxlag, area = "region"))$resp
@@ -129,11 +137,12 @@ eval_metrics <- function(data,
 
 
       if(is.null(combined_resp) || nrow(combined_resp) == 0) {
-        stop("combined_resp is empty. Check mod_resp structure and ScYr values.")
+        stop("combined_resp is empty. Check mod_resp structure and ScYr values")
       }
 
       if(nrow(combined_resp) != nrow(lagdata[[t]])) {
-        stop(paste("Mismatch in dimensions: combined_resp has", nrow(combined_resp), "rows,
+        stop(paste("Mismatch in dimensions: combined_resp has",
+                   nrow(combined_resp), "rows,
                      lagdata has", nrow(lagdata[[t]]), "rows"))
       }
 
